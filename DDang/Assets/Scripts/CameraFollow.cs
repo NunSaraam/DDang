@@ -17,9 +17,15 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
+        player1Camera.enabled = false;
+        player2Camera.enabled = false;
+
+        //카메라 씬 나누기(플레이어별 카메라)
+        /*
         mainCamera.enabled = false;
         player1Camera.rect = new Rect(0f, 0f, 0.5f, 1f);
         player2Camera.rect = new Rect(0.5f, 0f, 0.5f, 1f);
+        */
     }
 
     private void LateUpdate()
