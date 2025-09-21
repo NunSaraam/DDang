@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class TestPlacedObj : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Renderer rend;
+
+    private void Awake()
     {
-        
+        rend = GetComponentInChildren<Renderer>();
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetMaterial(Material mat)
     {
-        
+        if (rend != null && mat != null)
+        {
+            rend.material = mat;
+        }
     }
 }

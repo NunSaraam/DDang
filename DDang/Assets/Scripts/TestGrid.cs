@@ -4,23 +4,32 @@ using UnityEngine;
 
 public class TestGrid : MonoBehaviour
 {
-    public TestPlacedObj prefab;
-    public int gridSize = 10;
+    public int gridSizeX = 10;
+    public int gridSizeZ = 10;
 
+    [Header("블럭 세팅")]
+    public TestPlacedObj prefab;
+    public Material defaultMat;
+    public Material p1Mat;
+    public Material p2Mat;
+
+
+    private int currentGrid;
     private TestPlacedObj[,] grid;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         Init();
+        GenerateGrid();
     }
 
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
-            float x = Random.value * gridSize;
-            float z = Random.value * gridSize;
+            float x = Random.value * gridSizeX;
+            float z = Random.value * gridSizeZ;
 
             Vector3 temp = new Vector3(x,0,z);
             Vector2Int pos = WorldToGridPosition(temp);
@@ -28,15 +37,45 @@ public class TestGrid : MonoBehaviour
         }
     }
 
+    private void Init()
+    {
+        grid = new TestPlacedObj[gridSizeX,gridSizeZ];
+    }
+
+    public void PaintBlock(TestPlacedObj block, PlayerType pT)
+    {
+        if (block == null) return;
+
+        Material mat = pT switch
+        {
+            PlayerType.Player1 => p1Mat,
+            PlayerType.Player2 => p2Mat,
+            _ => defaultMat
+        };
+
+        block.SetMaterial(mat);
+    }
+
+    private void GenerateGrid()
+    {
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int z = 0; z < gridSizeZ; z++)
+            {
+                Vector3 pos = new Vector3(x + 0.5f, 0, z + 0.5f);
+                TestPlacedObj obj = Instantiate(prefab, pos, Quaternion.identity, transform);
+                obj.SetMaterial(defaultMat);
+                grid[x, z] = obj;
+            }
+        }
+    }
+
+
     public Vector2Int WorldToGridPosition(Vector3 pos)
     {
         return new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
     }
 
-    private void Init()
-    {
-        grid = new TestPlacedObj[gridSize, gridSize];
-    }
 
     public void SetObject(int x, int z)                         // 예외처리 디버그 적어놓을것
     {
@@ -65,7 +104,7 @@ public class TestGrid : MonoBehaviour
     // 그리드 범위 안쪽인지 확인
     private bool IsInGrid(int x, int z)
     {
-        return (x >= 0 && x < gridSize && z >= 0 && z < gridSize);
+        return (x >= 0 && x < gridSizeX && z >= 0 && z < gridSizeZ);
     }
 
     // 해당 위치가 비어있는지 확인
