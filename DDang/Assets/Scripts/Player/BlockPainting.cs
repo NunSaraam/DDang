@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum PlayerType
 {
+    None,
     Player1,
     Player2
 }
@@ -11,12 +12,12 @@ public enum PlayerType
 public class BlockPainting : MonoBehaviour
 {
     public PlayerType pT;
-    public TestGrid grid;
+    public GridManager grid;
     public LayerMask mask;
 
     private void Start()
     {
-        grid = FindObjectOfType<TestGrid>();    
+        grid = FindObjectOfType<GridManager>();    
     }
 
     private void Update()

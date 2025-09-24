@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestGrid : MonoBehaviour
+public class GridManager : MonoBehaviour
 {
     public int gridSizeX = 10;
     public int gridSizeZ = 10;
@@ -24,18 +24,6 @@ public class TestGrid : MonoBehaviour
         GenerateGrid();
     }
 
-    void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            float x = Random.value * gridSizeX;
-            float z = Random.value * gridSizeZ;
-
-            Vector3 temp = new Vector3(x,0,z);
-            Vector2Int pos = WorldToGridPosition(temp);
-            SetObject(pos.x, pos.y);
-        }
-    }
 
     private void Init()
     {
@@ -46,14 +34,29 @@ public class TestGrid : MonoBehaviour
     {
         if (block == null) return;
 
-        Material mat = pT switch
+        Material mat = pT switch                            //switch expression방식 =>는 왼쪽이 입력일 때 오른쪽 값 반환, _는 default:
         {
             PlayerType.Player1 => p1Mat,
             PlayerType.Player2 => p2Mat,
             _ => defaultMat
         };
 
-        block.SetMaterial(mat);
+        block.SetMaterial(mat, pT);                 //땅을 칠하면서, 땅주인도 기록
+    }
+
+    public int CountScore(PlayerType pT)
+    {
+        int score = 0;
+
+        foreach (var block in grid)
+        {
+            if (block != null && block.onwer == pT)
+            {
+                score++;
+            }
+        }
+
+        return score;
     }
 
     private void GenerateGrid()
@@ -64,7 +67,7 @@ public class TestGrid : MonoBehaviour
             {
                 Vector3 pos = new Vector3(x + 0.5f, 0, z + 0.5f);
                 TestPlacedObj obj = Instantiate(prefab, pos, Quaternion.identity, transform);
-                obj.SetMaterial(defaultMat);
+                obj.SetMaterial(defaultMat, PlayerType.None);
                 grid[x, z] = obj;
             }
         }
