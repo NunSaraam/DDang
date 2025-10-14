@@ -1,0 +1,123 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum RoundState
+{
+    WaitingRound,           //라운드 대기 상태
+    Playing,                //플레이 중
+    End,                    //라운드 종료
+    Store,                  //상점
+}
+
+public class RoundManager : MonoBehaviour
+{
+    public static RoundManager Instance;
+
+    public GridManager grid;
+    public ScoreUIManager sM;
+
+    public int totalRounds = 3;             //총 라운드 (ex : 3판 2선
+    public float gamePlayTime = 60f;        //라운드 플레이 시간 60초
+    public float extratime = 15f;           //추가시간 15초 (플레이어 점수가 5점 이하로 차이날 때)
+    public float roundWaitTime = 3f;        //라운드 시작 전 대기시간 3초
+    public float shopingTime = 20f;         //상점 제한시간
+
+    private int currentRound = 1;
+    private float remainingTime;            //남은 시간
+    private bool extraTimeUsed = false;         //추가시간 비활성화 상태
+
+    public RoundState currentState { get; private set; } = RoundState.WaitingRound;
+
+    private void Start()
+    {
+        
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    IEnumerator RoundLOOP()
+    {
+        StartCoroutine(HandleWaitRound());
+    }
+
+    IEnumerator HandleWaitRound()
+    {
+        currentState = RoundState.WaitingRound;
+        Debug.Log($"{currentRound}");
+        sM.NextRound(currentRound);
+        yield return new WaitForSeconds(roundWaitTime);
+
+    }
+
+    IEnumerator HandlePlaying()
+    {
+        currentState = RoundState.Playing;
+        remainingTime = gamePlayTime;
+        extraTimeUsed = false;
+
+        while (remainingTime > 0)
+        {
+            remainingTime -= Time.deltaTime;
+            yield return null;
+
+            //점수 차이가 5이하일 때 추가시간
+            int p1 = grid.CountScore(PlayerType.Player1);
+            int p2 = grid.CountScore(PlayerType.Player2);
+            int diff = Mathf.Abs(p1 - p2);
+
+            if (diff <= 5 && !extraTimeUsed && remainingTime <= 0)              //차이가 5점 이하이고, 추가시간 사용을 하지 않았고, 게임 플레이 시간이 0이하일 때
+            {
+                remainingTime += extratime;
+                extraTimeUsed = true;
+            }
+        }
+        Debug.Log("라운드 시간 종료");
+    }
+    
+    private IEnumerator HandleRoundEnd()
+    {
+        currentState = RoundState.End;
+
+        PlayerType winner = CheckWinner();
+
+        sM.RoundResult(winner);
+
+        yield return new WaitForSeconds(5f);
+    }
+
+    IEnumerator HandleStore()
+    {
+        currentState = RoundState.Store;
+
+        //씬 매니저 연결
+
+        float storeTimer = shopingTime;
+        while (storeTimer > 0)
+        {
+            storeTimer -= Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    PlayerType CheckWinner()
+    {
+        int p1Score = grid.CountScore(PlayerType.Player1);
+        int p2Score = grid.CountScore(PlayerType.Player2);
+
+        if (p1Score > p2Score) return PlayerType.Player1;
+        if (p1Score < p2Score) return PlayerType.Player2;
+        return PlayerType.None;
+    }
+}

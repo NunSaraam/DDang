@@ -10,7 +10,8 @@ public enum PlayerState
     Idle,           //기본 상태
     Controllable,   //조작 가능
     Attacking,      //공격 중
-    Stunned         //기절 상태
+    Stunned,        //기절 상태
+
 }
 
 public class PlayerMovement : MonoBehaviour
@@ -94,9 +95,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)                  //인풋 시스템 공격로직
     {
+        if (state == PlayerState.Attacking) return;             //이미 공격 상태이면 반환
+
         if (context.performed && state == PlayerState.Controllable)
         {
-            state = PlayerState.Attacking;              //조작 => 공격으로 상태전환
+            state = PlayerState.Attacking;                      //조작 => 공격으로 상태전환
             ChaeckAttackRange();                                //공격 사거리 체크 매서드
             StartCoroutine(AttackCooldown(attackCooldown));     //공격 쿨다운 코루틴 실행
         }
