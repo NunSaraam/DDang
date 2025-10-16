@@ -31,7 +31,7 @@ public class RoundManager : MonoBehaviour
 
     private void Start()
     {
-        
+        StartCoroutine(RoundLOOP());
     }
 
     private void Awake()
@@ -49,7 +49,13 @@ public class RoundManager : MonoBehaviour
 
     IEnumerator RoundLOOP()
     {
-        StartCoroutine(HandleWaitRound());
+        yield return StartCoroutine(HandleWaitRound());
+
+        yield return StartCoroutine(HandlePlaying());
+
+        yield return StartCoroutine(HandleRoundEnd());
+
+        yield return StartCoroutine(HandleStore());
     }
 
     IEnumerator HandleWaitRound()
@@ -69,6 +75,7 @@ public class RoundManager : MonoBehaviour
 
         while (remainingTime > 0)
         {
+            sM.RoundTime(remainingTime);
             remainingTime -= Time.deltaTime;
             yield return null;
 
