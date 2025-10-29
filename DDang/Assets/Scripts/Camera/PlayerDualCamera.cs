@@ -7,7 +7,7 @@ public class PlayerDualCamera : MonoBehaviour
     public Transform target;
     public float followSpeed = 5f;
 
-    private Vector3 offset = new Vector3(4f, 3f, 0f);
+    private Vector3 offset = new Vector3(4f, 4f, 0f);
     
 
     private void LateUpdate()
