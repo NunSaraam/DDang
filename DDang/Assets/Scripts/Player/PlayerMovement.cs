@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Transform playerTransform;
     private Vector3 moveDirection;
+    private PlayerState currentState;
 
     public PlayerState state { get; private set; } = PlayerState.Controllable;
 
@@ -39,6 +40,10 @@ public class PlayerMovement : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
+        if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.WaitingRound)
+        {
+            state = PlayerState.Idle;
+        }
     }
 
     private void Update()
@@ -46,12 +51,18 @@ public class PlayerMovement : MonoBehaviour
         PlayerStates(state);
     }
 
-    void PlayerStates(PlayerState state)
+
+    void PlayerStates(PlayerState states)
     {
-        switch (state)
+        switch (states)
         {
             case PlayerState.Idle:                                  //대기 상태
                 rb.velocity = Vector3.zero;
+
+                if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Playing)
+                {
+                    state = PlayerState.Controllable;
+                }
                 break;
             
             case PlayerState.Controllable:                          //조작 상태

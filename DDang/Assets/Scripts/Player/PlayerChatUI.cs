@@ -35,6 +35,7 @@ public class PlayerChatUI : MonoBehaviour
 
         bool isStunned = pM.state == PlayerState.Stunned;
         stunImage.gameObject.SetActive(isStunned);
+        scoreText.gameObject.SetActive(!isStunned);
 
         switch (playerType)
         {

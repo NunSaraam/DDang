@@ -17,14 +17,14 @@ public class RoundManager : MonoBehaviour
     public GridManager grid;
     public ScoreUIManager sM;
 
-    public int totalRounds = 3;             //총 라운드 (ex : 3판 2선
-    public float gamePlayTime = 60f;        //라운드 플레이 시간 60초
-    public float extratime = 15f;           //추가시간 15초 (플레이어 점수가 5점 이하로 차이날 때)
-    public float roundWaitTime = 3f;        //라운드 시작 전 대기시간 3초
-    public float shopingTime = 20f;         //상점 제한시간
+    public int totalRounds = 3;                 //총 라운드 (ex : 3판 2선
+    public float gamePlayTime = 60f;            //라운드 플레이 시간 60초
+    public float extratime = 15f;               //추가시간 15초 (플레이어 점수가 5점 이하로 차이날 때)
+    public float roundWaitTime = 3f;            //라운드 시작 전 대기시간 3초
+    public float shopingTime = 20f;             //상점 제한시간
 
     private int currentRound = 1;
-    private float remainingTime;            //남은 시간
+    private float remainingTime;                //남은 시간
     private bool extraTimeUsed = false;         //추가시간 비활성화 상태
 
     public RoundState currentState { get; private set; } = RoundState.WaitingRound;

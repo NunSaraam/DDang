@@ -22,6 +22,13 @@ public class ScoreUIManager : MonoBehaviour
 
     public TextMeshProUGUI roundText;
 
+    public Image[] player1WinImages;
+    public Image[] player2WinImages;
+
+    public Sprite defaultSprite;
+    public Sprite player1WinSpreite;
+    public Sprite player2WinSpreite;
+
     private int p1RoundWins = 0;
     private int p2RoundWins = 0;
     private int currentRound = 1;
@@ -63,6 +70,7 @@ public class ScoreUIManager : MonoBehaviour
                 break;
         }
 
+        UpdateWinIcon();
         UpdateRoundUI();
     }
 
@@ -94,6 +102,34 @@ public class ScoreUIManager : MonoBehaviour
         p2RoundWins = 0;
         currentRound = 1;
 
+        UpdateWinIcon();
         UpdateRoundUI();
+    }
+
+    private void UpdateWinIcon()
+    {
+        for (int i = 0; i < player1WinImages.Length; i++)
+        {
+            if (i < p1RoundWins)
+            {
+                player1WinImages[i].sprite = player1WinSpreite;
+            }
+            else
+            {
+                player1WinImages[i].sprite = defaultSprite;
+            }
+        }
+
+        for (int i = 0; i < player2WinImages.Length; i++)
+        {
+            if (i < p1RoundWins)
+            {
+                player2WinImages[i].sprite = player2WinSpreite;
+            }
+            else
+            {
+                player2WinImages[i].sprite = defaultSprite;
+            }
+        }
     }
 }
