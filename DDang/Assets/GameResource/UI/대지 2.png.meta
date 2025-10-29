@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9ae6c72d393fc3d498b07299e8f5de24
+guid: 5c36956dc420f4147afe14d65c2897c4
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player1_Score
+      name: Player2_Key
       rect:
         serializedVersion: 2
-        x: 1113
-        y: 311
-        width: 27
-        height: 27
+        x: 170
+        y: 647
+        width: 580
+        height: 371
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c09db280a7848e34b8274b6a93d9778a
-      internalID: -889018536
+      spriteID: 2438ea4acb9a8994e9710ed7c691c007
+      internalID: -2052901860
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DefaultScore
+      name: Player1_Key
       rect:
         serializedVersion: 2
-        x: 1156
-        y: 311
-        width: 27
-        height: 27
+        x: 170
+        y: 258
+        width: 580
+        height: 371
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,92 +132,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5e5d63561ad635046b537a6591c82d40
-      internalID: 1390753191
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player2_Score
-      rect:
-        serializedVersion: 2
-        x: 1199
-        y: 312
-        width: 27
-        height: 27
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 15b36adb7f287cd4bbe03e8c3a994003
-      internalID: -1840767706
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player_Chat
-      rect:
-        serializedVersion: 2
-        x: 1346
-        y: 240
-        width: 138
-        height: 121
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2c29cd9bdbc5e7a43be3c6f51acdcd10
-      internalID: 846660553
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Background01
-      rect:
-        serializedVersion: 2
-        x: 812
-        y: 0
-        width: 312
-        height: 176
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c6cb8ddc66f40ca448ad09c9a43b5a0a
-      internalID: -1845587308
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player1_Chat
-      rect:
-        serializedVersion: 2
-        x: 1346
-        y: 26
-        width: 140
-        height: 123
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0742717434851e54485f54a9ce7be2b6
-      internalID: 659316571
+      spriteID: e0d0657e0459e044681c31f655d41f9e
+      internalID: 1415234765
       vertices: []
       indices: 
       edges: []
@@ -225,7 +141,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: c32f15daa10017440b216d1ca20a8653
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -233,14 +149,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Background01: -1845587308
-      DefaultScore: 1390753191
-      Player1_Chat: 659316571
-      Player1_Key: 861821435
-      Player1_Score: -889018536
-      Player2_Key: -1469308612
-      Player2_Score: -1840767706
-      Player_Chat: 846660553
+      Player1_Key: 1415234765
+      Player2_Key: -2052901860
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

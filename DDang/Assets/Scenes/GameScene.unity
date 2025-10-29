@@ -843,7 +843,7 @@ PrefabInstance:
     - target: {fileID: 7108877277086476334, guid: 5d61fb5edd938bd4f969073fd8d1a68f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 7108877277086476334, guid: 5d61fb5edd938bd4f969073fd8d1a68f,
         type: 3}
@@ -939,9 +939,9 @@ MonoBehaviour:
   - {fileID: 955098798}
   - {fileID: 1468348245}
   defaultSprite: {fileID: 1390753191, guid: 9ae6c72d393fc3d498b07299e8f5de24, type: 3}
-  player1WinSpreite: {fileID: -1840767706, guid: 9ae6c72d393fc3d498b07299e8f5de24,
+  player1WinSpreite: {fileID: -889018536, guid: 9ae6c72d393fc3d498b07299e8f5de24,
     type: 3}
-  player2WinSpreite: {fileID: -889018536, guid: 9ae6c72d393fc3d498b07299e8f5de24,
+  player2WinSpreite: {fileID: -1840767706, guid: 9ae6c72d393fc3d498b07299e8f5de24,
     type: 3}
 --- !u!4 &504565781
 Transform:
@@ -1738,7 +1738,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1264027601
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2034,7 +2034,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1744074734
 RectTransform:
   m_ObjectHideFlags: 0
