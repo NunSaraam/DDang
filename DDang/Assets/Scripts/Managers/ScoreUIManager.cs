@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -122,7 +122,7 @@ public class ScoreUIManager : MonoBehaviour
 
         for (int i = 0; i < player2WinImages.Length; i++)
         {
-            if (i < p1RoundWins)
+            if (i < p2RoundWins)
             {
                 player2WinImages[i].sprite = player2WinSpreite;
             }
