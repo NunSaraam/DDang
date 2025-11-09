@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask mask;
     public float stunTime = 1.5f;
 
+    public PlayerType playerType;
+
     private float attackRange = 0.5f;
     private float attackCooldown = 0.5f;
 
@@ -30,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private Transform playerTransform;
     private Vector3 moveDirection;
     private PlayerState currentState;
+
+    private StoreTile currentStoreTile;
 
     public PlayerState state { get; private set; } = PlayerState.Controllable;
 
@@ -108,11 +112,21 @@ public class PlayerMovement : MonoBehaviour
     {
         if (state == PlayerState.Attacking) return;             //이미 공격 상태이면 반환
 
-        if (context.performed && state == PlayerState.Controllable)
+        if (context.performed)
         {
-            state = PlayerState.Attacking;                      //조작 => 공격으로 상태전환
-            ChaeckAttackRange();                                //공격 사거리 체크 매서드
-            StartCoroutine(AttackCooldown(attackCooldown));     //공격 쿨다운 코루틴 실행
+
+            if (currentStoreTile != null && RoundManager.Instance.currentState == RoundState.Store)
+            {
+                currentStoreTile.TryPurchase(this);
+                return;
+            }
+
+            if (state == PlayerState.Controllable)
+            {
+                state = PlayerState.Attacking;                      //조작 => 공격으로 상태전환
+                ChaeckAttackRange();                                //공격 사거리 체크 매서드
+                StartCoroutine(AttackCooldown(attackCooldown));     //공격 쿨다운 코루틴 실행
+            }
         }
     }
 
@@ -165,5 +179,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (state == PlayerState.Attacking)
             state = PlayerState.Controllable;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        StoreTile tile = other.GetComponent<StoreTile>();
+
+        if (tile != null && currentStoreTile == tile)
+        {
+            currentStoreTile = null;
+        }
     }
 }
