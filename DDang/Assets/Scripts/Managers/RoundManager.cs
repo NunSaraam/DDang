@@ -109,6 +109,7 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.Store;
 
         //씬 매니저 연결
+        SceneLoadManager.Instance.LoadScene("Store");
 
         float storeTimer = shopingTime;
         while (storeTimer > 0)
