@@ -80,7 +80,16 @@ public class PlayerMovement : MonoBehaviour
                 break;
 
             case PlayerState.Attacking:                             //공격 중
-                rb.velocity = Vector3.zero;
+                
+                if (currentStoreTile != null && RoundManager.Instance.currentState == RoundState.Store)
+                {
+                    return;
+                }
+            
+                if (state == PlayerState.Controllable)
+                {
+                    rb.velocity = Vector3.zero;
+                }
                 break;
 
             case PlayerState.Stunned:                               //기절 중

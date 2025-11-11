@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class BackgroundCloud : MonoBehaviour
 {
 
-     public float scrollSpeed = 0.1f;
+    public float scrollSpeed = 0.1f;
+
     private RawImage rawImage;
 
     void Start()

@@ -9,6 +9,7 @@ public class PlayerChatUI : MonoBehaviour
 {
     public Image stunImage;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI storeText;
 
     public PlayerMovement pM;
     public PlayerType playerType;
@@ -29,13 +30,23 @@ public class PlayerChatUI : MonoBehaviour
         UpdateUI();
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         if (pM == null || ScoreUIManager.Instance == null)  return;
 
-        bool isStunned = pM.state == PlayerState.Stunned;
-        stunImage.gameObject.SetActive(isStunned);
-        scoreText.gameObject.SetActive(!isStunned);
+        if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Playing)
+        {
+            bool isStunned = pM.state == PlayerState.Stunned;
+            stunImage.gameObject.SetActive(isStunned);
+            scoreText.gameObject.SetActive(!isStunned);
+        }
+        else if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Store)
+        {
+            stunImage.gameObject.SetActive(false);
+            scoreText.gameObject.SetActive(false);
+            storeText.gameObject.SetActive(true);
+        }
+
 
         switch (playerType)
         {

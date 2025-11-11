@@ -24,6 +24,7 @@ public class RoundManager : MonoBehaviour
     public float shopingTime = 20f;             //상점 제한시간
 
     private int currentRound = 1;
+    private float remainingWaitTime;
     private float remainingTime;                //남은 시간
     private bool extraTimeUsed = false;         //추가시간 비활성화 상태
 
@@ -61,10 +62,22 @@ public class RoundManager : MonoBehaviour
     IEnumerator HandleWaitRound()
     {
         currentState = RoundState.WaitingRound;
+        remainingWaitTime = roundWaitTime;
         Debug.Log($"{currentRound}");
         sM.NextRound(currentRound);
-        yield return new WaitForSeconds(roundWaitTime);
 
+        while (remainingWaitTime > 0)
+        {
+            sM.RoundWait(remainingWaitTime);
+            remainingWaitTime -= Time.deltaTime;
+
+            yield return null;
+
+        }
+        sM.roundWaitText.text = "Start!";
+        yield return new WaitForSeconds(.5f);
+        sM.RoundWait(0);
+        sM.roundWaitPanel.SetActive(false);
     }
 
     IEnumerator HandlePlaying()

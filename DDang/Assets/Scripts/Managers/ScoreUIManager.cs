@@ -15,11 +15,12 @@ public class ScoreUIManager : MonoBehaviour
     public TextMeshProUGUI player1WinCountText;
     public TextMeshProUGUI player2WinCountText;
 
-    public TextMeshProUGUI winnerText;
-    
+    //public TextMeshProUGUI winnerText;
+
+    public TextMeshProUGUI roundWaitText;
     public TextMeshProUGUI roundTimeText;
 
-
+    public GameObject roundWaitPanel;
     public TextMeshProUGUI roundText;
 
     public Image[] player1WinImages;
@@ -31,8 +32,10 @@ public class ScoreUIManager : MonoBehaviour
 
     private int p1RoundWins = 0;
     private int p2RoundWins = 0;
+
+    private float currentRoundWaitTime;
     private int currentRound = 1;
-    private float currentRountTime;
+    private float currentRoundTime;
 
     private void Awake()
     {
@@ -78,10 +81,13 @@ public class ScoreUIManager : MonoBehaviour
 
     public void UpdateRoundUI()
     {
+        roundWaitText.text = $"{currentRoundWaitTime:F1}";
+
         player1WinCountText.text = $"{p1RoundWins}";
         player2WinCountText.text = $"{p2RoundWins}";
+        
         roundText.text = $"{currentRound}";
-        roundTimeText.text = $"{currentRountTime:F2}";
+        roundTimeText.text = $"{currentRoundTime:F2}";
     }
 
     public void NextRound(int roundNumber)              //RoundManager»£√‚øÎ
@@ -90,9 +96,15 @@ public class ScoreUIManager : MonoBehaviour
         UpdateRoundUI();  
     }
 
+    public void RoundWait(float roundWait)
+    {
+        currentRoundWaitTime = roundWait;
+        UpdateRoundUI();
+    }
+
     public void RoundTime(float roundTime)
     {
-        currentRountTime = roundTime;
+        currentRoundTime = roundTime;
         UpdateRoundUI(); 
     }
 

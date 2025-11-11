@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public enum StoreType
 {
@@ -10,26 +10,27 @@ public enum StoreType
     StunReduce
 }
 
-
 public class StoreTile : MonoBehaviour
 {
     public StoreType storeType;
     public int cost;
 
+    public Image tileImage;
+
     [Range(0, 99)] public int randFail = 49;
     [Range(0, 99)] public int randSpeed = 74;
     [Range(0, 99)] public int randStun = 99;
 
-    private Renderer rend;
+    private Image image;
 
-    private void Awake()
-    {
-        rend = GetComponentInChildren<Renderer>();
-    }
 
-    public void SetMaterial(Material mat)
+    public void SetImage(Sprite icon)
     {
-        rend.material = mat;
+        if (tileImage != null)
+        {
+            GameObject.Find("TileImage");
+        }
+        tileImage.sprite = icon;
     }
 
     private void OnTriggerEnter(Collider other)
