@@ -9,6 +9,10 @@ public class StoreUIManager : MonoBehaviour
 
     private void Start()
     {
-        
+        player1CchatUI.storeText.enabled = true;
+        player2CchatUI.storeText.enabled = true;
+            
     }
+
+    
 }

@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection;
     private PlayerState currentState;
 
-    private StoreTile currentStoreTile;
+    [SerializeField] private StoreTile currentStoreTile;
 
     public PlayerState state { get; private set; } = PlayerState.Controllable;
 
@@ -124,13 +124,16 @@ public class PlayerMovement : MonoBehaviour
         if (context.performed)
         {
 
-            if (currentStoreTile != null && RoundManager.Instance.currentState == RoundState.Store)
+            if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Store)
             {
-                currentStoreTile.TryPurchase(this);
-                return;
+                if (currentStoreTile != null)
+                {
+                    currentStoreTile.TryPurchase(this);
+                    return;
+                }
             }
 
-            if (state == PlayerState.Controllable)
+            if (state == PlayerState.Controllable && RoundManager.Instance.currentState == RoundState.Playing)
             {
                 state = PlayerState.Attacking;                      //조작 => 공격으로 상태전환
                 ChaeckAttackRange();                                //공격 사거리 체크 매서드
@@ -194,7 +197,17 @@ public class PlayerMovement : MonoBehaviour
     {
         StoreTile tile = other.GetComponent<StoreTile>();
 
-        if (tile != null && currentStoreTile == tile)
+        if (tile != null)
+        {
+            currentStoreTile = tile;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        StoreTile tile = other.GetComponent<StoreTile> ();
+
+        if (tile != null && tile == currentStoreTile)
         {
             currentStoreTile = null;
         }
