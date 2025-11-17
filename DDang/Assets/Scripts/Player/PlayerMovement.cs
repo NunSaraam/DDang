@@ -33,7 +33,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection;
     private PlayerState currentState;
 
-    [SerializeField] private StoreTile currentStoreTile;
+    public StoreTile currentStoreTile;
+    [SerializeField] StoreUIManager curretnStoreUI;
 
     public PlayerState state { get; private set; } = PlayerState.Controllable;
 
@@ -200,16 +201,18 @@ public class PlayerMovement : MonoBehaviour
         if (tile != null)
         {
             currentStoreTile = tile;
+            curretnStoreUI.UpdateStoreUI(this);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        StoreTile tile = other.GetComponent<StoreTile> ();
+        StoreTile tile = other.GetComponent<StoreTile>();
 
         if (tile != null && tile == currentStoreTile)
         {
             currentStoreTile = null;
+            curretnStoreUI.ExitTileUI(this);
         }
     }
 }

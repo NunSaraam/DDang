@@ -57,7 +57,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   stunTime: 1.5
-  playerType: 0
+  playerType: 2
+  currentStoreTile: {fileID: 0}
+  curretnStoreUI: {fileID: 0}
 --- !u!114 &1354570675757862160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,7 +356,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4286670289
+    rgba: 4291384702
   m_fontColor: {r: 0.49411765, g: 0.33333334, b: 0.7882353, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -372,8 +374,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
-  m_fontSizeBase: 0.3
+  m_fontSize: 0.08
+  m_fontSizeBase: 0.08
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -672,7 +674,7 @@ GameObject:
   - component: {fileID: 8162009434265947608}
   - component: {fileID: 559843084108367138}
   m_Layer: 7
-  m_Name: Canvas
+  m_Name: P2Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

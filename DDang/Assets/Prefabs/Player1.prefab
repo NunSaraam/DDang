@@ -89,7 +89,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   stunTime: 1.5
-  playerType: 0
+  playerType: 1
+  currentStoreTile: {fileID: 0}
+  curretnStoreUI: {fileID: 0}
 --- !u!114 &8246529043820231410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,8 +323,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
-  m_fontSizeBase: 0.3
+  m_fontSize: 0.08
+  m_fontSizeBase: 0.08
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -379,7 +381,7 @@ GameObject:
   - component: {fileID: 1302069676439583388}
   - component: {fileID: 4085804323413439333}
   m_Layer: 7
-  m_Name: Canvas
+  m_Name: P1Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

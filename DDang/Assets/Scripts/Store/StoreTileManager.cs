@@ -26,8 +26,9 @@ public class StoreTileManager : MonoBehaviour
     {
         Vector3 worldPos = new Vector3(pos.x + .5f, 0.51f, pos.y + .5f);
         GameObject tile = Instantiate(shopTilePrefab, worldPos, Quaternion.identity);
-        StoreTile Stile = tile.GetComponent<StoreTile>();
-        Stile.storeType = type;
-        Stile.SetImage(spr);
+        StoreTile sTile = tile.GetComponent<StoreTile>();
+        tile.name = $"{type}Tile";
+        sTile.storeType = type;
+        sTile.SetImage(spr);
     }
 }
