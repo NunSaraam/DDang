@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour
 {
     [SerializeField] PlayerChatUI player1CchatUI;
     [SerializeField] PlayerChatUI player2CchatUI;
-    
+
+    public TextMeshProUGUI shopingTimeText;
+
+    private float currentShopingTime;
 
     private void Start()
     {
@@ -20,11 +24,6 @@ public class StoreUIManager : MonoBehaviour
     
     public void UpdateStoreUI(PlayerMovement pM)
     {
-
-
-
-
-
         switch (pM.playerType)
         {
             case PlayerType.Player1:
@@ -61,6 +60,16 @@ public class StoreUIManager : MonoBehaviour
         }
     }
 
+    private void UpdateRoundUI()
+    {
+        shopingTimeText.text = $"{currentShopingTime:F2}";
+    }
+
+    public void ShopingTime(float shopingTime)
+    {
+        currentShopingTime = shopingTime;
+        UpdateRoundUI();
+    }
     public void ExitTileUI(PlayerMovement pM)
     {
         switch (pM.playerType)

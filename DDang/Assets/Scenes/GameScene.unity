@@ -231,6 +231,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 946359209}
   sM: {fileID: 504565780}
+  sT: {fileID: 0}
   totalRounds: 3
   gamePlayTime: 10
   extratime: 15

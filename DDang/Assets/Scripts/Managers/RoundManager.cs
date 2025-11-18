@@ -114,6 +114,8 @@ public class RoundManager : MonoBehaviour
 
         sM.RoundResult(winner);
 
+        CoinManager.Instance.AddCoins(winner, 10);
+
         yield return new WaitForSeconds(5f);
     }
 
@@ -124,12 +126,21 @@ public class RoundManager : MonoBehaviour
         //씬 매니저 연결
         SceneLoadManager.Instance.LoadScene("Store");
 
+        StoreUIManager sT = null;
+        while ((sT = FindObjectOfType<StoreUIManager>()) == null)
+        {
+            yield return null;
+        }
+
         float storeTimer = shopingTime;
         while (storeTimer > 0)
         {
+            sT.ShopingTime(storeTimer);
             storeTimer -= Time.deltaTime;
             yield return null;
         }
+
+        SceneLoadManager.Instance.LoadScene("GameScene");
     }
 
     PlayerType CheckWinner()

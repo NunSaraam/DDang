@@ -20,6 +20,7 @@ public class ScoreUIManager : MonoBehaviour
     public TextMeshProUGUI roundWaitText;
     public TextMeshProUGUI roundTimeText;
 
+
     public GameObject roundWaitPanel;
     public TextMeshProUGUI roundText;
 
@@ -81,13 +82,14 @@ public class ScoreUIManager : MonoBehaviour
 
     public void UpdateRoundUI()
     {
-        roundWaitText.text = $"{currentRoundWaitTime:F1}";
 
-        player1WinCountText.text = $"{p1RoundWins}";
-        player2WinCountText.text = $"{p2RoundWins}";
-        
-        roundText.text = $"{currentRound}";
-        roundTimeText.text = $"{currentRoundTime:F2}";
+            roundWaitText.text = $"{currentRoundWaitTime:F1}";
+
+            player1WinCountText.text = $"{p1RoundWins}";
+            player2WinCountText.text = $"{p2RoundWins}";
+
+            roundText.text = $"{currentRound}";
+            roundTimeText.text = $"{currentRoundTime:F2}";
     }
 
     public void NextRound(int roundNumber)              //RoundManager»£√‚øÎ
@@ -107,6 +109,7 @@ public class ScoreUIManager : MonoBehaviour
         currentRoundTime = roundTime;
         UpdateRoundUI(); 
     }
+
 
     public void ResetAll()
     {

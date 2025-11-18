@@ -13,13 +13,15 @@ public enum StoreType
 public class StoreTile : MonoBehaviour
 {
     public StoreType storeType;
-    public int cost;
+    public int randCost = 2;
+    public int speedCost = 5;
+    public int stunCost = 5;
 
     public Image tileImage;
 
-    [Range(0, 99)] public int randFail = 49;
-    [Range(0, 99)] public int randSpeed = 74;
-    [Range(0, 99)] public int randStun = 100;
+    [Range(0, 99)] public int randFail = 69;
+    [Range(0, 99)] public int randSpeed = 84;
+    [Range(0, 99)] public int randStun = 99;
 
     private Image image;
 
@@ -53,25 +55,26 @@ public class StoreTile : MonoBehaviour
         PlayerType playerType = player.playerType;
         int coins = CoinManager.Instance.GetCoins(playerType);
 
-        if (coins < cost)           //코인 부족 시 리턴
+        if (coins < randCost || coins < speedCost || coins < stunCost)           //코인 부족 시 리턴
         {
             return;
         }
 
-        CoinManager.Instance.SpendCoins(playerType, cost);
-
         switch (storeType)
         {
             case StoreType.RandomStat:      //랜덤 스탯
+                CoinManager.Instance.SpendCoins(playerType, speedCost);
                 ApplyRandomStat(player);
                 break;
 
             case StoreType.MoveSpeed:       //속도 증가
+                CoinManager.Instance.SpendCoins(playerType, randCost);
                 player.moveSpeed += 1f;
                 Debug.Log($"이동속도 +{1}");
                 break;
 
             case StoreType.StunReduce:      //스턴 시간 감소
+                CoinManager.Instance.SpendCoins(playerType, stunCost);
                 player.stunTime = Mathf.Max(0.5f, player.stunTime - 0.5f);
                 Debug.Log($"랜덤 강화 스턴 시간 감소 -{0.5}");
                 break;
