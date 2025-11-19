@@ -30,10 +30,6 @@ public class RoundManager : MonoBehaviour
 
     public RoundState currentState { get; private set; } = RoundState.WaitingRound;
 
-    private void Start()
-    {
-        StartCoroutine(RoundLOOP());
-    }
 
     private void Awake()
     {
@@ -48,8 +44,15 @@ public class RoundManager : MonoBehaviour
         }
     }
 
+    public void Begin()
+    {
+        StartCoroutine(RoundLOOP());
+    }
     IEnumerator RoundLOOP()
     {
+        Debug.Log("라운드 루프 시작");
+
+        Debug.Log("웨잇 라운드 루프 시작");
         yield return StartCoroutine(HandleWaitRound());
 
         yield return StartCoroutine(HandlePlaying());
@@ -61,10 +64,23 @@ public class RoundManager : MonoBehaviour
 
     IEnumerator HandleWaitRound()
     {
+
+        while (grid == null)
+        {
+            grid = GameObject.Find("GridManager")?.GetComponent<GridManager>();
+            if (grid == null)
+            {
+                yield return null;
+            }
+        }
+        Debug.Log("그리드 참조 완료");
+
+
+        Debug.Log("웨잇 라운드 카운트 시작");
+        sM.NextRound(currentRound);
         currentState = RoundState.WaitingRound;
         remainingWaitTime = roundWaitTime;
         Debug.Log($"{currentRound}");
-        sM.NextRound(currentRound);
 
         while (remainingWaitTime > 0)
         {
@@ -111,10 +127,21 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.End;
 
         PlayerType winner = CheckWinner();
-
         sM.RoundResult(winner);
 
-        CoinManager.Instance.AddCoins(winner, 10);
+        if (winner != PlayerType.None)
+        {
+            CoinManager.Instance.AddCoins(winner, 10);
+        }
+
+        PlayerType loser = (winner == PlayerType.Player1) ? PlayerType.Player2 :
+                           (winner == PlayerType.Player2) ? PlayerType.Player1 :
+                           PlayerType.None;
+
+        if (loser != PlayerType.None)
+        {
+            CoinManager.Instance.AddCoins(loser, 5);
+        }
 
         yield return new WaitForSeconds(5f);
     }
@@ -140,8 +167,9 @@ public class RoundManager : MonoBehaviour
             yield return null;
         }
 
-        SceneLoadManager.Instance.LoadScene("GameScene");
+        //SceneLoadManager.Instance.LoadScene("GameScene");
     }
+
 
     PlayerType CheckWinner()
     {

@@ -13,7 +13,6 @@ public class GridManager : MonoBehaviour
     public Material p1Mat;
     public Material p2Mat;
 
-
     private int currentGrid;
     private TestPlacedObj[,] grid;
 

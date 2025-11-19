@@ -14,11 +14,15 @@ public class PlayerChatUI : MonoBehaviour
     public PlayerMovement pM;
     public PlayerType playerType;
 
+    public GridManager grid;
+
     public Transform targetCamera;
 
     private void Start()
     {
         if (pM == null) pM = GetComponentInParent<PlayerMovement>();
+
+        if (grid == null) grid = FindObjectOfType<GridManager>();
 
         if (targetCamera == null) targetCamera = Camera.main.transform;
     }
@@ -32,7 +36,10 @@ public class PlayerChatUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        if (pM == null || ScoreUIManager.Instance == null)  return;
+        if (grid == null) return;
+
+        int p1Score = grid.CountScore(PlayerType.Player1);
+        int p2Score = grid.CountScore(PlayerType.Player2);
 
         if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Playing)
         {
@@ -45,23 +52,20 @@ public class PlayerChatUI : MonoBehaviour
             stunImage.gameObject.SetActive(false);
             scoreText.gameObject.SetActive(false);
             storeText.gameObject.SetActive(true);
-        }
-
+        }  
 
         switch (playerType)
         {
             case PlayerType.Player1:
-                if (ScoreUIManager.Instance.player1ScoreText != null)
-                {
-                    scoreText.text = ScoreUIManager.Instance.player1ScoreText.text;
-                }
+
+                scoreText.text = $"{p1Score}";
+               
                 break;
 
             case PlayerType.Player2:
-                if (ScoreUIManager.Instance.player2ScoreText != null)
-                {
-                    scoreText.text = ScoreUIManager.Instance.player2ScoreText.text;
-                }
+
+                scoreText.text = $"{p2Score}";
+
                 break;
         }
     }

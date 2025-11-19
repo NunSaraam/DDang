@@ -55,26 +55,49 @@ public class StoreTile : MonoBehaviour
         PlayerType playerType = player.playerType;
         int coins = CoinManager.Instance.GetCoins(playerType);
 
-        if (coins < randCost || coins < speedCost || coins < stunCost)           //코인 부족 시 리턴
-        {
-            return;
-        }
+        int price = 0;
 
         switch (storeType)
         {
             case StoreType.RandomStat:      //랜덤 스탯
-                CoinManager.Instance.SpendCoins(playerType, speedCost);
+
+                price = randCost;
+
+                break;
+
+            case StoreType.MoveSpeed:       //속도 증가
+
+                price = speedCost;
+
+                break;
+
+            case StoreType.StunReduce:      //스턴 시간 감소
+
+                price = stunCost;
+
+                break;
+        }
+
+        if (coins < price)
+        {
+            Debug.Log($"{playerType} 코인 부족");
+            return;
+        }
+
+        CoinManager.Instance.SpendCoins(playerType, price);
+
+        switch (storeType)
+        {
+            case StoreType.RandomStat:      //랜덤 스탯
                 ApplyRandomStat(player);
                 break;
 
             case StoreType.MoveSpeed:       //속도 증가
-                CoinManager.Instance.SpendCoins(playerType, randCost);
                 player.moveSpeed += 1f;
                 Debug.Log($"이동속도 +{1}");
                 break;
 
             case StoreType.StunReduce:      //스턴 시간 감소
-                CoinManager.Instance.SpendCoins(playerType, stunCost);
                 player.stunTime = Mathf.Max(0.5f, player.stunTime - 0.5f);
                 Debug.Log($"랜덤 강화 스턴 시간 감소 -{0.5}");
                 break;

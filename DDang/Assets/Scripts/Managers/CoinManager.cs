@@ -6,8 +6,8 @@ public class CoinManager : MonoBehaviour
 {
     public static CoinManager Instance;
 
-    private int player1Coins = 0;
-    private int player2Coins = 0;
+    public int player1Coins = 0;
+    public int player2Coins = 0;
 
     private void Awake()
     {

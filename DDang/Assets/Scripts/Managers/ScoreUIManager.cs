@@ -2,27 +2,17 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScoreUIManager : MonoBehaviour
 {
     public static ScoreUIManager Instance { get; private set; }
 
-    public GridManager grid;
-    public TextMeshProUGUI player1ScoreText;
-    public TextMeshProUGUI player2ScoreText;
-
-    public TextMeshProUGUI player1WinCountText;
-    public TextMeshProUGUI player2WinCountText;
-
-    //public TextMeshProUGUI winnerText;
-
-    public TextMeshProUGUI roundWaitText;
-    public TextMeshProUGUI roundTimeText;
-
+    public TextMeshProUGUI roundWaitText;           //대기시간 텍스트
+    public TextMeshProUGUI roundTimeText;           //진행시간 텍스트
 
     public GameObject roundWaitPanel;
-    public TextMeshProUGUI roundText;
 
     public Image[] player1WinImages;
     public Image[] player2WinImages;
@@ -53,13 +43,7 @@ public class ScoreUIManager : MonoBehaviour
 
     private void Update()
     {
-        if (grid == null) return;
-
-        int p1Score = grid.CountScore(PlayerType.Player1);
-        int p2Score = grid.CountScore(PlayerType.Player2);
-
-        player1ScoreText.text = $"{p1Score}";
-        player2ScoreText.text = $"{p2Score}";
+        if (RoundManager.Instance != null && RoundManager.Instance.currentState != RoundState.WaitingRound) return;
     }
 
     public void RoundResult(PlayerType winner)
@@ -78,18 +62,39 @@ public class ScoreUIManager : MonoBehaviour
         UpdateRoundUI();
     }
 
+    public void ReconnectUI()          //다시 게임 씬으로 넘어올 때 재연결
+    {
+        if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.WaitingRound)
+        {
+            roundWaitText = GameObject.Find("StartWaitText")?.GetComponent<TextMeshProUGUI>();
+            roundTimeText = GameObject.Find("Round_Time_Text")?.GetComponent<TextMeshProUGUI>();
+            roundWaitPanel = GameObject.Find("StartWaitPanel");
 
+            GameObject p1Group = GameObject.Find("Player1_Win_Images");
+            if (p1Group != null)
+            {
+                player1WinImages = p1Group.GetComponentsInChildren<Image>();
+            }
+
+            GameObject p2Group = GameObject.Find("Player2_Win_Images");
+            if (p2Group != null)
+            {
+                player2WinImages = p2Group.GetComponentsInChildren<Image>();
+            }
+        }
+
+        if (IsUIReady())
+        {
+            UpdateRoundUI();
+        }
+    }
 
     public void UpdateRoundUI()
     {
+        if (!IsUIReady()) return;
 
-            roundWaitText.text = $"{currentRoundWaitTime:F1}";
-
-            player1WinCountText.text = $"{p1RoundWins}";
-            player2WinCountText.text = $"{p2RoundWins}";
-
-            roundText.text = $"{currentRound}";
-            roundTimeText.text = $"{currentRoundTime:F2}";
+        roundWaitText.text = $"{currentRoundWaitTime:F1}";
+        roundTimeText.text = $"{currentRoundTime:F2}";
     }
 
     public void NextRound(int roundNumber)              //RoundManager호출용
@@ -145,6 +150,33 @@ public class ScoreUIManager : MonoBehaviour
             {
                 player2WinImages[i].sprite = defaultSprite;
             }
+        }
+    }
+
+    public bool IsUIReady()
+    {
+        return roundWaitText != null &&
+               roundTimeText != null &&
+               roundWaitPanel != null &&
+               player1WinImages != null && player1WinImages.Length > 0 &&
+               player2WinImages != null && player2WinImages.Length > 0;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "GameScene")
+        {
+            ReconnectUI();
         }
     }
 }
