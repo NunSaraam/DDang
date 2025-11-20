@@ -5,10 +5,8 @@ using UnityEngine;
 public enum GameState
 {
     Menu,           //메인 메뉴
-    Playing,        //게임 플레이 중
-    Paused,         //일시정지 상태
+    Gmae,           //게임
     Store,          //상점
-    GameResult      //게임 결과
 }
 
 public class GameManager : MonoBehaviour

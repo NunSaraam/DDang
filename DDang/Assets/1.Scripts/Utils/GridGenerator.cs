@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridManager : MonoBehaviour
+public class GridGenerator : MonoBehaviour
 {
     public int gridSizeX = 10;
     public int gridSizeZ = 10;
 
     [Header("블럭 세팅")]
-    public TestPlacedObj prefab;
+    public PlacedObj prefab;
     public Material defaultMat;
     public Material p1Mat;
     public Material p2Mat;
 
     private int currentGrid;
-    private TestPlacedObj[,] grid;
+    private PlacedObj[,] grid;
 
 
     void Start()
@@ -26,10 +26,10 @@ public class GridManager : MonoBehaviour
 
     private void Init()
     {
-        grid = new TestPlacedObj[gridSizeX,gridSizeZ];
+        grid = new PlacedObj[gridSizeX,gridSizeZ];
     }
 
-    public void PaintBlock(TestPlacedObj block, PlayerType pT)
+    public void PaintBlock(PlacedObj block, PlayerType pT)
     {
         if (block == null) return;
 
@@ -65,7 +65,7 @@ public class GridManager : MonoBehaviour
             for (int z = 0; z < gridSizeZ; z++)
             {
                 Vector3 pos = new Vector3(x + 0.5f, 0, z + 0.5f);
-                TestPlacedObj obj = Instantiate(prefab, pos, Quaternion.identity, transform);
+                PlacedObj obj = Instantiate(prefab, pos, Quaternion.identity, transform);
                 obj.SetMaterial(defaultMat, PlayerType.None);
                 grid[x, z] = obj;
             }
@@ -97,7 +97,7 @@ public class GridManager : MonoBehaviour
             return;
         }
 
-        TestPlacedObj obj = Instantiate(prefab, new Vector3(x + 0.5f, 0, z + 0.5f), Quaternion.identity);
+        PlacedObj obj = Instantiate(prefab, new Vector3(x + 0.5f, 0, z + 0.5f), Quaternion.identity);
 
         grid[x,z] = obj;
     }

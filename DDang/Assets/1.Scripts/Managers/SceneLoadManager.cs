@@ -10,7 +10,6 @@ public class SceneLoadManager : MonoBehaviour
 
     public string targetSceneName;
 
-    public Action OnSceneReady;
 
     private void Awake()
     {

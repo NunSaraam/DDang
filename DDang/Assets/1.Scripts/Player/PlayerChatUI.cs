@@ -14,7 +14,7 @@ public class PlayerChatUI : MonoBehaviour
     public PlayerMovement pM;
     public PlayerType playerType;
 
-    public GridManager grid;
+    public GridGenerator grid;
 
     public Transform targetCamera;
 
@@ -22,7 +22,7 @@ public class PlayerChatUI : MonoBehaviour
     {
         if (pM == null) pM = GetComponentInParent<PlayerMovement>();
 
-        if (grid == null) grid = FindObjectOfType<GridManager>();
+        if (grid == null) grid = FindObjectOfType<GridGenerator>();
 
         if (targetCamera == null) targetCamera = Camera.main.transform;
     }

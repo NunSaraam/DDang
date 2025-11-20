@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class StoreTileManager : MonoBehaviour
+public class StoreTileGenerator : MonoBehaviour
 {
     public GameObject shopTilePrefab;
 

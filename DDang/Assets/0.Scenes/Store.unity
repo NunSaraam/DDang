@@ -189,7 +189,7 @@ PrefabInstance:
         type: 3}
       propertyPath: curretnStoreUI
       value: 
-      objectReference: {fileID: 1691068969}
+      objectReference: {fileID: 1691068971}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -552,7 +552,7 @@ PrefabInstance:
         type: 3}
       propertyPath: curretnStoreUI
       value: 
-      objectReference: {fileID: 1691068969}
+      objectReference: {fileID: 1691068971}
     - target: {fileID: 7108877277086476334, guid: 5d61fb5edd938bd4f969073fd8d1a68f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -911,7 +911,7 @@ GameObject:
   - component: {fileID: 946359208}
   - component: {fileID: 946359209}
   m_Layer: 0
-  m_Name: GridManager
+  m_Name: GridGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -941,12 +941,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 946359206}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e40a1649ee511694e93fa7b7464d3cb2, type: 3}
+  m_Script: {fileID: 11500000, guid: 510e916f6cc81414fbb7c0d17e393eaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gridSizeX: 15
   gridSizeZ: 15
-  prefab: {fileID: 3932562486963276682, guid: 6c748ab12ef25054f98dd927bdb9b04b, type: 3}
+  prefab: {fileID: 8617420448957281622, guid: 6c748ab12ef25054f98dd927bdb9b04b, type: 3}
   defaultMat: {fileID: -8469494145858465668, guid: e2384d29073ae41429a472e26829bcea,
     type: 3}
   p1Mat: {fileID: 2100000, guid: 664dc7c5d7d05cc48b9feef4113b9c5b, type: 2}
@@ -1518,29 +1518,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1691068970}
-  - component: {fileID: 1691068969}
+  - component: {fileID: 1691068971}
   m_Layer: 0
-  m_Name: StoreUIManager
+  m_Name: StoreUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1691068969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1691068968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1596d0db12130e44db35aa6151152398, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player1CchatUI: {fileID: 1589217}
-  player2CchatUI: {fileID: 462321412}
-  shopingTimeText: {fileID: 384350006}
 --- !u!4 &1691068970
 Transform:
   m_ObjectHideFlags: 0
@@ -1556,6 +1541,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1691068971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691068968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970490c19dc2b49458c7b861c05e6bde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1CchatUI: {fileID: 1589217}
+  player2CchatUI: {fileID: 462321412}
+  shopingTimeText: {fileID: 384350006}
 --- !u!4 &1983084292 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7108877277086476334, guid: 5d61fb5edd938bd4f969073fd8d1a68f,

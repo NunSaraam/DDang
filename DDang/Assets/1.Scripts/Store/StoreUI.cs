@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class StoreUIManager : MonoBehaviour
+public class StoreUI : MonoBehaviour
 {
     [SerializeField] PlayerChatUI player1CchatUI;
     [SerializeField] PlayerChatUI player2CchatUI;

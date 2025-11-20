@@ -12,12 +12,12 @@ public enum PlayerType
 public class BlockPainting : MonoBehaviour
 {
     public PlayerType pT;
-    public GridManager grid;
+    public GridGenerator grid;
     public LayerMask mask;
 
     private void Start()
     {
-        grid = FindObjectOfType<GridManager>();    
+        grid = FindObjectOfType<GridGenerator>();    
     }
 
     private void Update()
@@ -25,7 +25,7 @@ public class BlockPainting : MonoBehaviour
         Vector3 rayOrigin = transform.position + Vector3.up * 0.5f;
         if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, mask))
         {
-            TestPlacedObj block = hit.collider.GetComponent<TestPlacedObj>();
+            PlacedObj block = hit.collider.GetComponent<PlacedObj>();
             if (block != null)
             {
                 grid.PaintBlock(block, pT);

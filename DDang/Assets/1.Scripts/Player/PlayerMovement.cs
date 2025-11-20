@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerState currentState;
 
     public StoreTile currentStoreTile;
-    [SerializeField] StoreUIManager curretnStoreUI;
+    [SerializeField] StoreUI curretnStoreUI;
 
     public PlayerState state { get; private set; } = PlayerState.Controllable;
 

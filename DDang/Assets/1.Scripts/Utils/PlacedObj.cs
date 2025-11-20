@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestPlacedObj : MonoBehaviour
+public class PlacedObj : MonoBehaviour
 {
     public PlayerType onwer = PlayerType.None;              //onwer = 현재 땅 주인
 

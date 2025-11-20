@@ -64,24 +64,22 @@ public class ScoreUIManager : MonoBehaviour
 
     public void ReconnectUI()          //다시 게임 씬으로 넘어올 때 재연결
     {
-        if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.WaitingRound)
+        roundWaitText = GameObject.Find("StartWaitText")?.GetComponent<TextMeshProUGUI>();
+        roundTimeText = GameObject.Find("Round_Time_Text")?.GetComponent<TextMeshProUGUI>();
+        roundWaitPanel = GameObject.Find("StartWaitPanel");
+
+        GameObject p1Group = GameObject.Find("Player1_Win_Images");
+        if (p1Group != null)
         {
-            roundWaitText = GameObject.Find("StartWaitText")?.GetComponent<TextMeshProUGUI>();
-            roundTimeText = GameObject.Find("Round_Time_Text")?.GetComponent<TextMeshProUGUI>();
-            roundWaitPanel = GameObject.Find("StartWaitPanel");
-
-            GameObject p1Group = GameObject.Find("Player1_Win_Images");
-            if (p1Group != null)
-            {
-                player1WinImages = p1Group.GetComponentsInChildren<Image>();
-            }
-
-            GameObject p2Group = GameObject.Find("Player2_Win_Images");
-            if (p2Group != null)
-            {
-                player2WinImages = p2Group.GetComponentsInChildren<Image>();
-            }
+            player1WinImages = p1Group.GetComponentsInChildren<Image>();
         }
+
+        GameObject p2Group = GameObject.Find("Player2_Win_Images");
+        if (p2Group != null)
+        {
+            player2WinImages = p2Group.GetComponentsInChildren<Image>();
+        }
+
 
         if (IsUIReady())
         {
@@ -176,7 +174,13 @@ public class ScoreUIManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
-            ReconnectUI();
+            StartCoroutine(DelayedReconnect());
         }
+    }
+
+    IEnumerator DelayedReconnect()
+    {
+        yield return null;
+        ReconnectUI();
     }
 }

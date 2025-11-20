@@ -14,7 +14,7 @@ public class RoundManager : MonoBehaviour
 {
     public static RoundManager Instance;
 
-    public GridManager grid;
+    public GridGenerator grid;
     public ScoreUIManager sM;
 
     public int totalRounds = 3;                 //총 라운드 (ex : 3판 2선
@@ -48,6 +48,7 @@ public class RoundManager : MonoBehaviour
     {
         StartCoroutine(RoundLOOP());
     }
+
     IEnumerator RoundLOOP()
     {
         Debug.Log("라운드 루프 시작");
@@ -64,10 +65,9 @@ public class RoundManager : MonoBehaviour
 
     IEnumerator HandleWaitRound()
     {
-
         while (grid == null)
         {
-            grid = GameObject.Find("GridManager")?.GetComponent<GridManager>();
+            grid = GameObject.Find("GridGenerator")?.GetComponent<GridGenerator>();
             if (grid == null)
             {
                 yield return null;
@@ -153,8 +153,8 @@ public class RoundManager : MonoBehaviour
         //씬 매니저 연결
         SceneLoadManager.Instance.LoadScene("Store");
 
-        StoreUIManager sT = null;
-        while ((sT = FindObjectOfType<StoreUIManager>()) == null)
+        StoreUI sT = null;
+        while ((sT = FindObjectOfType<StoreUI>()) == null)
         {
             yield return null;
         }
@@ -167,7 +167,7 @@ public class RoundManager : MonoBehaviour
             yield return null;
         }
 
-        //SceneLoadManager.Instance.LoadScene("GameScene");
+        SceneLoadManager.Instance.LoadScene("GameScene");
     }
 
 
