@@ -17,7 +17,7 @@ public class RoundManager : MonoBehaviour
     public GridGenerator grid;
     public ScoreUIManager sM;
 
-    public int totalRounds = 3;                 //총 라운드 (ex : 3판 2선
+    public int winningPoint = 3;                 //총 라운드 (ex : 3판 2선
     public float gamePlayTime = 60f;            //라운드 플레이 시간 60초
     public float extratime = 15f;               //추가시간 15초 (플레이어 점수가 5점 이하로 차이날 때)
     public float roundWaitTime = 3f;            //라운드 시작 전 대기시간 3초
@@ -27,6 +27,9 @@ public class RoundManager : MonoBehaviour
     private float remainingWaitTime;
     private float remainingTime;                //남은 시간
     private bool extraTimeUsed = false;         //추가시간 비활성화 상태
+
+    public int p1roundWinCount = 0;
+    public int p2roundWinCount = 0;
 
     public RoundState currentState { get; private set; } = RoundState.WaitingRound;
 
@@ -73,14 +76,14 @@ public class RoundManager : MonoBehaviour
                 yield return null;
             }
         }
-        Debug.Log("그리드 참조 완료");
+        Debug.Log("Grid 참조 완료");
 
 
-        Debug.Log("웨잇 라운드 카운트 시작");
+        Debug.Log("WaitRound 카운트 시작");
         sM.NextRound(currentRound);
         currentState = RoundState.WaitingRound;
         remainingWaitTime = roundWaitTime;
-        Debug.Log($"{currentRound}");
+        Debug.Log($"Round: {currentRound}");
 
         while (remainingWaitTime > 0)
         {
@@ -143,7 +146,27 @@ public class RoundManager : MonoBehaviour
             CoinManager.Instance.AddCoins(loser, 5);
         }
 
+
+        switch (winner)
+        {
+            case PlayerType.Player1:
+                if (p1roundWinCount < winningPoint)
+                {
+                    p1roundWinCount++;
+                }
+                break;
+
+            case PlayerType.Player2:
+                if (p2roundWinCount < winningPoint)
+                {
+                    p2roundWinCount++;
+                }
+                break;
+        }
+        currentRound++;
+
         yield return new WaitForSeconds(5f);
+
     }
 
     IEnumerator HandleStore()
@@ -168,6 +191,8 @@ public class RoundManager : MonoBehaviour
         }
 
         SceneLoadManager.Instance.LoadScene("GameScene");
+
+        currentState = RoundState.WaitingRound;
     }
 
 

@@ -93,19 +93,41 @@ public class StoreTile : MonoBehaviour
                 break;
 
             case StoreType.MoveSpeed:       //속도 증가
-                player.moveSpeed += 1f;
-                Debug.Log($"이동속도 +{1}");
+                if (playerType == PlayerType.Player1)
+                {
+                    PlayerDataManager.Instance.p1MoveSpeed += 1;
+
+                    Debug.Log($"이동속도 +{1}");
+                }
+                else if (playerType == PlayerType.Player2)
+                {
+                    PlayerDataManager.Instance.p2MoveSpeed += 1;
+
+                    Debug.Log($"이동속도 +{1}");
+                }
                 break;
 
             case StoreType.StunReduce:      //스턴 시간 감소
-                player.stunTime = Mathf.Max(0.5f, player.stunTime - 0.5f);
-                Debug.Log($"랜덤 강화 스턴 시간 감소 -{0.5}");
+                if (playerType == PlayerType.Player1)
+                {
+                    PlayerDataManager.Instance.p1StunTime -= .5f;
+
+                    Debug.Log($"랜덤 강화 스턴 시간 감소 -{0.5}");
+                }
+                else if (playerType == PlayerType.Player2)
+                {
+                    PlayerDataManager.Instance.p2StunTime -= .5f;
+
+                    Debug.Log($"랜덤 강화 스턴 시간 감소 -{0.5}");
+                }
                 break;
         }
     }
 
     private void ApplyRandomStat(PlayerMovement player)
     {
+        PlayerType playerType = player.playerType;
+
         int random = Random.Range(0, 100);
 
         int fail = randFail;
@@ -120,15 +142,36 @@ public class StoreTile : MonoBehaviour
         {
             int cost = Random.Range(1, 3);
 
-            player.moveSpeed += cost;
-            Debug.Log($"랜덤 강화 이동속도 +{cost}");
+            if (playerType == PlayerType.Player1)
+            {
+                PlayerDataManager.Instance.p1MoveSpeed += cost;
+
+                Debug.Log($"이동속도 +{cost}");
+            }
+            else if (playerType == PlayerType.Player2)
+            {
+                PlayerDataManager.Instance.p2MoveSpeed += cost;
+
+                Debug.Log($"이동속도 +{cost}");
+            }
         }
         else if (random < stun)
         {
             float cost = Random.Range(0.5f, 1f);
 
-            player.stunTime = Mathf.Max(0f, player.stunTime -  cost);
-            Debug.Log($"랜덤 강화 스턴 시간 감소 -{cost:F0}");
+            if (playerType == PlayerType.Player1)
+            {
+                PlayerDataManager.Instance.p1StunTime -= cost;
+
+                Debug.Log($"랜덤 강화 스턴 시간 감소 -{cost:F0}");
+            }
+            else if (playerType == PlayerType.Player2)
+            {
+                PlayerDataManager.Instance.p2StunTime -= cost;
+
+                Debug.Log($"랜덤 강화 스턴 시간 감소 -{cost:F0}");
+            }
+
         }
     }
 }

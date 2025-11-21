@@ -43,6 +43,19 @@ public class PlayerMovement : MonoBehaviour
         playerTransform = transform;
         playerInput = GetComponent<PlayerInput>();
 
+
+        if (playerType == PlayerType.Player1)
+        {
+            moveSpeed = PlayerDataManager.Instance.p1MoveSpeed;
+            stunTime = PlayerDataManager.Instance.p1StunTime;
+
+        }
+        else if (playerType == PlayerType.Player2)
+        {
+            moveSpeed = PlayerDataManager.Instance.p2MoveSpeed;
+            stunTime = PlayerDataManager.Instance.p2StunTime;
+        }
+
         rb = GetComponent<Rigidbody>();
 
         if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.WaitingRound)
