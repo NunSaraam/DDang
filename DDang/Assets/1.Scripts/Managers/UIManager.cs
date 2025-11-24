@@ -5,9 +5,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ScoreUIManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    public static ScoreUIManager Instance { get; private set; }
+    public static UIManager Instance { get; private set; }
+
+    public GameObject pausePanel;
 
     public TextMeshProUGUI roundWaitText;           //대기시간 텍스트
     public TextMeshProUGUI roundTimeText;           //진행시간 텍스트
@@ -43,6 +45,12 @@ public class ScoreUIManager : MonoBehaviour
 
     private void Update()
     {
+        if (pausePanel == null)
+        {
+            //pausePanel = GameObject.Find("Setting");
+            //pausePanel.SetActive(false);
+        }
+
         if (RoundManager.Instance != null && RoundManager.Instance.currentState != RoundState.WaitingRound) return;
     }
 
@@ -83,6 +91,7 @@ public class ScoreUIManager : MonoBehaviour
 
         if (IsUIReady())
         {
+            SetRoundWins(RoundManager.Instance.p1roundWinCount, RoundManager.Instance.p2roundWinCount);
             UpdateRoundUI();
         }
     }
@@ -149,6 +158,13 @@ public class ScoreUIManager : MonoBehaviour
                 player2WinImages[i].sprite = defaultSprite;
             }
         }
+    }
+
+    public void SetRoundWins(int p1Wins, int p2Wins)
+    {
+        this.p1RoundWins = p1Wins;
+        this.p2RoundWins = p2Wins;
+        UpdateWinIcon();
     }
 
     public bool IsUIReady()

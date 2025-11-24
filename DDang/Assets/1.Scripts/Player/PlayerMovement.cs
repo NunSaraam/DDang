@@ -182,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
          
     }
 
-    void Stun(float duration)
+    public void Stun(float duration)
     {
         if (state == PlayerState.Stunned) return;               //이미 기절상태면 반환
 

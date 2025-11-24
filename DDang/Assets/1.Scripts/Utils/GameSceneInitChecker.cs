@@ -6,10 +6,10 @@ public class GameSceneInitChecker : MonoBehaviour
 {
     private IEnumerator Start()
     {
-        ScoreUIManager.Instance?.ReconnectUI();
+        UIManager.Instance?.ReconnectUI();
 
         Debug.Log("SceneUIManager 체킹 시작");
-        while (ScoreUIManager.Instance == null || !ScoreUIManager.Instance.IsUIReady())
+        while (UIManager.Instance == null || !UIManager.Instance.IsUIReady())
             yield return null;
         Debug.Log("SceneUIManager 완료");
 

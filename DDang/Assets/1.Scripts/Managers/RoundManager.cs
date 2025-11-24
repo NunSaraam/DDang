@@ -15,9 +15,9 @@ public class RoundManager : MonoBehaviour
     public static RoundManager Instance;
 
     public GridGenerator grid;
-    public ScoreUIManager sM;
+    public UIManager sM;
 
-    public int winningPoint = 3;                 //총 라운드 (ex : 3판 2선
+    public int winningPoint = 3;                //총 라운드 (ex : 5판 3선
     public float gamePlayTime = 60f;            //라운드 플레이 시간 60초
     public float extratime = 15f;               //추가시간 15초 (플레이어 점수가 5점 이하로 차이날 때)
     public float roundWaitTime = 3f;            //라운드 시작 전 대기시간 3초
@@ -30,6 +30,8 @@ public class RoundManager : MonoBehaviour
 
     public int p1roundWinCount = 0;
     public int p2roundWinCount = 0;
+
+    private bool bossSpawned = false;
 
     public RoundState currentState { get; private set; } = RoundState.WaitingRound;
 
@@ -80,23 +82,23 @@ public class RoundManager : MonoBehaviour
 
 
         Debug.Log("WaitRound 카운트 시작");
-        sM.NextRound(currentRound);
+        UIManager.Instance.NextRound(currentRound);
         currentState = RoundState.WaitingRound;
         remainingWaitTime = roundWaitTime;
         Debug.Log($"Round: {currentRound}");
 
         while (remainingWaitTime > 0)
         {
-            sM.RoundWait(remainingWaitTime);
+            UIManager.Instance.RoundWait(remainingWaitTime);
             remainingWaitTime -= Time.deltaTime;
 
             yield return null;
 
         }
-        sM.roundWaitText.text = "Start!";
+        UIManager.Instance.roundWaitText.text = "Start!";
         yield return new WaitForSeconds(.5f);
-        sM.RoundWait(0);
-        sM.roundWaitPanel.SetActive(false);
+        UIManager.Instance.RoundWait(0);
+        UIManager.Instance.roundWaitPanel.SetActive(false);
     }
 
     IEnumerator HandlePlaying()
@@ -105,9 +107,11 @@ public class RoundManager : MonoBehaviour
         remainingTime = gamePlayTime;
         extraTimeUsed = false;
 
+        StartCoroutine(BossTimer());
+
         while (remainingTime > 0)
         {
-            sM.RoundTime(remainingTime);
+            UIManager.Instance.RoundTime(remainingTime);
             remainingTime -= Time.deltaTime;
             yield return null;
 
@@ -130,7 +134,7 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.End;
 
         PlayerType winner = CheckWinner();
-        sM.RoundResult(winner);
+        UIManager.Instance.RoundResult(winner);
 
         if (winner != PlayerType.None)
         {
@@ -163,7 +167,20 @@ public class RoundManager : MonoBehaviour
                 }
                 break;
         }
+
+        Debug.Log($"{currentRound} 승자 = {winner}");
+
         currentRound++;
+        UIManager.Instance.SetRoundWins(p1roundWinCount, p2roundWinCount);
+
+        if (winner == PlayerType.Player1 && p1roundWinCount >= winningPoint)
+        {
+            //게임 토탈 승자 결정
+        }
+        else if (winner == PlayerType.Player2 && p2roundWinCount >= winningPoint)
+        {
+            //게임 토탈 승자 
+        }
 
         yield return new WaitForSeconds(5f);
 
@@ -195,6 +212,22 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.WaitingRound;
     }
 
+    IEnumerator BossTimer()
+    {
+        if (bossSpawned) yield break;
+        while (remainingTime > 30f)
+            yield return null;
+
+        bossSpawned = true;
+
+        //UIManager.Instance.ShowBossWarning(true);
+
+        yield return new WaitForSeconds(3f);
+
+        //UIManager.Instance.ShowBossWarning(false);
+
+        BossManager.Instance.SpawnRandomBoss();
+    }
 
     PlayerType CheckWinner()
     {
