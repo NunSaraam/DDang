@@ -14,7 +14,7 @@ public class GridGenerator : MonoBehaviour
     public Material p2Mat;
 
     private int currentGrid;
-    private PlacedObj[,] grid;
+    public PlacedObj[,] grid;
 
 
     void Start()

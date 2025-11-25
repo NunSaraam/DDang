@@ -15,7 +15,6 @@ public class RoundManager : MonoBehaviour
     public static RoundManager Instance;
 
     public GridGenerator grid;
-    public UIManager sM;
 
     public int winningPoint = 3;                //총 라운드 (ex : 5판 3선
     public float gamePlayTime = 60f;            //라운드 플레이 시간 60초

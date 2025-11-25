@@ -34,18 +34,19 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        //Debug.Log($"GameState{currentState}");
         TogglePause();
     }
 
     void TogglePause()
     {
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && currentState != GameState.Pause)
         {
             currentState = GameState.Pause;
             UIManager.Instance.pausePanel.SetActive(true);
             Time.timeScale = 0f;
         }
-        else if (Input.GetKey(KeyCode.Escape) && currentState == GameState.Pause)
+        else if (Input.GetKeyDown(KeyCode.Escape) && currentState == GameState.Pause)
         {
             currentState = GameState.Resume;
             UIManager.Instance.pausePanel.SetActive(false);

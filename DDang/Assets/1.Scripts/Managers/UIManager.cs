@@ -43,13 +43,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+
+    }
+
     private void Update()
     {
-        if (pausePanel == null)
-        {
-            //pausePanel = GameObject.Find("Setting");
-            //pausePanel.SetActive(false);
-        }
 
         if (RoundManager.Instance != null && RoundManager.Instance.currentState != RoundState.WaitingRound) return;
     }
@@ -72,6 +72,12 @@ public class UIManager : MonoBehaviour
 
     public void ReconnectUI()          //다시 게임 씬으로 넘어올 때 재연결
     {
+        if (pausePanel == null)
+        {
+            pausePanel = GameObject.Find("Setting");
+            pausePanel.SetActive(false);
+        }
+
         roundWaitText = GameObject.Find("StartWaitText")?.GetComponent<TextMeshProUGUI>();
         roundTimeText = GameObject.Find("Round_Time_Text")?.GetComponent<TextMeshProUGUI>();
         roundWaitPanel = GameObject.Find("StartWaitPanel");

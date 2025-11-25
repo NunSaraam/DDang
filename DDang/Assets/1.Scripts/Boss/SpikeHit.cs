@@ -9,6 +9,7 @@ public class SpikeHit : MonoBehaviour
     private void Start()
     {
         StartCoroutine(EnableCollision());    
+        Destroy(gameObject, 3f);
     }
 
     IEnumerator EnableCollision()
