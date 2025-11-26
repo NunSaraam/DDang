@@ -77,6 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5448015f47d31642a57c36e458801e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shuffleInterval: 1
+  shuffleCount: 3
 --- !u!1 &8905891099823294997
 GameObject:
   m_ObjectHideFlags: 0

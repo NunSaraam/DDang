@@ -231,10 +231,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
   winningPoint: 3
-  gamePlayTime: 30
+  gamePlayTime: 10
   extratime: 15
   roundWaitTime: 3
-  shopingTime: 5
+  shopingTime: 10
   p1roundWinCount: 0
   p2roundWinCount: 0
 --- !u!4 &2485468

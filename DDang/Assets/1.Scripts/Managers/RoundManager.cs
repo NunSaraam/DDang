@@ -8,6 +8,7 @@ public enum RoundState
     Playing,                //플레이 중
     End,                    //라운드 종료
     Store,                  //상점
+    Result,                 //게임 결과
 }
 
 public class RoundManager : MonoBehaviour
@@ -29,6 +30,8 @@ public class RoundManager : MonoBehaviour
 
     public int p1roundWinCount = 0;
     public int p2roundWinCount = 0;
+
+    public PlayerType gameWinner;
 
     private bool bossSpawned = false;
 
@@ -64,7 +67,10 @@ public class RoundManager : MonoBehaviour
 
         yield return StartCoroutine(HandleRoundEnd());
 
-        yield return StartCoroutine(HandleStore());
+        if (currentState != RoundState.Result) 
+        {
+            yield return StartCoroutine(HandleStore());
+        }
     }
 
     IEnumerator HandleWaitRound()
@@ -132,6 +138,8 @@ public class RoundManager : MonoBehaviour
     {
         currentState = RoundState.End;
 
+        bossSpawned= false;
+
         PlayerType winner = CheckWinner();
         UIManager.Instance.RoundResult(winner);
 
@@ -174,11 +182,17 @@ public class RoundManager : MonoBehaviour
 
         if (winner == PlayerType.Player1 && p1roundWinCount >= winningPoint)
         {
-            //게임 토탈 승자 결정
+            gameWinner = PlayerType.Player1;
+            currentState = RoundState.Result;
+
+            SceneLoadManager.Instance.LoadScene("GameResult");
         }
         else if (winner == PlayerType.Player2 && p2roundWinCount >= winningPoint)
         {
-            //게임 토탈 승자 
+            gameWinner = PlayerType.Player2;
+            currentState = RoundState.Result;
+
+            SceneLoadManager.Instance.LoadScene("GameResult");
         }
 
         yield return new WaitForSeconds(5f);
@@ -214,7 +228,7 @@ public class RoundManager : MonoBehaviour
     IEnumerator BossTimer()
     {
         if (bossSpawned) yield break;
-        while (remainingTime > 30f)
+        while (remainingTime > 33f)
             yield return null;
 
         bossSpawned = true;

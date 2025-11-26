@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class GorillaBoss : BossBase
 {
+    public float shuffleInterval = 1f;
+    public int shuffleCount = 3;
+
     public override void Activate()
     {
-        ShuffleTiles();
+        StartCoroutine(ShuffleRoutine());
     }
 
     public override void Deactivate()
@@ -14,10 +17,20 @@ public class GorillaBoss : BossBase
 
     }
 
+    IEnumerator ShuffleRoutine()
+    {
+        for (int i = 0; i < shuffleCount; i++)
+        {
+            ShuffleTiles();
+
+            yield return new WaitForSeconds(shuffleInterval);
+        }
+    }
     void ShuffleTiles()
     {
         GridGenerator grid = FindObjectOfType<GridGenerator>();
         List<PlayerType> owner = new List<PlayerType>();
+
 
         for (int x = 0; x < grid.gridSizeX; x++)
         {
@@ -43,5 +56,8 @@ public class GorillaBoss : BossBase
                 grid.PaintBlock(grid.grid[x, z], newowner);
             }
         }
+
+        Destroy(gameObject, 3f);
     }
+
 }

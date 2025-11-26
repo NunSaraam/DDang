@@ -25,12 +25,12 @@ public class HedgehogBoss : BossBase
     {
         while (active)
         {
-            FireAllDirections();
+            FireAllDirections(10f);
             yield return new WaitForSeconds(fireInterval);
         }
     }
 
-    void FireAllDirections()
+    void FireAllDirections(float lifeTime)
     {
         int count = 12;
         for (int i = 0; i < count; i++)
@@ -44,5 +44,7 @@ public class HedgehogBoss : BossBase
 
             
         }
+
+        Destroy(gameObject, lifeTime);
     }
 }
