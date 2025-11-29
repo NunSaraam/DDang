@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
 
     public PlayerType playerType;
 
+    public Animator animator;
+
     private float attackRange = 0.5f;
     private float attackCooldown = 0.5f;
 
