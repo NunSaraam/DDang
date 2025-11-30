@@ -188,6 +188,8 @@ public class PlayerMovement : MonoBehaviour
                 if (angle < 90f)
                 {
                     target.Stun(stunTime);
+
+                    QuestManager.Instance?.OnStunLanded(this.playerType);
                 }
             }
             

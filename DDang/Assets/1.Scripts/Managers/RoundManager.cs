@@ -127,6 +127,8 @@ public class RoundManager : MonoBehaviour
 
             if (diff <= 5 && !extraTimeUsed && remainingTime <= 0)              //차이가 5점 이하이고, 추가시간 사용을 하지 않았고, 게임 플레이 시간이 0이하일 때
             {
+                QuestManager.Instance?.OnExtraTImeStarted(p1, p2);
+
                 remainingTime += extratime;
                 extraTimeUsed = true;
             }
@@ -138,10 +140,16 @@ public class RoundManager : MonoBehaviour
     {
         currentState = RoundState.End;
 
-        bossSpawned= false;
+        bossSpawned = false;
+
+        int p1Score = grid.CountScore(PlayerType.Player1);
+        int p2Score = grid.CountScore(PlayerType.Player2);
 
         PlayerType winner = CheckWinner();
+
         UIManager.Instance.RoundResult(winner);
+
+        QuestManager.Instance?.OnRoundEnd(p1Score, p2Score, winner);
 
         if (winner != PlayerType.None)
         {

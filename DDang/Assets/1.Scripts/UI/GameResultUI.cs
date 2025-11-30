@@ -7,11 +7,23 @@ using UnityEngine.UI;
 public class GameResultUI : MonoBehaviour
 {
     public Image player1Panel;
+    public GameObject p1Win;
+    public GameObject p1Lose;
+    
     public Image player2Panel;
+    public GameObject p2Win;
+    public GameObject p2Lose;
 
     private float pulseDuration = 3f;
     private float pulseSpeed = 1f;
 
+    private void Start()
+    {
+        p1Win.SetActive(false);
+        p1Lose.SetActive(false);
+        p2Win.SetActive(false);
+        p2Lose.SetActive(false);
+    }
 
     private void Update()
     {
@@ -24,6 +36,19 @@ public class GameResultUI : MonoBehaviour
     public void StartPulseEffect(PlayerType winner)
     {
         StartCoroutine(PulseEffect(winner));
+
+        switch (winner)
+        {
+            case PlayerType.Player1:
+                p1Win.SetActive(true);
+                p2Lose.SetActive(true);
+                break;
+
+            case PlayerType.Player2:
+                p2Win.SetActive(true);
+                p1Lose.SetActive(true);
+                break ;
+        }
     }
 
     IEnumerator Result()
