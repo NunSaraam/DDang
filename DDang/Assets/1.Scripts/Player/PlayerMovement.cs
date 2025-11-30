@@ -126,10 +126,20 @@ public class PlayerMovement : MonoBehaviour
         if (direction.magnitude > minValue)
         {
             moveDirection = direction.normalized;
+
+            if (animator != null)
+            {
+                animator.SetFloat("Move", 1f);
+            }
         }
         else
         {
-            moveDirection = Vector3.zero; 
+            moveDirection = Vector3.zero;
+
+            if (animator != null)
+            {
+                animator.SetFloat("Move", 0f);
+            }
         }
     }
 
@@ -153,6 +163,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 state = PlayerState.Attacking;                      //조작 => 공격으로 상태전환
                 ChaeckAttackRange();                                //공격 사거리 체크 매서드
+                animator.SetTrigger("Attack");                      //어택 애니메이션 실행
                 StartCoroutine(AttackCooldown(attackCooldown));     //공격 쿨다운 코루틴 실행
             }
         }
