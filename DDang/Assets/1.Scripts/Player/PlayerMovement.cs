@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
-        if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.WaitingRound)
+        if (RoundManager.Instance.currentState == RoundState.WaitingRound)
         {
             state = PlayerState.Idle;
         }
@@ -68,6 +68,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (RoundManager.Instance.currentState == RoundState.WaitingRound)
+        {
+            state = PlayerState.Idle;
+        }
+
         PlayerStates(state);
     }
 
@@ -79,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.Idle:                                  //대기 상태
                 rb.velocity = Vector3.zero;
 
-                if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Playing)
+                if (RoundManager.Instance.currentState == RoundState.Playing)
                 {
                     state = PlayerState.Controllable;
                 }
@@ -242,5 +247,11 @@ public class PlayerMovement : MonoBehaviour
             currentStoreTile = null;
             curretnStoreUI.ExitTileUI(this);
         }
+    }
+
+    public void ResetStats()
+    {
+        moveSpeed = PlayerDataManager.Instance.baseMoveSpeed;
+        stunTime = PlayerDataManager.Instance.baseStunTime;
     }
 }

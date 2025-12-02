@@ -50,4 +50,10 @@ public class CoinManager : MonoBehaviour
             player2Coins = Mathf.Max(0, player2Coins - amount);
         }
     }
+
+    public void ResetCoins()
+    {
+        player1Coins = 0;
+        player2Coins = 0;
+    }
 }

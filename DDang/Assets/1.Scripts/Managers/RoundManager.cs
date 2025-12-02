@@ -35,6 +35,9 @@ public class RoundManager : MonoBehaviour
 
     private bool bossSpawned = false;
 
+    private bool stunQuestActive;
+    private bool reverseQuestActive;
+
     public RoundState currentState { get; private set; } = RoundState.WaitingRound;
 
 
@@ -116,18 +119,38 @@ public class RoundManager : MonoBehaviour
 
         while (remainingTime > 0)
         {
+            if (!stunQuestActive && remainingTime <= 25f)
+            {
+                stunQuestActive = true;
+                QuestManager.Instance.ActivateQuest(QuestType.StunChain);
+            }
+
+            if (!reverseQuestActive && remainingTime <= 10f)
+            {
+
+                int p1 = grid.CountScore(PlayerType.Player1);
+                int p2 = grid.CountScore(PlayerType.Player2);
+                int diff = Mathf.Abs(p1 - p2);
+
+                if (diff <= 10)
+                {
+                    reverseQuestActive = true;
+                    QuestManager.Instance.ActivateQuest(QuestType.Reverse);
+                }
+            }
+
             UIManager.Instance.RoundTime(remainingTime);
             remainingTime -= Time.deltaTime;
             yield return null;
 
             //점수 차이가 5이하일 때 추가시간
-            int p1 = grid.CountScore(PlayerType.Player1);
-            int p2 = grid.CountScore(PlayerType.Player2);
-            int diff = Mathf.Abs(p1 - p2);
+            int p1Score = grid.CountScore(PlayerType.Player1);
+            int p2Score = grid.CountScore(PlayerType.Player2);
+            int scoreDiff = Mathf.Abs(p1Score - p2Score);
 
-            if (diff <= 5 && !extraTimeUsed && remainingTime <= 0)              //차이가 5점 이하이고, 추가시간 사용을 하지 않았고, 게임 플레이 시간이 0이하일 때
+            if (scoreDiff <= 5 && !extraTimeUsed && remainingTime <= 0)              //차이가 5점 이하이고, 추가시간 사용을 하지 않았고, 게임 플레이 시간이 0이하일 때
             {
-                QuestManager.Instance?.OnExtraTImeStarted(p1, p2);
+                QuestManager.Instance?.OnExtraTImeStarted(p1Score, p2Score);
 
                 remainingTime += extratime;
                 extraTimeUsed = true;
@@ -141,6 +164,9 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.End;
 
         bossSpawned = false;
+
+        stunQuestActive = false;
+        reverseQuestActive = false;
 
         int p1Score = grid.CountScore(PlayerType.Player1);
         int p2Score = grid.CountScore(PlayerType.Player2);
@@ -258,5 +284,32 @@ public class RoundManager : MonoBehaviour
         if (p1Score > p2Score) return PlayerType.Player1;
         if (p1Score < p2Score) return PlayerType.Player2;
         return PlayerType.None;
+    }
+
+    public void ResetAll()
+    {
+        currentRound = 1;
+        p1roundWinCount = 0;
+        p2roundWinCount = 0;
+
+        extraTimeUsed = false;
+        bossSpawned = false;
+
+        gameWinner = PlayerType.None;
+
+        stunQuestActive = false;
+        reverseQuestActive = false;
+
+        foreach (var player in FindObjectsOfType<PlayerMovement>())
+        {
+            player.ResetStats();
+        }
+
+        currentState = RoundState.WaitingRound;
+
+        // 다른 매니저들도 초기화
+        QuestManager.Instance?.ResetAllQuest();
+        CoinManager.Instance?.ResetCoins();
+        UIManager.Instance?.ResetAllUI();
     }
 }

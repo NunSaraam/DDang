@@ -17,6 +17,11 @@ public class GameSceneInitChecker : MonoBehaviour
             yield return null;
         Debug.Log("모든 게임 준비 완료");
 
+        if (GameSession.Instance.needFullReset)
+        {
+            RoundManager.Instance.ResetAll();
+            GameSession.Instance.needFullReset = false;
+        }
 
         RoundManager.Instance.Begin();
     }

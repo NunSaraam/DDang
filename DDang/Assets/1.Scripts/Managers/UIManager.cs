@@ -206,4 +206,12 @@ public class UIManager : MonoBehaviour
         yield return null;
         ReconnectUI();
     }
+
+    public void ResetAllUI()
+    {
+        roundWaitText.text = "";
+        roundTimeText.text = "";
+
+        SetRoundWins(0, 0);
+    }
 }

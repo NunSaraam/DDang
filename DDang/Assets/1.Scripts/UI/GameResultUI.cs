@@ -36,19 +36,6 @@ public class GameResultUI : MonoBehaviour
     public void StartPulseEffect(PlayerType winner)
     {
         StartCoroutine(PulseEffect(winner));
-
-        switch (winner)
-        {
-            case PlayerType.Player1:
-                p1Win.SetActive(true);
-                p2Lose.SetActive(true);
-                break;
-
-            case PlayerType.Player2:
-                p2Win.SetActive(true);
-                p1Lose.SetActive(true);
-                break ;
-        }
     }
 
     IEnumerator Result()
@@ -57,8 +44,10 @@ public class GameResultUI : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
 
+        GameSession.Instance.needFullReset = true;
+
         SceneLoadManager.Instance.LoadScene("Mainmenu");
-            
+       
     }
 
     IEnumerator PulseEffect(PlayerType winner)
@@ -85,6 +74,19 @@ public class GameResultUI : MonoBehaviour
         {
             SetImageAlpha(player1Panel, .5f);
             SetImageAlpha(player2Panel, 1f);
+        }
+
+        switch (winner)
+        {
+            case PlayerType.Player1:
+                p1Win.SetActive(true);
+                p2Lose.SetActive(true);
+                break;
+
+            case PlayerType.Player2:
+                p2Win.SetActive(true);
+                p1Lose.SetActive(true);
+                break;
         }
     }
 

@@ -6,7 +6,9 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
 
-    public QuestSO[] activeQuest;
+    public QuestSO[] questData;
+
+    private List<QuestSO> activeQuest = new List<QuestSO>();
 
     private void Awake()
     {
@@ -21,6 +23,35 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public void ActivateQuest(QuestType type)
+    {
+        QuestSO qs = FindQuestByType(type);
+        if (qs == null)
+        {
+            return;
+        }
+
+        if (activeQuest.Contains(qs))
+        {
+            return;
+        }
+
+        activeQuest.Add(qs);
+        qs.ResetQuest();
+
+        QuestUI.Instance.CreateQuest(qs);
+    }
+
+    private QuestSO FindQuestByType(QuestType type)
+    {
+        foreach (var q in questData)
+        {
+            if (q != null && q.type == type)
+                return q;
+        }
+        return null;
+    }
+
     public void ResetAllQuest()
     {
         if (activeQuest == null) return;
@@ -28,16 +59,19 @@ public class QuestManager : MonoBehaviour
         foreach (var quest in activeQuest)
         {
             quest.ResetQuest();
+            QuestUI.Instance.CompleteQuestUI(quest, PlayerType.None, 0);
         }
+
+        activeQuest.Clear();
     }
 
     public void OnStunLanded(PlayerType attacker)
     {
         if (activeQuest == null) return;
 
-        foreach (var quest in activeQuest)
+        for (int i = activeQuest.Count - 1; i >= 0; i--)
         {
-            quest.OnStunLanded(attacker);
+            activeQuest[i].OnStunLanded(attacker);
         }
     }
 
@@ -61,10 +95,16 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    public void CompleteQuest(QuestSO quest, PlayerType player)
+    public void CompleteQuest(QuestSO qs, PlayerType player)
     {
         if (player == PlayerType.None) return;
 
-        CoinManager.Instance.AddCoins(player, quest.rewardCoins);
+        CoinManager.Instance.AddCoins(player, qs.rewardCoins);
+
+        QuestUI.Instance.CompleteQuestUI(qs, player, qs.rewardCoins);
+
+        activeQuest.Remove(qs);
+
+        qs.ResetQuest();
     }
 }

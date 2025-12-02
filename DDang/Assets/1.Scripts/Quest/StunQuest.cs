@@ -31,10 +31,13 @@ public class StunQuest : QuestSO
                 p1Chain++;
                 p2Chain = 0;
 
+                QuestUI.Instance.UpdateQuestUI(this, p1Chain, p2Chain);
+
                 if (p1Chain >= requiredChain)
                 {
                     p1Completed = true;
                     QuestManager.Instance.CompleteQuest(this, PlayerType.Player1);
+                    QuestUI.Instance.CompleteQuestUI(this, PlayerType.Player1, rewardCoins);
                 }
                 break;
 
@@ -43,10 +46,13 @@ public class StunQuest : QuestSO
                 p2Chain++;
                 p1Chain = 0;
 
+                QuestUI.Instance.UpdateQuestUI(this, p1Chain, p2Chain);
+
                 if (p2Chain >= requiredChain)
                 {
                     p2Completed = true;
                     QuestManager.Instance.CompleteQuest(this, PlayerType.Player2);
+                    QuestUI.Instance.CompleteQuestUI(this, PlayerType.Player2, rewardCoins);
                 }
                 break;
         }
@@ -54,7 +60,6 @@ public class StunQuest : QuestSO
 
     public override void OnRoundEnd(int p1Score, int p2Score, PlayerType winner)
     {
-        p1Chain = 0;
-        p2Chain = 0;
+        ResetQuest();
     }
 }

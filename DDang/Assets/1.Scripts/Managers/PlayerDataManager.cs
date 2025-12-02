@@ -6,8 +6,12 @@ public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager Instance;
 
+    public float baseMoveSpeed = 5f;
+
     public float p1MoveSpeed = 5f;
     public float p2MoveSpeed = 5f;
+
+    public float baseStunTime = 1.5f;
 
     public float p1StunTime = 1.5f;
     public float p2StunTime = 1.5f;

@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MainmenuUI : MonoBehaviour
 {
-    public RectTransform selectBar;
-
-    public void SelectButton(RectTransform newTransform)
+    
+    public void GameStart(string SceneName)
     {
-        selectBar.gameObject.SetActive(true);
-        selectBar.anchoredPosition = newTransform.anchoredPosition - Vector2.right * 10;
-        selectBar.sizeDelta = newTransform.sizeDelta + Vector2.right * 30;
+        if (SceneLoadManager.Instance != null)
+        {
+            SceneLoadManager.Instance.LoadSceneWithLoading(SceneName);
+        }
+    }
 
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
