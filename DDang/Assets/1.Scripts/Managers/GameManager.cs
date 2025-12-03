@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public GameState currentState {  get; private set; }
+    public GameState currentState { get; private set; }
 
     private void Awake()
     {
@@ -34,23 +34,37 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log($"GameState{currentState}");
-        TogglePause();
+        HandlePauseInput();
     }
 
-    void TogglePause()
+    void HandlePauseInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && currentState != GameState.Pause)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            currentState = GameState.Pause;
-            UIManager.Instance.pausePanel.SetActive(true);
-            Time.timeScale = 0f;
+            if (currentState == GameState.Pause)
+                ResumeGame();
+            else
+                PauseGame();
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && currentState == GameState.Pause)
-        {
-            currentState = GameState.Resume;
-            UIManager.Instance.pausePanel.SetActive(false);
-            Time.timeScale = 1f;
-        }
+    }
+
+    public void PauseGame()
+    {
+        currentState = GameState.Pause;
+
+        UIManager.Instance.ShowPausePanel(true);
+        Time.timeScale = 0f;
+
+        SoundManager.Instance.PauseBGM();
+    }
+
+    public void ResumeGame()
+    {
+        currentState = GameState.Resume;
+
+        UIManager.Instance.ShowPausePanel(false);
+        Time.timeScale = 1f;
+
+        SoundManager.Instance.ResumeBGM();
     }
 }

@@ -10,6 +10,9 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     public GameObject pausePanel;
+    public Image bgmSlider;
+    public Button bgmMinusButton;
+    public Button bgmPlusButton;
 
     public TextMeshProUGUI roundWaitText;           //대기시간 텍스트
     public TextMeshProUGUI roundTimeText;           //진행시간 텍스트
@@ -41,12 +44,10 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        pausePanel.SetActive(false);
     }
 
-    private void Start()
-    {
-
-    }
 
     private void Update()
     {
@@ -57,6 +58,14 @@ public class UIManager : MonoBehaviour
         }
 
         if (RoundManager.Instance != null && RoundManager.Instance.currentState != RoundState.WaitingRound) return;
+    }
+
+    public void ShowPausePanel(bool show)
+    {
+        pausePanel.SetActive(show);
+
+        if (show)
+            pausePanel.GetComponent<PausePanel>()?.RefreshUI();
     }
 
     public void RoundResult(PlayerType winner)
