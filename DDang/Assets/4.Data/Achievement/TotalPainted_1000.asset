@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de64357868f126f4a84b71fb55e860f7, type: 3}
+  m_Name: TotalPainted_1000
+  m_EditorClassIdentifier: 
+  achievementName: "\uB204\uC801 \uC810\uB839 \uD0C0\uC77C 1000\uAC1C"
+  description: "1000\uAC1C\uC758 \uD0C0\uC77C\uC744 \uC0C9\uCE60\uD558\uC138\uC694!"
+  type: 0
+  goal: 1000
+  icon: {fileID: 0}

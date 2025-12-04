@@ -122,6 +122,9 @@ public class StoreTile : MonoBehaviour
                 }
                 break;
         }
+
+        AchievementManager.Instance.AddValue(player.playerType, AchievementType.TotalStoreUsed, 1);
+
     }
 
     private void ApplyRandomStat(PlayerMovement player)

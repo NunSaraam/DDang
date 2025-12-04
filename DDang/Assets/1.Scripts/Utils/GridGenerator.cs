@@ -33,6 +33,8 @@ public class GridGenerator : MonoBehaviour
     {
         if (block == null) return;
 
+        PlayerType oldOwner = block.owner;
+
         Material mat = pT switch                            //switch expression방식 =>는 왼쪽이 입력일 때 오른쪽 값 반환, _는 default:
         {
             PlayerType.Player1 => p1Mat,
@@ -41,6 +43,11 @@ public class GridGenerator : MonoBehaviour
         };
 
         block.SetMaterial(mat, pT);                 //땅을 칠하면서, 땅주인도 기록
+
+        if (pT != PlayerType.None && pT != oldOwner)
+        {
+            AchievementManager.Instance.AddValue(pT, AchievementType.TotalPaintedTiles, 1);
+        }
     }
 
     public int CountScore(PlayerType pT)
@@ -49,7 +56,7 @@ public class GridGenerator : MonoBehaviour
 
         foreach (var block in grid)
         {
-            if (block != null && block.onwer == pT)
+            if (block != null && block.owner == pT)
             {
                 score++;
             }

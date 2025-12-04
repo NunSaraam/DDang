@@ -36,7 +36,7 @@ public class GorillaBoss : BossBase
         {
             for (int z = 0; z < grid.gridSizeZ; z++)
             {
-                owner.Add(grid.grid[x, z].onwer);
+                owner.Add(grid.grid[x, z].owner);
             }
         }
 

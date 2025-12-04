@@ -211,6 +211,8 @@ public class RoundManager : MonoBehaviour
 
         Debug.Log($"{currentRound} ½ÂÀÚ = {winner}");
 
+        AchievementManager.Instance.AddValue(winner, AchievementType.TotalWins, 1);
+
         currentRound++;
         UIManager.Instance.SetRoundWins(p1roundWinCount, p2roundWinCount);
 

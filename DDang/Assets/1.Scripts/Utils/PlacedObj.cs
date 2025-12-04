@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlacedObj : MonoBehaviour
 {
-    public PlayerType onwer = PlayerType.None;              //onwer = 현재 땅 주인
+    public PlayerType owner = PlayerType.None;              //onwer = 현재 땅 주인
 
     private Renderer rend;
 
@@ -19,7 +19,7 @@ public class PlacedObj : MonoBehaviour
         if (rend != null && mat != null)
         {
             rend.material = mat;
-            onwer = pT;
+            owner = pT;
         }
     }
 }
