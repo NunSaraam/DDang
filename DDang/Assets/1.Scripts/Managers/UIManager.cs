@@ -45,7 +45,14 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        if (pausePanel == null)
+        {
+            pausePanel = GameObject.Find("Setting");
+            pausePanel.SetActive(false);
+        }
+
         pausePanel.SetActive(false);
+
     }
 
 
