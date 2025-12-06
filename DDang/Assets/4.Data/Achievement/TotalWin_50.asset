@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de64357868f126f4a84b71fb55e860f7, type: 3}
   m_Name: TotalWin_50
   m_EditorClassIdentifier: 
-  achievementName: "\uB204\uC801 \uC2B9\uB9AC 50\uD68C"
-  description: "\uB204\uC801 50\uD68C \uC2B9\uB9AC \uD558\uC138\uC694!"
+  achievementName: "Round \uB204\uC801 \uC2B9\uB9AC 50\uD68C"
+  description: "Round\uB97C \uB204\uC801 50\uD68C \uC2B9\uB9AC \uD558\uC138\uC694!"
   type: 1
   goal: 50
   icon: {fileID: 0}
