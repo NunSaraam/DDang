@@ -34,7 +34,7 @@ public class StoreUI : MonoBehaviour
                 }
                 else if (pM.currentStoreTile.storeType == StoreType.StunReduce && player1CchatUI.playerType == PlayerType.Player1)
                 {
-                    player1CchatUI.storeText.text = $"{pM.currentStoreTile.name}\n기절시간을 단축 시킴";
+                    player1CchatUI.storeText.text = $"{pM.currentStoreTile.name}\n상대 기절시간을 증가 시킴";
                 }
                 else if (pM.currentStoreTile.storeType == StoreType.RandomStat && player1CchatUI.playerType == PlayerType.Player1)
                 {
@@ -50,7 +50,7 @@ public class StoreUI : MonoBehaviour
                 }
                 else if (pM.currentStoreTile.storeType == StoreType.StunReduce && player2CchatUI.playerType == PlayerType.Player2)
                 {
-                    player2CchatUI.storeText.text = $"{pM.currentStoreTile.name}\n기절시간을 단축 시킴";
+                    player2CchatUI.storeText.text = $"{pM.currentStoreTile.name}\n상대 기절시간을 증가 시킴";
                 }
                 else if (pM.currentStoreTile.storeType == StoreType.RandomStat && player2CchatUI.playerType == PlayerType.Player2)
                 {

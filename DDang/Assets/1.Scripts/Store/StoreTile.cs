@@ -19,8 +19,8 @@ public class StoreTile : MonoBehaviour
 
     public Image tileImage;
 
-    [Range(0, 99)] public int randFail = 69;
-    [Range(0, 99)] public int randSpeed = 84;
+    [Range(0, 99)] public int randFail = 79;
+    [Range(0, 99)] public int randSpeed = 89;
     [Range(0, 99)] public int randStun = 99;
 
     private Image image;
@@ -135,7 +135,6 @@ public class StoreTile : MonoBehaviour
 
         int fail = randFail;
         int speed = fail + randSpeed;
-        int stun = speed + randStun;
 
         if (random < fail)
         {
@@ -158,21 +157,21 @@ public class StoreTile : MonoBehaviour
                 Debug.Log($"이동속도 +{cost}");
             }
         }
-        else if (random < stun)
+        else
         {
-            float cost = Random.Range(0.5f, 1f);
+            float cost = Random.Range(0.1f, .8f);
 
             if (playerType == PlayerType.Player1)
             {
-                PlayerDataManager.Instance.p1StunTime -= cost;
+                PlayerDataManager.Instance.p1StunTime += cost;
 
-                Debug.Log($"랜덤 강화 스턴 시간 감소 -{cost:F0}");
+                Debug.Log($"랜덤 강화 상대 스턴 시간 증가 +{cost:F0}");
             }
             else if (playerType == PlayerType.Player2)
             {
-                PlayerDataManager.Instance.p2StunTime -= cost;
+                PlayerDataManager.Instance.p2StunTime += cost;
 
-                Debug.Log($"랜덤 강화 스턴 시간 감소 -{cost:F0}");
+                Debug.Log($"랜덤 강화 상대 스턴 시간 증가 +{cost:F0}");
             }
 
         }

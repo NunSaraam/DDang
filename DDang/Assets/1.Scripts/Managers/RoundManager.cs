@@ -21,7 +21,7 @@ public class RoundManager : MonoBehaviour
     public float gamePlayTime = 60f;            //라운드 플레이 시간 60초
     public float extratime = 15f;               //추가시간 15초 (플레이어 점수가 5점 이하로 차이날 때)
     public float roundWaitTime = 3f;            //라운드 시작 전 대기시간 3초
-    public float shopingTime = 20f;             //상점 제한시간
+    public float shopingTime = 15;             //상점 제한시간
 
     private int currentRound = 1;
     private float remainingWaitTime;
@@ -231,7 +231,7 @@ public class RoundManager : MonoBehaviour
             SceneLoadManager.Instance.LoadScene("GameResult");
         }
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
 
     }
 

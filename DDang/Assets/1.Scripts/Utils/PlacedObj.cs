@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlacedObj : MonoBehaviour
 {
     public PlayerType owner = PlayerType.None;              //onwer = «ˆ¿Á ∂• ¡÷¿Œ
-
+    public KeyCheckPlayerType kowner = KeyCheckPlayerType.None;
     private Renderer rend;
 
     private void Awake()
@@ -20,6 +20,15 @@ public class PlacedObj : MonoBehaviour
         {
             rend.material = mat;
             owner = pT;
+        }
+    }
+
+    public void KeyCheckSetMaterial(Material mat, KeyCheckPlayerType kpT)
+    {
+        if (rend != null && mat != null)
+        {
+            rend.material = mat;
+            kowner = kpT;
         }
     }
 }

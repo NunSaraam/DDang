@@ -50,6 +50,22 @@ public class GridGenerator : MonoBehaviour
         }
     }
 
+    public void KeyCheckPaintBlock(PlacedObj block, KeyCheckPlayerType kpT)
+    {
+        if (block == null) return;
+
+        PlayerType oldOwner = block.owner;
+
+        Material mat = kpT switch                            //switch expression방식 =>는 왼쪽이 입력일 때 오른쪽 값 반환, _는 default:
+        {
+            KeyCheckPlayerType.Player1 => p1Mat,
+            KeyCheckPlayerType.Player2 => p2Mat,
+            _ => defaultMat
+        };
+
+        block.KeyCheckSetMaterial(mat, kpT);                 //땅을 칠하면서, 땅주인도 기록
+    }
+
     public int CountScore(PlayerType pT)
     {
         int score = 0;

@@ -68,13 +68,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storeType: 0
-  randCost: 2
-  speedCost: 5
-  stunCost: 5
+  randCost: 3
+  speedCost: 6
+  stunCost: 6
   tileImage: {fileID: 4930100775881907333}
-  randFail: 69
-  randSpeed: 84
-  randStun: 99
+  randFail: 80
+  randSpeed: 10
+  randStun: 10
 --- !u!1 &6350816334958580926
 GameObject:
   m_ObjectHideFlags: 0
