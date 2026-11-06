@@ -54,7 +54,7 @@ public class TutorialMovement : MonoBehaviour
         switch (state)
         {
             case PlayerState.Controllable:
-                rb.velocity = moveDirection * moveSpeed;
+                rb.linearVelocity = moveDirection * moveSpeed;
 
                 if (moveDirection != Vector3.zero)
                 {
@@ -64,7 +64,7 @@ public class TutorialMovement : MonoBehaviour
                 break;
 
             case PlayerState.Attacking:
-                rb.velocity = Vector3.zero;
+                rb.linearVelocity = Vector3.zero;
                 break;
         }
     }
@@ -74,13 +74,13 @@ public class TutorialMovement : MonoBehaviour
         if (!context.performed) return;
         if (state == PlayerState.Attacking) return;
 
-        // °ø°Ý »óÅÂ ÁøÀÔ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         state = PlayerState.Attacking;
 
-        // ¾Ö´Ï¸ÞÀÌ¼Ç ½ÇÇà
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         animator?.SetTrigger("Attack");
 
-        // Æ©Åä¸®¾ó ¿ë: °ø°Ý ÆÇÁ¤ ¾øÀ½ ¡æ ´Ü¼øÈ÷ ¿¬Ãâ¸¸ ÁøÇà
+        // Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¸¸ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(AttackRoutine());
     }
 

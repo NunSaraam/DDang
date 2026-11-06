@@ -7,10 +7,10 @@ using UnityEngine.InputSystem;
 
 public enum PlayerState
 {
-    Idle,           //±âº» »óÅÂ
-    Controllable,   //Á¶ÀÛ °¡´É
-    Attacking,      //°ø°Ý Áß
-    Stunned,        //±âÀý »óÅÂ
+    Idle,           //ï¿½âº» ï¿½ï¿½ï¿½ï¿½
+    Controllable,   //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    Attacking,      //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    Stunned,        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 }
 
@@ -81,8 +81,8 @@ public class PlayerMovement : MonoBehaviour
     {
         switch (states)
         {
-            case PlayerState.Idle:                                  //´ë±â »óÅÂ
-                rb.velocity = Vector3.zero;
+            case PlayerState.Idle:                                  //ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                rb.linearVelocity = Vector3.zero;
 
                 if (RoundManager.Instance.currentState == RoundState.Playing)
                 {
@@ -90,8 +90,8 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
             
-            case PlayerState.Controllable:                          //Á¶ÀÛ »óÅÂ
-                rb.velocity = moveDirection * moveSpeed;
+            case PlayerState.Controllable:                          //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                rb.linearVelocity = moveDirection * moveSpeed;
 
                 if (moveDirection != Vector3.zero)
                 {
@@ -100,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
 
-            case PlayerState.Attacking:                             //°ø°Ý Áß
+            case PlayerState.Attacking:                             //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                 
                 if (currentStoreTile != null && RoundManager.Instance.currentState == RoundState.Store)
                 {
@@ -109,17 +109,17 @@ public class PlayerMovement : MonoBehaviour
             
                 if (state == PlayerState.Controllable)
                 {
-                    rb.velocity = Vector3.zero;
+                    rb.linearVelocity = Vector3.zero;
                 }
                 break;
 
-            case PlayerState.Stunned:                               //±âÀý Áß
-                rb.velocity = Vector3.zero;
+            case PlayerState.Stunned:                               //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+                rb.linearVelocity = Vector3.zero;
                 break;
         }
     }
 
-    public void OnMove(InputAction.CallbackContext context)                     //ÀÎÇ² ½Ã½ºÅÛ ÀÌµ¿·ÎÁ÷
+    public void OnMove(InputAction.CallbackContext context)                     //ï¿½ï¿½Ç² ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½
     {
         Vector3 forward = Vector3.left;
         Vector3 right = Vector3.forward;
@@ -148,9 +148,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void OnAttack(InputAction.CallbackContext context)                  //ÀÎÇ² ½Ã½ºÅÛ °ø°Ý·ÎÁ÷
+    public void OnAttack(InputAction.CallbackContext context)                  //ï¿½ï¿½Ç² ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½
     {
-        if (state == PlayerState.Attacking) return;             //ÀÌ¹Ì °ø°Ý »óÅÂÀÌ¸é ¹ÝÈ¯
+        if (state == PlayerState.Attacking) return;             //ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½È¯
 
         if (context.performed)
         {
@@ -166,10 +166,10 @@ public class PlayerMovement : MonoBehaviour
 
             if (state == PlayerState.Controllable && RoundManager.Instance.currentState == RoundState.Playing)
             {
-                state = PlayerState.Attacking;                      //Á¶ÀÛ => °ø°ÝÀ¸·Î »óÅÂÀüÈ¯
-                ChaeckAttackRange();                                //°ø°Ý »ç°Å¸® Ã¼Å© ¸Å¼­µå
-                animator.SetTrigger("Attack");                      //¾îÅÃ ¾Ö´Ï¸ÞÀÌ¼Ç ½ÇÇà
-                StartCoroutine(AttackCooldown(attackCooldown));     //°ø°Ý Äð´Ù¿î ÄÚ·çÆ¾ ½ÇÇà
+                state = PlayerState.Attacking;                      //ï¿½ï¿½ï¿½ï¿½ => ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯
+                ChaeckAttackRange();                                //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ Ã¼Å© ï¿½Å¼ï¿½ï¿½ï¿½
+                animator.SetTrigger("Attack");                      //ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+                StartCoroutine(AttackCooldown(attackCooldown));     //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¿ï¿½ ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
             }
         }
     }
@@ -178,11 +178,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 checkPosition = playerTransform.position + playerTransform.forward * (attackRange * 0.5f);
 
-        Collider[] hitColliders = Physics.OverlapSphere(checkPosition, attackRange, mask);                 //±¸Ã¼¿Í Ãæµ¹ÇÑ ¸ðµç ÄÝ¶óÀÌ´õ ¹è¿­
+        Collider[] hitColliders = Physics.OverlapSphere(checkPosition, attackRange, mask);                 //ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½è¿­
 
         foreach (Collider collider in hitColliders)
         {
-            if (collider.gameObject == this.gameObject) continue;                //ÀÚ±â Á¦¿Ü
+            if (collider.gameObject == this.gameObject) continue;                //ï¿½Ú±ï¿½ ï¿½ï¿½ï¿½ï¿½
 
             PlayerMovement target = collider.GetComponent<PlayerMovement>();
             if (target != null)
@@ -204,19 +204,19 @@ public class PlayerMovement : MonoBehaviour
 
     public void Stun(float duration)
     {
-        if (state == PlayerState.Stunned) return;               //ÀÌ¹Ì ±âÀý»óÅÂ¸é ¹ÝÈ¯
+        if (state == PlayerState.Stunned) return;               //ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½È¯
 
-        Debug.Log("±âÀý µÊ!");
-        state = PlayerState.Stunned;                            //±âÁ¤ »óÅÂ
-        rb.velocity = Vector3.zero;                             //¿òÁ÷ÀÓ Á¤Áö
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½!");
+        state = PlayerState.Stunned;                            //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        rb.linearVelocity = Vector3.zero;                             //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
         StartCoroutine(PlayerStun(duration));
     }
 
     IEnumerator PlayerStun(float duration)
     {
-        yield return new WaitForSeconds(duration);              //duration¸¸Å­ ±â´Ù¸®±â
-        state = PlayerState.Controllable;                       //½Ã°£ÀÌ Áö³ª¸é Á¶ÀÛ °¡´É»óÅÂ·Î º¯°æ
+        yield return new WaitForSeconds(duration);              //durationï¿½ï¿½Å­ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½
+        state = PlayerState.Controllable;                       //ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É»ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     IEnumerator AttackCooldown(float duration)

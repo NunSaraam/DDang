@@ -35,12 +35,12 @@ public class HedgehogBoss : BossBase
         int count = 12;
         for (int i = 0; i < count; i++)
         {
-            float angle = i * (360f / count);           //12 ¹æÇâ
+            float angle = i * (360f / count);           //12 ï¿½ï¿½ï¿½ï¿½
             Vector3 dir = Quaternion.Euler(0, angle, 0) * Vector3.forward;
-            Vector3 spawnPos = transform.position + Vector3.up * .5f;               //¹Ù´Ú Å¸ÀÏ ÄÝ¶óÀÌ´õ ´êÀ½ ¹æÁö .5 ¿Ã¸²
+            Vector3 spawnPos = transform.position + Vector3.up * .5f;               //ï¿½Ù´ï¿½ Å¸ï¿½ï¿½ ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ .5 ï¿½Ã¸ï¿½
 
             GameObject spike = Instantiate(spikePrefab, spawnPos, Quaternion.identity);
-            spike.GetComponent<Rigidbody>().velocity = dir * projectileSpeed;
+            spike.GetComponent<Rigidbody>().linearVelocity = dir * projectileSpeed;
 
             
         }
