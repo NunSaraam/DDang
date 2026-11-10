@@ -14,7 +14,10 @@ public class QuestUI : MonoBehaviour
 
     public float slideDuration = .4f;
 
+    [SerializeField] private float hideDelay = 1.5f;
+
     private Dictionary<QuestSO, Quest> activeQuest = new();
+    private Coroutine hideRoutine;
 
     private void Awake()
     {
@@ -24,8 +27,14 @@ public class QuestUI : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        questPanel.gameObject.SetActive(false);
+    }
+
     public void CreateQuest(QuestSO qs)
     {
+        if (hideRoutine != null) { StopCoroutine(hideRoutine); hideRoutine = null; }
         questPanel.gameObject.SetActive(true);
         GameObject obj = Instantiate(questPrefab, content);
         var pf = obj.GetComponent<Quest>();
@@ -45,6 +54,7 @@ public class QuestUI : MonoBehaviour
         }
 
         activeQuest.Clear();
+        HideIfEmpty(0f);
     }
 
     public void UpdateQuestUI(QuestSO qs, int p1, int p2)
@@ -63,6 +73,7 @@ public class QuestUI : MonoBehaviour
             Destroy(pf.gameObject, 1.5f);
             activeQuest.Remove(qs);
         }
+        HideIfEmpty(hideDelay);
     }
 
     public void SlideDown()
@@ -96,5 +107,29 @@ public class QuestUI : MonoBehaviour
             Destroy(pf.gameObject);
             activeQuest.Remove(qs);
         }
+        HideIfEmpty(0f);
+    }
+
+    private void HideIfEmpty(float delay)
+    {
+        if (activeQuest.Count > 0) return;
+        if (hideRoutine != null) StopCoroutine(hideRoutine);
+        hideRoutine = StartCoroutine(HidePanelRoutine(delay));
+    }
+
+    IEnumerator HidePanelRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Vector2 start = questPanel.anchoredPosition;
+        Vector2 end = new Vector2(0, 200);
+        for (float t = 0; t < slideDuration; t += Time.deltaTime)
+        {
+            questPanel.anchoredPosition = Vector2.Lerp(start, end, t / slideDuration);
+            yield return null;
+        }
+
+        questPanel.gameObject.SetActive(false);
+        hideRoutine = null;
     }
 }

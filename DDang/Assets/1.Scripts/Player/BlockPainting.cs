@@ -17,7 +17,7 @@ public class BlockPainting : MonoBehaviour
 
     private void Start()
     {
-        grid = FindObjectOfType<GridGenerator>();    
+        grid = FindAnyObjectByType<GridGenerator>();    
     }
 
     private void Update()

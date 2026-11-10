@@ -1,317 +1,190 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public enum RoundState
+namespace DDang.Rules
 {
-    WaitingRound,           //∂ÛøÓµÂ ¥Î±‚ ªÛ≈¬
-    Playing,                //«√∑π¿Ã ¡ﬂ
-    End,                    //∂ÛøÓµÂ ¡æ∑·
-    Store,                  //ªÛ¡°
-    Result,                 //∞‘¿” ∞·∞˙
-}
-
-public class RoundManager : MonoBehaviour
-{
-    public static RoundManager Instance;
-
-    public GridGenerator grid;
-
-    public int winningPoint = 3;                //√— ∂ÛøÓµÂ (ex : 5∆« 3º±
-    public float gamePlayTime = 60f;            //∂ÛøÓµÂ «√∑π¿Ã Ω√∞£ 60√ 
-    public float extratime = 15f;               //√ﬂ∞°Ω√∞£ 15√  («√∑π¿ÃæÓ ¡°ºˆ∞° 5¡° ¿Ã«œ∑Œ ¬˜¿Ã≥Ø ∂ß)
-    public float roundWaitTime = 3f;            //∂ÛøÓµÂ Ω√¿€ ¿¸ ¥Î±‚Ω√∞£ 3√ 
-    public float shopingTime = 15;             //ªÛ¡° ¡¶«—Ω√∞£
-
-    private int currentRound = 1;
-    private float remainingWaitTime;
-    private float remainingTime;                //≥≤¿∫ Ω√∞£
-    private bool extraTimeUsed = false;         //√ﬂ∞°Ω√∞£ ∫Ò»∞º∫»≠ ªÛ≈¬
-
-    public int p1roundWinCount = 0;
-    public int p2roundWinCount = 0;
-
-    public PlayerType gameWinner;
-
-    private bool bossSpawned = false;
-
-    private bool stunQuestActive;
-    private bool reverseQuestActive;
-
-    public RoundState currentState { get; private set; } = RoundState.WaitingRound;
-
-
-    private void Awake()
+    public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
-        if (Instance == null)
+        [SerializeField] private RoundRuleSettings rules;
+
+        public RoundPhase Phase { get; private set; } = RoundPhase.None;
+        public MatchScore Match { get; private set; }
+        public float RemainingTime { get; private set; }
+        public bool IsDuelRound => Match != null && Match.IsDuel;
+        public RoundRuleSettings Rules => rules;
+
+        public bool IsRoundActive => Phase is RoundPhase.Playing or RoundPhase.ExtraTime
+                                           or RoundPhase.SuddenDeath or RoundPhase.GoldenGoal;
+
+        public event Action<RoundPhase> PhaseChanged;
+        public event Action<float> RemainingTimeChanged;
+        public event Action<int> RoundStarted;              // ÎùºÏö¥Îìú Î≤àÌò∏
+        public event Action QuestTimeReached;               // ÏãúÏûë ÌõÑ 10Ï¥à
+        public event Action AnimalWarningReached;           // 27Ï¥à
+        public event Action AnimalSpawnReached;             // 30Ï¥à
+        public event Action<RoundResult> RoundEnded;
+        public event Action<MatchProgress> MatchProgressed;
+
+        private IRoundScoreSource scoreSource;
+        private PlayerType roundWinner;
+        private PlayerType suddenDeathWinner;
+
+        public void RegisterScoreSource(IRoundScoreSource source) => scoreSource = source;
+
+        public void UnregisterScoreSource(IRoundScoreSource source)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (scoreSource == source) scoreSource = null;
         }
-        else
+
+        public int GetTiles(PlayerType player) => scoreSource?.CountTiles(player) ?? 0;
+
+        public void StartMatch()
         {
-            Destroy(gameObject);
+            Match = new MatchScore(rules.winsToWin);
+            SetPhase(RoundPhase.None);
         }
-    }
 
-    public void Begin()
-    {
-        StartCoroutine(RoundLOOP());
-    }
-
-    IEnumerator RoundLOOP()
-    {
-        Debug.Log("∂ÛøÓµÂ ∑Á«¡ Ω√¿€");
-
-        Debug.Log("ø˛¿’ ∂ÛøÓµÂ ∑Á«¡ Ω√¿€");
-        yield return StartCoroutine(HandleWaitRound());
-
-        yield return StartCoroutine(HandlePlaying());
-
-        yield return StartCoroutine(HandleRoundEnd());
-
-        if (currentState != RoundState.Result) 
+        public void BeginRound()                            // Í≤åÏûÑ Ïî¨ Ï§ÄÎπÑ ÏôÑÎ£å ÌõÑ Ìò∏Ï∂ú
         {
-            yield return StartCoroutine(HandleStore());
+            StopAllCoroutines();
+            StartCoroutine(RoundRoutine());
         }
-    }
 
-    IEnumerator HandleWaitRound()
-    {
-        while (grid == null)
+        public void ReportPlayerHit(PlayerType attacker)   // Í≥µÍ≤© Ï†ÅÏ§ë Ïãú Ìò∏Ï∂ú (ÏÑúÎì†Îç∞Ïä§ ÌåêÏ†ï)
         {
-            grid = GameObject.Find("GridGenerator")?.GetComponent<GridGenerator>();
-            if (grid == null)
+            if (Phase == RoundPhase.SuddenDeath && suddenDeathWinner == PlayerType.None)
+                suddenDeathWinner = attacker;
+        }
+
+        public void FinishStore()                           // ÏÉÅÏ†ê Ï¢ÖÎ£å Ïãú Ìò∏Ï∂ú
+        {
+            if (Phase != RoundPhase.Store) return;
+            SetPhase(RoundPhase.None);
+            SceneLoadManager.Instance.LoadScene("GameScene");
+        }
+
+        private IEnumerator RoundRoutine()
+        {
+            yield return new WaitUntil(() => scoreSource != null);
+
+            RoundStarted?.Invoke(Match.RoundNumber);
+            yield return RunTimer(RoundPhase.Countdown, rules.countdownTime);
+
+            if (IsDuelRound) yield return PlayDuelRound();
+            else yield return PlayNormalRound();
+
+            yield return EndRound();
+        }
+
+        private IEnumerator PlayNormalRound()
+        {
+            bool questSent = false, warned = false, spawned = false;
+
+            SetPhase(RoundPhase.Playing);
+            for (float elapsed = 0f; elapsed < rules.roundTime; elapsed += Time.deltaTime)
             {
+                if (!questSent && elapsed >= rules.questTime) { questSent = true; QuestTimeReached?.Invoke(); }
+                if (!warned && elapsed >= rules.animalWarningTime) { warned = true; AnimalWarningReached?.Invoke(); }
+                if (!spawned && elapsed >= rules.animalSpawnTime) { spawned = true; AnimalSpawnReached?.Invoke(); }
+
+                SetRemainingTime(rules.roundTime - elapsed);
                 yield return null;
             }
-        }
-        Debug.Log("Grid ¬¸¡∂ øœ∑·");
 
-
-        Debug.Log("WaitRound ƒ´øÓ∆Æ Ω√¿€");
-        UIManager.Instance.NextRound(currentRound);
-        currentState = RoundState.WaitingRound;
-        remainingWaitTime = roundWaitTime;
-        Debug.Log($"Round: {currentRound}");
-
-        while (remainingWaitTime > 0)
-        {
-            UIManager.Instance.RoundWait(remainingWaitTime);
-            remainingWaitTime -= Time.deltaTime;
-
-            yield return null;
-
-        }
-        UIManager.Instance.roundWaitText.text = "Start!";
-        yield return new WaitForSeconds(.5f);
-        UIManager.Instance.RoundWait(0);
-        UIManager.Instance.roundWaitPanel.SetActive(false);
-    }
-
-    IEnumerator HandlePlaying()
-    {
-        currentState = RoundState.Playing;
-        remainingTime = gamePlayTime;
-        extraTimeUsed = false;
-
-        StartCoroutine(BossTimer());
-
-        while (remainingTime > 0)
-        {
-            if (!stunQuestActive && remainingTime <= 25f)
+            if (!IsWithinExtraTimeMargin())
             {
-                stunQuestActive = true;
-                QuestManager.Instance.ActivateQuest(QuestType.StunChain);
+                roundWinner = Leader();
+                yield break;
             }
 
-            if (!reverseQuestActive && remainingTime <= 10f)
+            yield return RunTimer(RoundPhase.ExtraTime, rules.extraTime);
+            roundWinner = Leader();
+            if (roundWinner != PlayerType.None) yield break;
+
+            suddenDeathWinner = PlayerType.None;
+            SetPhase(RoundPhase.SuddenDeath);
+            yield return new WaitUntil(() => suddenDeathWinner != PlayerType.None);
+            roundWinner = suddenDeathWinner;
+        }
+
+        private IEnumerator PlayDuelRound()
+        {
+            yield return RunTimer(RoundPhase.Playing, rules.duelTime);
+
+            SetPhase(RoundPhase.GoldenGoal);
+            yield return new WaitUntil(() => Leader() != PlayerType.None);
+            roundWinner = Leader();
+        }
+
+        private IEnumerator EndRound()
+        {
+            var result = new RoundResult(roundWinner,
+                scoreSource.CountTiles(PlayerType.Player1),
+                scoreSource.CountTiles(PlayerType.Player2),
+                IsDuelRound);
+
+            SetPhase(RoundPhase.RoundEnd);
+            RoundEnded?.Invoke(result);
+
+            MatchProgress progress = Match.RecordRound(roundWinner);
+            MatchProgressed?.Invoke(progress);
+
+            yield return new WaitForSeconds(rules.resultShowTime);
+
+            switch (progress)
             {
-
-                int p1 = grid.CountScore(PlayerType.Player1);
-                int p2 = grid.CountScore(PlayerType.Player2);
-                int diff = Mathf.Abs(p1 - p2);
-
-                if (diff <= 10)
-                {
-                    reverseQuestActive = true;
-                    QuestManager.Instance.ActivateQuest(QuestType.Reverse);
-                }
+                case MatchProgress.GameOver:
+                    SetPhase(RoundPhase.GameOver);
+                    SceneLoadManager.Instance.LoadScene("GameResult");
+                    break;
+                case MatchProgress.Duel:                    // Í∏∞Î≥∏ Îä•Î†•ÏπòÎ°ú Ïã∏Ïö∞ÎØÄÎ°ú ÏÉÅÏ†ê ÏÉùÎûµ
+                    SetPhase(RoundPhase.None);
+                    SceneLoadManager.Instance.LoadScene("GameScene");
+                    break;
+                default:
+                    SetPhase(RoundPhase.Store);
+                    SceneLoadManager.Instance.LoadScene("Store");
+                    break;
             }
+        }
 
-            UIManager.Instance.RoundTime(remainingTime);
-            remainingTime -= Time.deltaTime;
-            yield return null;
-
-            //¡°ºˆ ¬˜¿Ã∞° 5¿Ã«œ¿œ ∂ß √ﬂ∞°Ω√∞£
-            int p1Score = grid.CountScore(PlayerType.Player1);
-            int p2Score = grid.CountScore(PlayerType.Player2);
-            int scoreDiff = Mathf.Abs(p1Score - p2Score);
-
-            if (scoreDiff <= 5 && !extraTimeUsed && remainingTime <= 0)              //¬˜¿Ã∞° 5¡° ¿Ã«œ¿Ã∞Ì, √ﬂ∞°Ω√∞£ ªÁøÎ¿ª «œ¡ˆ æ æ“∞Ì, ∞‘¿” «√∑π¿Ã Ω√∞£¿Ã 0¿Ã«œ¿œ ∂ß
+        private IEnumerator RunTimer(RoundPhase phase, float duration)
+        {
+            SetPhase(phase);
+            for (float t = duration; t > 0f; t -= Time.deltaTime)
             {
-                QuestManager.Instance?.OnExtraTImeStarted(p1Score, p2Score);
-
-                remainingTime += extratime;
-                extraTimeUsed = true;
+                SetRemainingTime(t);
+                yield return null;
             }
+            SetRemainingTime(0f);
         }
-        Debug.Log("∂ÛøÓµÂ Ω√∞£ ¡æ∑·");
-    }
-    
-    private IEnumerator HandleRoundEnd()
-    {
-        currentState = RoundState.End;
 
-        bossSpawned = false;
-
-        stunQuestActive = false;
-        reverseQuestActive = false;
-
-        int p1Score = grid.CountScore(PlayerType.Player1);
-        int p2Score = grid.CountScore(PlayerType.Player2);
-
-        PlayerType winner = CheckWinner();
-
-        UIManager.Instance.RoundResult(winner);
-
-        QuestManager.Instance?.OnRoundEnd(p1Score, p2Score, winner);
-
-        if (winner != PlayerType.None)
+        private bool IsWithinExtraTimeMargin()
         {
-            CoinManager.Instance.AddCoins(winner, 10);
+            int margin = Mathf.RoundToInt(scoreSource.PaintableCount * rules.extraTimeMarginRatio);
+            int diff = Mathf.Abs(scoreSource.CountTiles(PlayerType.Player1) - scoreSource.CountTiles(PlayerType.Player2));
+            return diff <= margin;
         }
 
-        PlayerType loser = (winner == PlayerType.Player1) ? PlayerType.Player2 :
-                           (winner == PlayerType.Player2) ? PlayerType.Player1 :
-                           PlayerType.None;
-
-        if (loser != PlayerType.None)
+        private PlayerType Leader()
         {
-            CoinManager.Instance.AddCoins(loser, 5);
+            int p1 = scoreSource.CountTiles(PlayerType.Player1);
+            int p2 = scoreSource.CountTiles(PlayerType.Player2);
+            if (p1 == p2) return PlayerType.None;
+            return p1 > p2 ? PlayerType.Player1 : PlayerType.Player2;
         }
 
-
-        switch (winner)
+        private void SetPhase(RoundPhase phase)
         {
-            case PlayerType.Player1:
-                if (p1roundWinCount < winningPoint)
-                {
-                    p1roundWinCount++;
-                }
-                break;
-
-            case PlayerType.Player2:
-                if (p2roundWinCount < winningPoint)
-                {
-                    p2roundWinCount++;
-                }
-                break;
+            Phase = phase;
+            PhaseChanged?.Invoke(phase);
         }
 
-        Debug.Log($"{currentRound} Ω¬¿⁄ = {winner}");
-
-        AchievementManager.Instance.AddValue(winner, AchievementType.TotalWins, 1);
-
-        currentRound++;
-        UIManager.Instance.SetRoundWins(p1roundWinCount, p2roundWinCount);
-
-        if (winner == PlayerType.Player1 && p1roundWinCount >= winningPoint)
+        private void SetRemainingTime(float time)
         {
-            gameWinner = PlayerType.Player1;
-            currentState = RoundState.Result;
-
-            SceneLoadManager.Instance.LoadScene("GameResult");
+            RemainingTime = time;
+            RemainingTimeChanged?.Invoke(time);
         }
-        else if (winner == PlayerType.Player2 && p2roundWinCount >= winningPoint)
-        {
-            gameWinner = PlayerType.Player2;
-            currentState = RoundState.Result;
-
-            SceneLoadManager.Instance.LoadScene("GameResult");
-        }
-
-        yield return new WaitForSeconds(3f);
-
-    }
-
-    IEnumerator HandleStore()
-    {
-        currentState = RoundState.Store;
-
-        //æ¿ ∏≈¥œ¿˙ ø¨∞·
-        SceneLoadManager.Instance.LoadScene("Store");
-
-        StoreUI sT = null;
-        while ((sT = FindObjectOfType<StoreUI>()) == null)
-        {
-            yield return null;
-        }
-
-        float storeTimer = shopingTime;
-        while (storeTimer > 0)
-        {
-            sT.ShopingTime(storeTimer);
-            storeTimer -= Time.deltaTime;
-            yield return null;
-        }
-
-        SceneLoadManager.Instance.LoadScene("GameScene");
-
-        currentState = RoundState.WaitingRound;
-    }
-
-    IEnumerator BossTimer()
-    {
-        if (bossSpawned) yield break;
-        while (remainingTime > 33f)
-            yield return null;
-
-        bossSpawned = true;
-
-        //UIManager.Instance.ShowBossWarning(true);
-
-        yield return new WaitForSeconds(3f);
-
-        //UIManager.Instance.ShowBossWarning(false);
-
-        BossManager.Instance.SpawnRandomBoss();
-    }
-
-    PlayerType CheckWinner()
-    {
-        int p1Score = grid.CountScore(PlayerType.Player1);
-        int p2Score = grid.CountScore(PlayerType.Player2);
-
-        if (p1Score > p2Score) return PlayerType.Player1;
-        if (p1Score < p2Score) return PlayerType.Player2;
-        return PlayerType.None;
-    }
-
-    public void ResetAll()
-    {
-        currentRound = 1;
-        p1roundWinCount = 0;
-        p2roundWinCount = 0;
-
-        extraTimeUsed = false;
-        bossSpawned = false;
-
-        gameWinner = PlayerType.None;
-
-        stunQuestActive = false;
-        reverseQuestActive = false;
-
-        foreach (var player in FindObjectsOfType<PlayerMovement>())
-        {
-            player.ResetStats();
-        }
-
-        currentState = RoundState.WaitingRound;
-
-        // ¥Ÿ∏• ∏≈¥œ¿˙µÈµµ √ ±‚»≠
-        QuestManager.Instance?.ResetAllQuest();
-        CoinManager.Instance?.ResetCoins();
-        UIManager.Instance?.ResetAllUI();
     }
 }

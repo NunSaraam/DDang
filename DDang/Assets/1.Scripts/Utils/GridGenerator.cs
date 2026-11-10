@@ -1,13 +1,14 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DDang.Rules;
 
-public class GridGenerator : MonoBehaviour
+public class GridGenerator : MonoBehaviour, IRoundScoreSource
 {
     public int gridSizeX = 10;
     public int gridSizeZ = 10;
 
-    [Header("ºí·° ¼¼ÆÃ")]
+    [Header("ë¸”ëŸ­ ì„¸íŒ…")]
     public PlacedObj prefab;
     public Material defaultMat;
     public Material p1Mat;
@@ -16,11 +17,22 @@ public class GridGenerator : MonoBehaviour
     private int currentGrid;
     public PlacedObj[,] grid;
 
+    public int PaintableCount => gridSizeX * gridSizeZ;        // ìž¥ì• ë¬¼ ë„ìž… ì „ê¹Œì§€ ì „ì²´ ì¹¸
+    public int CountTiles(PlayerType pT) => CountScore(pT);
+
 
     void Start()
     {
         Init();
         GenerateGrid();
+
+        if (RoundManager.HasInstance)                           // ë¼ìš´ë“œê°€ ì—†ëŠ” ì”¬(íŠœí† ë¦¬ì–¼ ë“±)ì—ì„œëŠ” ë“±ë¡ ì•ˆ í•¨
+            RoundManager.Instance.RegisterScoreSource(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (RoundManager.HasInstance) RoundManager.Instance.UnregisterScoreSource(this);
     }
 
 
@@ -35,14 +47,14 @@ public class GridGenerator : MonoBehaviour
 
         PlayerType oldOwner = block.owner;
 
-        Material mat = pT switch                            //switch expression¹æ½Ä =>´Â ¿ÞÂÊÀÌ ÀÔ·ÂÀÏ ¶§ ¿À¸¥ÂÊ °ª ¹ÝÈ¯, _´Â default:
+        Material mat = pT switch                            //switch expressionë°©ì‹ =>ëŠ” ì™¼ìª½ì´ ìž…ë ¥ì¼ ë•Œ ì˜¤ë¥¸ìª½ ê°’ ë°˜í™˜, _ëŠ” default:
         {
             PlayerType.Player1 => p1Mat,
             PlayerType.Player2 => p2Mat,
             _ => defaultMat
         };
 
-        block.SetMaterial(mat, pT);                 //¶¥À» Ä¥ÇÏ¸é¼­, ¶¥ÁÖÀÎµµ ±â·Ï
+        block.SetMaterial(mat, pT);                 //ë•…ì„ ì¹ í•˜ë©´ì„œ, ë•…ì£¼ì¸ë„ ê¸°ë¡
 
         if (pT != PlayerType.None && pT != oldOwner)
         {
@@ -56,14 +68,14 @@ public class GridGenerator : MonoBehaviour
 
         PlayerType oldOwner = block.owner;
 
-        Material mat = kpT switch                            //switch expression¹æ½Ä =>´Â ¿ÞÂÊÀÌ ÀÔ·ÂÀÏ ¶§ ¿À¸¥ÂÊ °ª ¹ÝÈ¯, _´Â default:
+        Material mat = kpT switch                            //switch expressionë°©ì‹ =>ëŠ” ì™¼ìª½ì´ ìž…ë ¥ì¼ ë•Œ ì˜¤ë¥¸ìª½ ê°’ ë°˜í™˜, _ëŠ” default:
         {
             KeyCheckPlayerType.Player1 => p1Mat,
             KeyCheckPlayerType.Player2 => p2Mat,
             _ => defaultMat
         };
 
-        block.KeyCheckSetMaterial(mat, kpT);                 //¶¥À» Ä¥ÇÏ¸é¼­, ¶¥ÁÖÀÎµµ ±â·Ï
+        block.KeyCheckSetMaterial(mat, kpT);                 //ë•…ì„ ì¹ í•˜ë©´ì„œ, ë•…ì£¼ì¸ë„ ê¸°ë¡
     }
 
     public int CountScore(PlayerType pT)
@@ -102,21 +114,21 @@ public class GridGenerator : MonoBehaviour
     }
 
 
-    public void SetObject(int x, int z)                         // ¿¹¿ÜÃ³¸® µð¹ö±× Àû¾î³õÀ»°Í
+    public void SetObject(int x, int z)                         // ì˜ˆì™¸ì²˜ë¦¬ ë””ë²„ê·¸ ì ì–´ë†“ì„ê²ƒ
     {
         if (!IsInGrid(x, z))
         {
-            Debug.Log($"{x}, {z}´Â ±×¸®µå ¹üÀ§ ¹ÛÀÔ´Ï´Ù.");
+            Debug.Log($"{x}, {z}ëŠ” ê·¸ë¦¬ë“œ ë²”ìœ„ ë°–ìž…ë‹ˆë‹¤.");
             return;
         }
         if (!CanInstantiate(x, z))
         {
-            Debug.Log($"{x}, {z}¿¡´Â ÀÌ¹Ì ¿ÀºêÁ§Æ®°¡ Á¸ÀçÇÕ´Ï´Ù.");
+            Debug.Log($"{x}, {z}ì—ëŠ” ì´ë¯¸ ì˜¤ë¸Œì íŠ¸ê°€ ì¡´ìž¬í•©ë‹ˆë‹¤.");
             return;
         }
         if (prefab == null)
         {
-            Debug.Log("PrefabÀÌ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.Log("Prefabì´ í• ë‹¹ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return;
         }
 
@@ -126,13 +138,13 @@ public class GridGenerator : MonoBehaviour
     }
 
 
-    // ±×¸®µå ¹üÀ§ ¾ÈÂÊÀÎÁö È®ÀÎ
+    // ê·¸ë¦¬ë“œ ë²”ìœ„ ì•ˆìª½ì¸ì§€ í™•ì¸
     private bool IsInGrid(int x, int z)
     {
         return (x >= 0 && x < gridSizeX && z >= 0 && z < gridSizeZ);
     }
 
-    // ÇØ´ç À§Ä¡°¡ ºñ¾îÀÖ´ÂÁö È®ÀÎ
+    // í•´ë‹¹ ìœ„ì¹˜ê°€ ë¹„ì–´ìžˆëŠ”ì§€ í™•ì¸
     private bool CanInstantiate(int x, int z)
     {
         return grid[x, z] == null;

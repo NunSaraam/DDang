@@ -1,6 +1,7 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DDang.Rules;
 
 public class GameSceneInitChecker : MonoBehaviour
 {
@@ -8,21 +9,26 @@ public class GameSceneInitChecker : MonoBehaviour
     {
         UIManager.Instance?.ReconnectUI();
 
-        Debug.Log("SceneUIManager Ã¼Å· ½ÃÀÛ");
+        Debug.Log("SceneUIManager ì²´í‚¹ ì‹œìž‘");
         while (UIManager.Instance == null || !UIManager.Instance.IsUIReady())
             yield return null;
-        Debug.Log("SceneUIManager ¿Ï·á");
+        Debug.Log("SceneUIManager ì™„ë£Œ");
 
         while (RoundManager.Instance == null)
             yield return null;
-        Debug.Log("¸ðµç °ÔÀÓ ÁØºñ ¿Ï·á");
+        Debug.Log("ëª¨ë“  ê²Œìž„ ì¤€ë¹„ ì™„ë£Œ");
 
-        if (GameSession.Instance.needFullReset)
+        if (GameSession.Instance.needFullReset || RoundManager.Instance.Match == null)
         {
-            RoundManager.Instance.ResetAll();
+            RoundManager.Instance.StartMatch();
+            QuestManager.Instance?.ResetAllQuest();
+            CoinManager.Instance?.ResetCoins();
+            UIManager.Instance?.ResetAllUI();
+            foreach (var player in FindObjectsByType<PlayerMovement>(FindObjectsSortMode.None))
+                player.ResetStats();
             GameSession.Instance.needFullReset = false;
         }
 
-        RoundManager.Instance.Begin();
+        RoundManager.Instance.BeginRound();
     }
 }

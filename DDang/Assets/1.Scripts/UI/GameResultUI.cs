@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DDang.Rules;
 
 public class GameResultUI : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class GameResultUI : MonoBehaviour
 
     private void Update()
     {
-        if (RoundManager.Instance.currentState == RoundState.Result)
+        if (RoundManager.Instance.Phase == RoundPhase.GameOver)
         {
             StartCoroutine(Result());
         }
@@ -40,7 +41,7 @@ public class GameResultUI : MonoBehaviour
 
     IEnumerator Result()
     {
-        StartPulseEffect(RoundManager.Instance.gameWinner);
+        StartPulseEffect(RoundManager.Instance.Match.Winner);
 
         yield return new WaitForSeconds(5f);
 

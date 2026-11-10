@@ -1,9 +1,10 @@
- using System.Collections;
+ï»¿ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DDang.Rules;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class UIManager : MonoBehaviour
     public Button bgmMinusButton;
     public Button bgmPlusButton;
 
-    public TextMeshProUGUI roundWaitText;           //´ë±â½Ã°£ ÅØ½ºÆ®
-    public TextMeshProUGUI roundTimeText;           //ÁøÇà½Ã°£ ÅØ½ºÆ®
+    public TextMeshProUGUI roundWaitText;           //ëŒ€ê¸°ì‹œê°„ í…ìŠ¤íŠ¸
+    public TextMeshProUGUI roundTimeText;           //ì§„í–‰ì‹œê°„ í…ìŠ¤íŠ¸
 
     public GameObject roundWaitPanel;
 
@@ -63,8 +64,6 @@ public class UIManager : MonoBehaviour
             pausePanel = GameObject.Find("Setting");
             pausePanel.SetActive(false);
         }
-
-        if (RoundManager.Instance != null && RoundManager.Instance.currentState != RoundState.WaitingRound) return;
     }
 
     public void ShowPausePanel(bool show)
@@ -91,10 +90,8 @@ public class UIManager : MonoBehaviour
         UpdateRoundUI();
     }
 
-    public void ReconnectUI()          //´Ù½Ã °ÔÀÓ ¾ÀÀ¸·Î ³Ñ¾î¿Ã ¶§ Àç¿¬°á
+    public void ReconnectUI()          //ë‹¤ì‹œ ê²Œì„ ì”¬ìœ¼ë¡œ ë„˜ì–´ì˜¬ ë•Œ ì¬ì—°ê²°
     {
-
-
         roundWaitText = GameObject.Find("StartWaitText")?.GetComponent<TextMeshProUGUI>();
         roundTimeText = GameObject.Find("Round_Time_Text")?.GetComponent<TextMeshProUGUI>();
         roundWaitPanel = GameObject.Find("StartWaitPanel");
@@ -114,7 +111,8 @@ public class UIManager : MonoBehaviour
 
         if (IsUIReady())
         {
-            SetRoundWins(RoundManager.Instance.p1roundWinCount, RoundManager.Instance.p2roundWinCount);
+            MatchScore match = RoundManager.Instance.Match;           // ì²« ê²Œì„ ì‹œì‘ ì „ì—ëŠ” null
+            SetRoundWins(match?.P1Wins ?? 0, match?.P2Wins ?? 0);
             UpdateRoundUI();
         }
     }
@@ -127,7 +125,7 @@ public class UIManager : MonoBehaviour
         roundTimeText.text = $"{currentRoundTime:F2}";
     }
 
-    public void NextRound(int roundNumber)              //RoundManagerÈ£Ãâ¿ë
+    public void NextRound(int roundNumber)              //RoundManagerí˜¸ì¶œìš©
     {
         currentRound = roundNumber;
         UpdateRoundUI();  

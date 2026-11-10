@@ -1,7 +1,8 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DDang.Rules;
 
 public enum StoreType
 {
@@ -47,7 +48,7 @@ public class StoreTile : MonoBehaviour
 
     public void TryPurchase(PlayerMovement player)
     {
-        if (RoundManager.Instance.currentState != RoundState.Store)     //ÇöÀç ¶ó¿îµå°¡ »óÁ¡ÀÌ ¾Æ´Ï¸é ¸®ÅÏ
+        if (RoundManager.Instance.Phase != RoundPhase.Store)     //í˜„ì¬ ë¼ìš´ë“œê°€ ìƒì ì´ ì•„ë‹ˆë©´ ë¦¬í„´
         {
             return;
         }
@@ -59,19 +60,19 @@ public class StoreTile : MonoBehaviour
 
         switch (storeType)
         {
-            case StoreType.RandomStat:      //·£´ı ½ºÅÈ
+            case StoreType.RandomStat:      //ëœë¤ ìŠ¤íƒ¯
 
                 price = randCost;
 
                 break;
 
-            case StoreType.MoveSpeed:       //¼Óµµ Áõ°¡
+            case StoreType.MoveSpeed:       //ì†ë„ ì¦ê°€
 
                 price = speedCost;
 
                 break;
 
-            case StoreType.StunReduce:      //½ºÅÏ ½Ã°£ °¨¼Ò
+            case StoreType.StunReduce:      //ìŠ¤í„´ ì‹œê°„ ê°ì†Œ
 
                 price = stunCost;
 
@@ -80,7 +81,7 @@ public class StoreTile : MonoBehaviour
 
         if (coins < price)
         {
-            Debug.Log($"{playerType} ÄÚÀÎ ºÎÁ·");
+            Debug.Log($"{playerType} ì½”ì¸ ë¶€ì¡±");
             return;
         }
 
@@ -88,37 +89,37 @@ public class StoreTile : MonoBehaviour
 
         switch (storeType)
         {
-            case StoreType.RandomStat:      //·£´ı ½ºÅÈ
+            case StoreType.RandomStat:      //ëœë¤ ìŠ¤íƒ¯
                 ApplyRandomStat(player);
                 break;
 
-            case StoreType.MoveSpeed:       //¼Óµµ Áõ°¡
+            case StoreType.MoveSpeed:       //ì†ë„ ì¦ê°€
                 if (playerType == PlayerType.Player1)
                 {
                     PlayerDataManager.Instance.p1MoveSpeed += 1;
 
-                    Debug.Log($"ÀÌµ¿¼Óµµ +{1}");
+                    Debug.Log($"ì´ë™ì†ë„ +{1}");
                 }
                 else if (playerType == PlayerType.Player2)
                 {
                     PlayerDataManager.Instance.p2MoveSpeed += 1;
 
-                    Debug.Log($"ÀÌµ¿¼Óµµ +{1}");
+                    Debug.Log($"ì´ë™ì†ë„ +{1}");
                 }
                 break;
 
-            case StoreType.StunReduce:      //½ºÅÏ ½Ã°£ °¨¼Ò
+            case StoreType.StunReduce:      //ìŠ¤í„´ ì‹œê°„ ê°ì†Œ
                 if (playerType == PlayerType.Player1)
                 {
                     PlayerDataManager.Instance.p1StunTime -= .5f;
 
-                    Debug.Log($"·£´ı °­È­ ½ºÅÏ ½Ã°£ °¨¼Ò -{0.5}");
+                    Debug.Log($"ëœë¤ ê°•í™” ìŠ¤í„´ ì‹œê°„ ê°ì†Œ -{0.5}");
                 }
                 else if (playerType == PlayerType.Player2)
                 {
                     PlayerDataManager.Instance.p2StunTime -= .5f;
 
-                    Debug.Log($"·£´ı °­È­ ½ºÅÏ ½Ã°£ °¨¼Ò -{0.5}");
+                    Debug.Log($"ëœë¤ ê°•í™” ìŠ¤í„´ ì‹œê°„ ê°ì†Œ -{0.5}");
                 }
                 break;
         }
@@ -138,7 +139,7 @@ public class StoreTile : MonoBehaviour
 
         if (random < fail)
         {
-            Debug.Log("²Î");
+            Debug.Log("ê½");
         }
         else if (random < speed)
         {
@@ -148,13 +149,13 @@ public class StoreTile : MonoBehaviour
             {
                 PlayerDataManager.Instance.p1MoveSpeed += cost;
 
-                Debug.Log($"ÀÌµ¿¼Óµµ +{cost}");
+                Debug.Log($"ì´ë™ì†ë„ +{cost}");
             }
             else if (playerType == PlayerType.Player2)
             {
                 PlayerDataManager.Instance.p2MoveSpeed += cost;
 
-                Debug.Log($"ÀÌµ¿¼Óµµ +{cost}");
+                Debug.Log($"ì´ë™ì†ë„ +{cost}");
             }
         }
         else
@@ -165,13 +166,13 @@ public class StoreTile : MonoBehaviour
             {
                 PlayerDataManager.Instance.p1StunTime += cost;
 
-                Debug.Log($"·£´ı °­È­ »ó´ë ½ºÅÏ ½Ã°£ Áõ°¡ +{cost:F0}");
+                Debug.Log($"ëœë¤ ê°•í™” ìƒëŒ€ ìŠ¤í„´ ì‹œê°„ ì¦ê°€ +{cost:F0}");
             }
             else if (playerType == PlayerType.Player2)
             {
                 PlayerDataManager.Instance.p2StunTime += cost;
 
-                Debug.Log($"·£´ı °­È­ »ó´ë ½ºÅÏ ½Ã°£ Áõ°¡ +{cost:F0}");
+                Debug.Log($"ëœë¤ ê°•í™” ìƒëŒ€ ìŠ¤í„´ ì‹œê°„ ì¦ê°€ +{cost:F0}");
             }
 
         }

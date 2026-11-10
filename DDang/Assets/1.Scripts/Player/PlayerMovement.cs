@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DDang.Rules;
 
 
 public enum PlayerState
 {
-    Idle,           //�⺻ ����
-    Controllable,   //���� ����
-    Attacking,      //���� ��
-    Stunned,        //���� ����
+    Idle,
+    Controllable,
+    Attacking,
+    Stunned,
 
 }
 
@@ -60,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
-        if (RoundManager.Instance.currentState == RoundState.WaitingRound)
+        if (!CanMoveInPhase())
         {
             state = PlayerState.Idle;
         }
@@ -68,12 +69,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (RoundManager.Instance.currentState == RoundState.WaitingRound)
+        if (!CanMoveInPhase())
         {
             state = PlayerState.Idle;
         }
+    }
 
+    private void FixedUpdate()
+    {
         PlayerStates(state);
+    }
+
+    // 라운드 진행 중이거나 상점에서만 이동 가능
+    private bool CanMoveInPhase()
+    {
+        RoundManager round = RoundManager.Instance;
+        return round.IsRoundActive || round.Phase == RoundPhase.Store;
     }
 
 
@@ -81,28 +92,28 @@ public class PlayerMovement : MonoBehaviour
     {
         switch (states)
         {
-            case PlayerState.Idle:                                  //��� ����
+            case PlayerState.Idle:
                 rb.linearVelocity = Vector3.zero;
 
-                if (RoundManager.Instance.currentState == RoundState.Playing)
+                if (CanMoveInPhase())
                 {
                     state = PlayerState.Controllable;
                 }
                 break;
             
-            case PlayerState.Controllable:                          //���� ����
+            case PlayerState.Controllable:
                 rb.linearVelocity = moveDirection * moveSpeed;
 
                 if (moveDirection != Vector3.zero)
                 {
                     Quaternion rotation = Quaternion.LookRotation(moveDirection);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
+                    rb.MoveRotation(Quaternion.Slerp(rb.rotation, rotation, Time.fixedDeltaTime * 10f));
                 }
                 break;
 
-            case PlayerState.Attacking:                             //���� ��
+            case PlayerState.Attacking:
                 
-                if (currentStoreTile != null && RoundManager.Instance.currentState == RoundState.Store)
+                if (currentStoreTile != null && RoundManager.Instance.Phase == RoundPhase.Store)
                 {
                     return;
                 }
@@ -113,13 +124,13 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
 
-            case PlayerState.Stunned:                               //���� ��
+            case PlayerState.Stunned:
                 rb.linearVelocity = Vector3.zero;
                 break;
         }
     }
 
-    public void OnMove(InputAction.CallbackContext context)                     //��ǲ �ý��� �̵�����
+    public void OnMove(InputAction.CallbackContext context)
     {
         Vector3 forward = Vector3.left;
         Vector3 right = Vector3.forward;
@@ -148,14 +159,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void OnAttack(InputAction.CallbackContext context)                  //��ǲ �ý��� ���ݷ���
+    public void OnAttack(InputAction.CallbackContext context)
     {
-        if (state == PlayerState.Attacking) return;             //�̹� ���� �����̸� ��ȯ
+        if (state == PlayerState.Attacking) return;
 
         if (context.performed)
         {
 
-            if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Store)
+            if (RoundManager.Instance != null && RoundManager.Instance.Phase == RoundPhase.Store)
             {
                 if (currentStoreTile != null)
                 {
@@ -164,12 +175,12 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (state == PlayerState.Controllable && RoundManager.Instance.currentState == RoundState.Playing)
+            if (state == PlayerState.Controllable && RoundManager.Instance.IsRoundActive)
             {
-                state = PlayerState.Attacking;                      //���� => �������� ������ȯ
-                ChaeckAttackRange();                                //���� ��Ÿ� üũ �ż���
-                animator.SetTrigger("Attack");                      //���� �ִϸ��̼� ����
-                StartCoroutine(AttackCooldown(attackCooldown));     //���� ��ٿ� �ڷ�ƾ ����
+                state = PlayerState.Attacking;
+                ChaeckAttackRange();
+                animator.SetTrigger("Attack");
+                StartCoroutine(AttackCooldown(attackCooldown));
             }
         }
     }
@@ -178,11 +189,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 checkPosition = playerTransform.position + playerTransform.forward * (attackRange * 0.5f);
 
-        Collider[] hitColliders = Physics.OverlapSphere(checkPosition, attackRange, mask);                 //��ü�� �浹�� ��� �ݶ��̴� �迭
+        Collider[] hitColliders = Physics.OverlapSphere(checkPosition, attackRange, mask);
 
         foreach (Collider collider in hitColliders)
         {
-            if (collider.gameObject == this.gameObject) continue;                //�ڱ� ����
+            if (collider.gameObject == this.gameObject) continue;
 
             PlayerMovement target = collider.GetComponent<PlayerMovement>();
             if (target != null)
@@ -195,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
                     target.Stun(stunTime);
 
                     QuestManager.Instance?.OnStunLanded(this.playerType);
+                    RoundManager.Instance.ReportPlayerHit(this.playerType);
                 }
             }
             
@@ -204,19 +216,19 @@ public class PlayerMovement : MonoBehaviour
 
     public void Stun(float duration)
     {
-        if (state == PlayerState.Stunned) return;               //�̹� �������¸� ��ȯ
+        if (state == PlayerState.Stunned) return;
 
         Debug.Log("���� ��!");
-        state = PlayerState.Stunned;                            //���� ����
-        rb.linearVelocity = Vector3.zero;                             //������ ����
+        state = PlayerState.Stunned;
+        rb.linearVelocity = Vector3.zero;
 
         StartCoroutine(PlayerStun(duration));
     }
 
     IEnumerator PlayerStun(float duration)
     {
-        yield return new WaitForSeconds(duration);              //duration��ŭ ��ٸ���
-        state = PlayerState.Controllable;                       //�ð��� ������ ���� ���ɻ��·� ����
+        yield return new WaitForSeconds(duration);
+        state = PlayerState.Controllable;
     }
 
     IEnumerator AttackCooldown(float duration)

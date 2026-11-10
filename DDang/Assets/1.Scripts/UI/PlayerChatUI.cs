@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DDang.Rules;
 
 public class PlayerChatUI : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class PlayerChatUI : MonoBehaviour
     {
         if (pM == null) pM = GetComponentInParent<PlayerMovement>();
 
-        if (grid == null) grid = FindObjectOfType<GridGenerator>();
+        if (grid == null) grid = FindAnyObjectByType<GridGenerator>();
 
         if (targetCamera == null) targetCamera = Camera.main.transform;
     }
@@ -41,13 +42,13 @@ public class PlayerChatUI : MonoBehaviour
         int p1Score = grid.CountScore(PlayerType.Player1);
         int p2Score = grid.CountScore(PlayerType.Player2);
 
-        if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Playing)
+        if (RoundManager.Instance != null && RoundManager.Instance.IsRoundActive)
         {
             bool isStunned = pM.state == PlayerState.Stunned;
             stunImage.gameObject.SetActive(isStunned);
             scoreText.gameObject.SetActive(!isStunned);
         }
-        else if (RoundManager.Instance != null && RoundManager.Instance.currentState == RoundState.Store)
+        else if (RoundManager.Instance != null && RoundManager.Instance.Phase == RoundPhase.Store)
         {
             stunImage.gameObject.SetActive(false);
             scoreText.gameObject.SetActive(false);
