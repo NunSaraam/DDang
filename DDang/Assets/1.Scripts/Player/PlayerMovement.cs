@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DDang.Rules;
+using Rules;
 
 
 public enum PlayerState
@@ -27,8 +27,16 @@ public class PlayerMovement : MonoBehaviour
 
     public Animator animator;
 
-    private float attackRange = 0.5f;
-    private float attackCooldown = 0.5f;
+    [Header("전투")]
+    [SerializeField] private float attackRange = 1f;            // 전방 1칸
+    [SerializeField] private float attackCooldown = 0.5f;
+    [SerializeField] private float invincibleTime = 0.5f;       // 무적 시간
+    [SerializeField] private float blinkInterval = 0.1f;        // 무적 중 깜빡임 간격
+
+    private Renderer[] renderers;
+    private float invincibleUntil;
+
+    public bool IsInvincible => Time.time < invincibleUntil;
 
     private Rigidbody rb;
 
@@ -45,18 +53,25 @@ public class PlayerMovement : MonoBehaviour
     {
         playerTransform = transform;
         playerInput = GetComponent<PlayerInput>();
+        renderers = GetComponentsInChildren<Renderer>();
 
 
         if (playerType == PlayerType.Player1)
         {
-            moveSpeed = PlayerDataManager.Instance.p1MoveSpeed;
-            stunTime = PlayerDataManager.Instance.p1StunTime;
+            moveSpeed = PlayerDataManager.Instance.ClampMoveSpeed(PlayerDataManager.Instance.p1MoveSpeed);
+            stunTime = PlayerDataManager.Instance.ClampStunTime(PlayerDataManager.Instance.p1StunTime);
 
         }
         else if (playerType == PlayerType.Player2)
         {
-            moveSpeed = PlayerDataManager.Instance.p2MoveSpeed;
-            stunTime = PlayerDataManager.Instance.p2StunTime;
+            moveSpeed = PlayerDataManager.Instance.ClampMoveSpeed(PlayerDataManager.Instance.p2MoveSpeed);
+            stunTime = PlayerDataManager.Instance.ClampStunTime(PlayerDataManager.Instance.p2StunTime);
+        }
+
+        if (RoundManager.Instance.IsDuelRound)                     // 결투 라운드는 기본 능력치
+        {
+            moveSpeed = PlayerDataManager.Instance.baseMoveSpeed;
+            stunTime = PlayerDataManager.Instance.baseStunTime;
         }
 
         rb = GetComponent<Rigidbody>();
@@ -175,7 +190,8 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (state == PlayerState.Controllable && RoundManager.Instance.IsRoundActive)
+            if (state == PlayerState.Controllable && RoundManager.Instance.IsRoundActive
+                && !RoundManager.Instance.IsDuelRound)               // 결투 라운드는 공격 금지
             {
                 state = PlayerState.Attacking;
                 ChaeckAttackRange();
@@ -187,9 +203,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void ChaeckAttackRange()
     {
-        Vector3 checkPosition = playerTransform.position + playerTransform.forward * (attackRange * 0.5f);
+        // 몸 앞 0 ~ attackRange 구간을 덮는 구
+        float radius = attackRange * 0.5f;
+        Vector3 checkPosition = playerTransform.position + playerTransform.forward * radius;
 
-        Collider[] hitColliders = Physics.OverlapSphere(checkPosition, attackRange, mask);
+        Collider[] hitColliders = Physics.OverlapSphere(checkPosition, radius, mask);
 
         foreach (Collider collider in hitColliders)
         {
@@ -203,7 +221,9 @@ public class PlayerMovement : MonoBehaviour
 
                 if (angle < 90f)
                 {
-                    target.Stun(stunTime);
+                    if (target.IsInvincible || target.state == PlayerState.Stunned) continue;
+
+                    target.Stun(target.stunTime);                  // 맞는 쪽의 기절 시간 적용
 
                     QuestManager.Instance?.OnStunLanded(this.playerType);
                     RoundManager.Instance.ReportPlayerHit(this.playerType);
@@ -216,9 +236,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void Stun(float duration)
     {
-        if (state == PlayerState.Stunned) return;
+        if (state == PlayerState.Stunned || IsInvincible) return;
 
-        Debug.Log("���� ��!");
         state = PlayerState.Stunned;
         rb.linearVelocity = Vector3.zero;
 
@@ -229,6 +248,26 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         state = PlayerState.Controllable;
+
+        invincibleUntil = Time.time + invincibleTime;
+        StartCoroutine(BlinkWhileInvincible());
+    }
+
+    IEnumerator BlinkWhileInvincible()
+    {
+        bool visible = true;
+        while (IsInvincible)
+        {
+            visible = !visible;
+            SetRenderersVisible(visible);
+            yield return new WaitForSeconds(blinkInterval);
+        }
+        SetRenderersVisible(true);
+    }
+
+    private void SetRenderersVisible(bool visible)
+    {
+        foreach (Renderer r in renderers) r.enabled = visible;
     }
 
     IEnumerator AttackCooldown(float duration)
@@ -259,6 +298,19 @@ public class PlayerMovement : MonoBehaviour
             currentStoreTile = null;
             curretnStoreUI.ExitTileUI(this);
         }
+    }
+
+    public void TeleportTo(Vector3 position, Vector3 lookAt)
+    {
+        Rigidbody body = GetComponent<Rigidbody>();                 // Start 전에 불릴 수 있음
+        Vector3 dir = lookAt - position;
+        dir.y = 0f;
+        Quaternion rotation = dir.sqrMagnitude > 0.01f ? Quaternion.LookRotation(dir) : transform.rotation;
+
+        transform.SetPositionAndRotation(position, rotation);
+        body.position = position;
+        body.rotation = rotation;
+        body.linearVelocity = Vector3.zero;
     }
 
     public void ResetStats()

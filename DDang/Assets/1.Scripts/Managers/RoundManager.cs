@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace DDang.Rules
+namespace Rules
 {
     public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
@@ -38,6 +38,7 @@ namespace DDang.Rules
         }
 
         public int GetTiles(PlayerType player) => scoreSource?.CountTiles(player) ?? 0;
+        public int PaintableCount => scoreSource?.PaintableCount ?? 0;
 
         public void StartMatch()
         {

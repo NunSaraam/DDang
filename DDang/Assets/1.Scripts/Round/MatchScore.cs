@@ -1,6 +1,6 @@
 using System;
 
-namespace DDang.Rules
+namespace Rules
 {
     public enum MatchProgress
     {

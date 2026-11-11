@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DDang.Rules;
+using Rules;
 
 public class GameSceneInitChecker : MonoBehaviour
 {

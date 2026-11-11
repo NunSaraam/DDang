@@ -36,7 +36,7 @@ public class GorillaBoss : BossBase
         {
             for (int z = 0; z < grid.gridSizeZ; z++)
             {
-                owner.Add(grid.grid[x, z].owner);
+                if (grid.grid[x, z] != null) owner.Add(grid.grid[x, z].owner);   // 장애물·빈 공간 제외
             }
         }
 
@@ -52,6 +52,7 @@ public class GorillaBoss : BossBase
         {
             for (int z = 0; z < grid.gridSizeZ; z++)
             {
+                if (grid.grid[x, z] == null) continue;              // 장애물·빈 공간
                 PlayerType newowner = owner[index++];
                 grid.PaintBlock(grid.grid[x, z], newowner);
             }

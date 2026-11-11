@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Rules;
 
 public enum PlayerType
 {
@@ -27,6 +28,7 @@ public class BlockPainting : MonoBehaviour
     private void Update()
     {
         if (player != null && player.state == PlayerState.Stunned) return;    // 기절 중에는 칠하지 않음
+        if (RoundManager.HasInstance && RoundManager.Instance.Phase == RoundPhase.SuddenDeath) return;  // 서든데스는 타격으로만 승부
 
         Vector3 rayOrigin = transform.position + Vector3.up * 0.5f;
         if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, mask))

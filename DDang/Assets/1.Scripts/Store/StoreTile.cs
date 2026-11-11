@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DDang.Rules;
+using Rules;
 
 public enum StoreType
 {

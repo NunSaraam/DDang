@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace DDang.Rules
+namespace Rules
 {
     [RequireComponent(typeof(RoundManager))]
     public class RoundBridge : MonoBehaviour
@@ -43,6 +43,7 @@ namespace DDang.Rules
         private void OnPhaseChanged(RoundPhase phase)
         {
             if (phase == RoundPhase.Playing) UIManager.Instance.roundWaitPanel.SetActive(false);
+            if (phase == RoundPhase.SuddenDeath) BossManager.Instance.DespawnCurrentBoss();
             if (phase == RoundPhase.Store) StartCoroutine(StoreTimer());
         }
 

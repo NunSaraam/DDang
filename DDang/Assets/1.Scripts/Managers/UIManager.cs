@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using DDang.Rules;
+using Rules;
 
 public class UIManager : MonoBehaviour
 {

@@ -1,4 +1,4 @@
-namespace DDang.Rules
+namespace Rules
 {
     public enum RoundPhase
     {

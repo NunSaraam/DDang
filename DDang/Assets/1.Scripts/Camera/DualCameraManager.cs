@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DDang.Cameras;
+using Cameras;
 
 public class DualCameraManager : MonoBehaviour
 {

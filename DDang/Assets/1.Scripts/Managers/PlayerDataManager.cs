@@ -16,6 +16,13 @@ public class PlayerDataManager : MonoBehaviour
     public float p1StunTime = 1.5f;
     public float p2StunTime = 1.5f;
 
+    [Header("스탯 하한")]
+    public float minStunTime = 0.3f;
+    [Range(0f, 1f)] public float minMoveSpeedRatio = 0.5f;     // 기본 이동속도 대비
+
+    public float ClampMoveSpeed(float speed) => Mathf.Max(speed, baseMoveSpeed * minMoveSpeedRatio);
+    public float ClampStunTime(float time) => Mathf.Max(time, minStunTime);
+
     private void Awake()
     {
         if (Instance == null)

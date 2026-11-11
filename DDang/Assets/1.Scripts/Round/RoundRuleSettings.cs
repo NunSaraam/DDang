@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DDang.Rules
+namespace Rules
 {
     [CreateAssetMenu(fileName = "RoundRuleSettings", menuName = "DDang/Round Rule Settings")]
     public class RoundRuleSettings : ScriptableObject

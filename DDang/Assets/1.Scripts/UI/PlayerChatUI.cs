@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using DDang.Rules;
+using Rules;
 
 public class PlayerChatUI : MonoBehaviour
 {

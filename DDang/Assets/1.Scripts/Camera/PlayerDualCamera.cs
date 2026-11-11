@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DDang.Cameras
+namespace Cameras
 {
     public class PlayerDualCamera : MonoBehaviour
     {

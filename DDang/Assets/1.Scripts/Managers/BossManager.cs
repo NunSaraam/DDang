@@ -32,4 +32,13 @@ public class BossManager : MonoBehaviour
         currentBoss = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation).GetComponent<BossBase>();
         currentBoss.Activate();
     }
+
+    public void DespawnCurrentBoss()
+    {
+        if (currentBoss == null) return;
+
+        currentBoss.Deactivate();
+        Destroy(currentBoss.gameObject);
+        currentBoss = null;
+    }
 }
