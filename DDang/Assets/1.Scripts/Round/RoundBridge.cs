@@ -18,7 +18,6 @@ namespace Rules
             round.PhaseChanged += OnPhaseChanged;
             round.RemainingTimeChanged += OnRemainingTimeChanged;
             round.QuestTimeReached += OnQuestTime;
-            round.AnimalSpawnReached += OnAnimalSpawn;
             round.RoundEnded += OnRoundEnded;
             round.MatchProgressed += OnMatchProgressed;
         }
@@ -29,7 +28,6 @@ namespace Rules
             round.PhaseChanged -= OnPhaseChanged;
             round.RemainingTimeChanged -= OnRemainingTimeChanged;
             round.QuestTimeReached -= OnQuestTime;
-            round.AnimalSpawnReached -= OnAnimalSpawn;
             round.RoundEnded -= OnRoundEnded;
             round.MatchProgressed -= OnMatchProgressed;
         }
@@ -43,7 +41,6 @@ namespace Rules
         private void OnPhaseChanged(RoundPhase phase)
         {
             if (phase == RoundPhase.Playing) UIManager.Instance.roundWaitPanel.SetActive(false);
-            if (phase == RoundPhase.SuddenDeath) BossManager.Instance.DespawnCurrentBoss();
             if (phase == RoundPhase.Store) StartCoroutine(StoreTimer());
         }
 
@@ -55,7 +52,6 @@ namespace Rules
 
         private void OnQuestTime() => QuestManager.Instance.ActivateQuest(QuestType.StunChain);
 
-        private void OnAnimalSpawn() => BossManager.Instance.SpawnRandomBoss();
 
         private void OnRoundEnded(RoundResult result)
         {

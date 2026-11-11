@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Rules;
+using Animal;
 
 
 public enum PlayerState
@@ -12,7 +13,7 @@ public enum PlayerState
     Controllable,
     Attacking,
     Stunned,
-
+    KnockedBack,
 }
 
 public class PlayerMovement : MonoBehaviour
@@ -35,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Renderer[] renderers;
     private float invincibleUntil;
+    private Coroutine knockbackRoutine;
 
     public bool IsInvincible => Time.time < invincibleUntil;
 
@@ -142,6 +144,10 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.Stunned:
                 rb.linearVelocity = Vector3.zero;
                 break;
+
+            case PlayerState.KnockedBack:                       // 이동은 KnockBackRoutine이 MovePosition으로 처리
+                rb.linearVelocity = Vector3.zero;
+                break;
         }
     }
 
@@ -208,10 +214,22 @@ public class PlayerMovement : MonoBehaviour
         Vector3 checkPosition = playerTransform.position + playerTransform.forward * radius;
 
         Collider[] hitColliders = Physics.OverlapSphere(checkPosition, radius, mask);
+        var hitAnimals = new List<AnimalBase>();                  // 콜라이더가 여러 개인 동물도 1회만 반응
 
         foreach (Collider collider in hitColliders)
         {
             if (collider.gameObject == this.gameObject) continue;
+
+            AnimalBase animal = collider.GetComponentInParent<AnimalBase>();   // 난입 동물 타격 반응
+            if (animal != null)
+            {
+                if (!hitAnimals.Contains(animal))
+                {
+                    hitAnimals.Add(animal);
+                    animal.HandleHit(this);
+                }
+                continue;
+            }
 
             PlayerMovement target = collider.GetComponent<PlayerMovement>();
             if (target != null)
@@ -302,7 +320,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void TeleportTo(Vector3 position, Vector3 lookAt)
     {
-        Rigidbody body = GetComponent<Rigidbody>();                 // Start 전에 불릴 수 있음
+        Rigidbody body = GetComponent<Rigidbody>();
         Vector3 dir = lookAt - position;
         dir.y = 0f;
         Quaternion rotation = dir.sqrMagnitude > 0.01f ? Quaternion.LookRotation(dir) : transform.rotation;
@@ -311,6 +329,38 @@ public class PlayerMovement : MonoBehaviour
         body.position = position;
         body.rotation = rotation;
         body.linearVelocity = Vector3.zero;
+    }
+
+    // 칸 단위 밀치기: 장애물·빈 공간·맵 끝 앞에서 멈추므로 끼이지 않음
+    public void KnockBack(Vector3 direction, int cells, float duration = 0.2f)
+    {
+        GridGenerator grid = FindAnyObjectByType<GridGenerator>();
+        Vector2Int dir = Mathf.Abs(direction.x) >= Mathf.Abs(direction.z)
+            ? new Vector2Int((int)Mathf.Sign(direction.x), 0)
+            : new Vector2Int(0, (int)Mathf.Sign(direction.z));
+
+        Vector2Int from = grid.WorldToGridPosition(rb.position);
+        Vector2Int to = grid.GetPushDestination(from, dir, cells);
+        Vector3 target = grid.CellToWorld(to, rb.position.y);
+
+        if (knockbackRoutine != null) StopCoroutine(knockbackRoutine);
+        knockbackRoutine = StartCoroutine(KnockBackRoutine(target, duration));
+    }
+
+    private IEnumerator KnockBackRoutine(Vector3 target, float duration)
+    {
+        if (state != PlayerState.Stunned) state = PlayerState.KnockedBack;
+        Vector3 start = rb.position;
+
+        for (float t = 0f; t < duration; t += Time.fixedDeltaTime)
+        {
+            rb.MovePosition(Vector3.Lerp(start, target, t / duration));
+            yield return new WaitForFixedUpdate();
+        }
+        rb.MovePosition(target);
+
+        if (state == PlayerState.KnockedBack) state = PlayerState.Controllable;
+        knockbackRoutine = null;
     }
 
     public void ResetStats()

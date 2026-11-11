@@ -58,6 +58,11 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -79,9 +84,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1761329489913253526
 GameObject:
@@ -160,10 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e50fa7b8800f754ca0890be89c5574b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallPrefab: {fileID: 7335726143975570211, guid: 8cd1d17e94786ab449f45acdb71b87c3,
+  cellsPerSecond: 4
+  straightChance: 0.7
+  wallPrefab: {fileID: 3272410960056362670, guid: 1e5bc8c91a6aad742a6b9cadf48029df,
     type: 3}
-  speed: 3
-  wallDuration: 5
-  pathPoint:
-  - {x: 7.5, y: 1, z: 0}
-  - {x: 0, y: 1, z: 15}
+  wallMinTime: 3
+  wallMaxTime: 5
+  playerClearance: 1

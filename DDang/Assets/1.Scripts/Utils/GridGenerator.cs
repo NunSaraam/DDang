@@ -27,6 +27,11 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
     public MapLayout Layout { get; private set; }
     private int paintableCount;
 
+    private readonly List<Vector2Int> floorCells = new();
+    private readonly HashSet<PlacedObj> lockedBlocks = new();
+    private readonly HashSet<Vector2Int> blockedCells = new();     // 뱀 벽처럼 잠깐 막힌 칸
+    public IReadOnlyList<Vector2Int> FloorCells => floorCells;
+
     public int PaintableCount => paintableCount;
     public int CountTiles(PlayerType pT) => CountScore(pT);
 
@@ -73,7 +78,7 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
 
     public void PaintBlock(PlacedObj block, PlayerType pT)
     {
-        if (block == null) return;
+        if (block == null || lockedBlocks.Contains(block)) return;     // 얼린 타일은 덮어쓸 수 없음
 
         PlayerType oldOwner = block.owner;
 
@@ -140,6 +145,7 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
                         obj.SetMaterial(defaultMat, PlayerType.None);
                         grid[x, z] = obj;
                         paintableCount++;
+                        floorCells.Add(new Vector2Int(x, z));
                         break;
                     case MapTile.Obstacle:
                         if (obstaclePrefab != null) Instantiate(obstaclePrefab, pos, Quaternion.identity, transform);
@@ -194,6 +200,74 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
     public Vector2Int WorldToGridPosition(Vector3 pos)
     {
         return new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
+    }
+
+    // ── 난입 동물·효과용 칸 도우미 ──
+    public bool IsFloor(Vector2Int c) => IsInGrid(c.x, c.y) && grid[c.x, c.y] != null;
+    public bool IsWalkable(Vector2Int c) => IsFloor(c) && !blockedCells.Contains(c);
+
+    public void SetBlocked(Vector2Int c, bool blocked)
+    {
+        if (blocked) blockedCells.Add(c); else blockedCells.Remove(c);
+    }
+    public PlacedObj GetBlock(Vector2Int c) => IsInGrid(c.x, c.y) ? grid[c.x, c.y] : null;
+    public Vector3 CellToWorld(Vector2Int c, float y = 0f) => new Vector3(c.x + 0.5f, y, c.y + 0.5f);
+    public Vector2Int RandomFloorCell() => floorCells[Random.Range(0, floorCells.Count)];
+
+    public bool PaintCell(Vector2Int c, PlayerType pT)          // 장애물·얼린 칸이면 false
+    {
+        PlacedObj block = GetBlock(c);
+        if (block == null || lockedBlocks.Contains(block)) return false;
+        PaintBlock(block, pT);
+        return true;
+    }
+
+    public bool IsLocked(Vector2Int c)
+    {
+        PlacedObj block = GetBlock(c);
+        return block != null && lockedBlocks.Contains(block);
+    }
+
+    public void SetLocked(Vector2Int c, bool locked)            // 펭귄: 칠한 뒤 잠금
+    {
+        PlacedObj block = GetBlock(c);
+        if (block == null) return;
+        if (locked) lockedBlocks.Add(block); else lockedBlocks.Remove(block);
+    }
+
+    // from에서 dir로 최대 distance칸. 바닥이 아닌 칸 앞에서 멈춤
+    public Vector2Int GetPushDestination(Vector2Int from, Vector2Int dir, int distance)
+    {
+        Vector2Int cur = IsWalkable(from) ? from : GetNearestFloor(from);
+        for (int i = 0; i < distance; i++)
+        {
+            Vector2Int next = cur + dir;
+            if (!IsWalkable(next)) break;
+            cur = next;
+        }
+        return cur;
+    }
+
+    // 가장 가까운 바닥 칸 (끼임 탈출용)
+    public Vector2Int GetNearestFloor(Vector2Int from)
+    {
+        var visited = new HashSet<Vector2Int> { from };
+        var queue = new Queue<Vector2Int>();
+        queue.Enqueue(from);
+        Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+
+        while (queue.Count > 0)
+        {
+            Vector2Int c = queue.Dequeue();
+            if (IsWalkable(c)) return c;
+            foreach (Vector2Int d in dirs)
+            {
+                Vector2Int n = c + d;
+                if (n.x < -1 || n.y < -1 || n.x > gridSizeX || n.y > gridSizeZ) continue;
+                if (visited.Add(n)) queue.Enqueue(n);
+            }
+        }
+        return from;
     }
 
 

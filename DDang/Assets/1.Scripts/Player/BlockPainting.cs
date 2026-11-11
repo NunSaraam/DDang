@@ -15,7 +15,7 @@ public class BlockPainting : MonoBehaviour
     public PlayerType pT;
     public GridGenerator grid;
     public LayerMask mask;
-    [SerializeField] private float rayDistance = 2f;        // 발밑 블록까지 검사할 거리
+    [SerializeField] private float rayDistance = 2f;
 
     private PlayerMovement player;
 

@@ -14,11 +14,11 @@ namespace Map
         [Header("장애물")]
         [Range(0f, 0.5f)] public float minObstacleRatio = 0.10f;
         [Range(0f, 0.5f)] public float maxObstacleRatio = 0.15f;
-        [Range(0f, 1f)] public float voidChance = 0.25f;        // 스탬프가 연못(빈 공간)일 확률
+        [Range(0f, 1f)] public float voidChance = 0.25f;        // 빈 공간일 확률
 
         [Header("장애물 금지 구역")]
         public int spawnSafeRadius = 2;                         // 스폰 주변
-        public int centerSafeRadius = 1;                        // 1 = 중앙 3×3 (고래 등장 위치)
+        public int centerSafeRadius = 1;                        // 1 = 중앙 3×3
 
         [Header("생성 시도")]
         public int maxAttempts = 20;
