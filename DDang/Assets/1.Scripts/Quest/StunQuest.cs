@@ -1,11 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewStunQuest", menuName = "Progress / StunQuest")]
 public class StunQuest : QuestSO
 {
-    public int requiredChain = 3;           //�⺻ 3
+    public int requiredChain = 3;           //기본 3
 
     private int p1Chain;
     private int p2Chain;
@@ -37,7 +37,6 @@ public class StunQuest : QuestSO
                 {
                     p1Completed = true;
                     QuestManager.Instance.CompleteQuest(this, PlayerType.Player1);
-                    QuestUI.Instance.CompleteQuestUI(this, PlayerType.Player1, rewardCoins);
                 }
                 break;
 
@@ -52,7 +51,6 @@ public class StunQuest : QuestSO
                 {
                     p2Completed = true;
                     QuestManager.Instance.CompleteQuest(this, PlayerType.Player2);
-                    QuestUI.Instance.CompleteQuestUI(this, PlayerType.Player2, rewardCoins);
                 }
                 break;
         }

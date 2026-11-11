@@ -57,7 +57,7 @@ public class ReverseQuest : QuestSO
             }
             else if (winner == PlayerType.Player2 && !p2Completed)
             {
-                p1Completed = true;
+                p2Completed = true;
                 QuestManager.Instance.CompleteQuest(this, PlayerType.Player2);
             }
         }

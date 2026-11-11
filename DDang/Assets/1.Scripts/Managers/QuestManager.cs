@@ -89,9 +89,9 @@ public class QuestManager : MonoBehaviour
     {
         if (activeQuest == null) return;
 
-        foreach (var quest in activeQuest)
+        for (int i = activeQuest.Count - 1; i >= 0; i--)        // 완료 시 목록에서 빠지므로 역순 순회
         {
-            quest.OnRoundEnd(p1Score, p2Score, winner);
+            activeQuest[i].OnRoundEnd(p1Score, p2Score, winner);
         }
     }
 
