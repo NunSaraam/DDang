@@ -5073,6 +5073,10 @@ MonoBehaviour:
     type: 3}
   p1Mat: {fileID: 2100000, guid: 664dc7c5d7d05cc48b9feef4113b9c5b, type: 2}
   p2Mat: {fileID: 2100000, guid: 92c5836c9ddd3a14798e9928bef3f479, type: 2}
+  mapSettings: {fileID: 0}
+  duelMapSettings: {fileID: 0}
+  obstaclePrefab: {fileID: 0}
+  voidPrefab: {fileID: 0}
 --- !u!4 &1479017708
 Transform:
   m_ObjectHideFlags: 0

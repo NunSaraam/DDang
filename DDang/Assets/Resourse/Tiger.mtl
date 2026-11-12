@@ -1,0 +1,28 @@
+newmtl Tiger_Orange
+Ka 0 0 0
+Kd 0.960 0.580 0.220
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Tiger_Black
+Ka 0 0 0
+Kd 0.150 0.120 0.120
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Tiger_White
+Ka 0 0 0
+Kd 0.980 0.950 0.880
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Tiger_Pink
+Ka 0 0 0
+Kd 0.950 0.550 0.600
+Ks 0 0 0
+d 1
+illum 1
+
