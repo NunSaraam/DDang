@@ -1,0 +1,35 @@
+newmtl Penguin_Orange
+Ka 0 0 0
+Kd 1.000 0.520 0.080
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Penguin_Black
+Ka 0 0 0
+Kd 0.070 0.060 0.100
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Penguin_White
+Ka 0 0 0
+Kd 1.000 0.980 0.940
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Penguin_Pink
+Ka 0 0 0
+Kd 1.000 0.420 0.550
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Penguin_Navy
+Ka 0 0 0
+Kd 0.100 0.160 0.360
+Ks 0 0 0
+d 1
+illum 1
+
