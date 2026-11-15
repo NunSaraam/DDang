@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b62ea73d62fe3a4d9b6d4d5b761c214, type: 3}
+  m_Name: AttackRange
+  m_EditorClassIdentifier: Assembly-CSharp::Store.AugmentData
+  displayName: "\uACF5\uACA9 \uBC94\uC704 \uC99D\uAC00"
+  effectFormat: "\uACF5\uACA9 \uBC94\uC704 +{0}\uCE78"
+  icon: {fileID: 0}
+  tag: 2
+  stat: 4
+  tierValues:
+  - 0.2
+  - 0.4
+  - 0.6
+  showAsPercent: 0

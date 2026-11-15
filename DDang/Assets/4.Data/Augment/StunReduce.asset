@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b62ea73d62fe3a4d9b6d4d5b761c214, type: 3}
+  m_Name: StunReduce
+  m_EditorClassIdentifier: Assembly-CSharp::Store.AugmentData
+  displayName: "\uAE30\uC808 \uC2DC\uAC04 \uAC10\uC18C"
+  effectFormat: "\uB0B4 \uAE30\uC808 \uC2DC\uAC04 -{0}\uCD08"
+  icon: {fileID: 0}
+  tag: 1
+  stat: 1
+  tierValues:
+  - 0.15
+  - 0.3
+  - 0.45
+  showAsPercent: 0

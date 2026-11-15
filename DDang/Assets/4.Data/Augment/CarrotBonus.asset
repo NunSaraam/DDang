@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b62ea73d62fe3a4d9b6d4d5b761c214, type: 3}
+  m_Name: CarrotBonus
+  m_EditorClassIdentifier: Assembly-CSharp::Store.AugmentData
+  displayName: "\uB2F9\uADFC \uBCF4\uB108\uC2A4"
+  effectFormat: "\uB77C\uC6B4\uB4DC \uBCF4\uC0C1 +{0} \uB2F9\uADFC"
+  icon: {fileID: 0}
+  tag: 4
+  stat: 8
+  tierValues:
+  - 1
+  - 2
+  - 3
+  showAsPercent: 0

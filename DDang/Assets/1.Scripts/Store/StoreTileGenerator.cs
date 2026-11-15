@@ -1,34 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-
-public class StoreTileGenerator : MonoBehaviour
+namespace Store
 {
-    public GameObject shopTilePrefab;
-
-    public Vector2Int randomTilePos = new Vector2Int(3, 3);
-    public Vector2Int SpeedTilePos = new Vector2Int(5, 3);
-    public Vector2Int stunTilePos = new Vector2Int(7, 3);
-
-    public Sprite randIcon;
-    public Sprite speedIcon;
-    public Sprite stunIcon;
-
-    private void Start()
+    // P1 구역에 증강·새로고침·레디 타일. P2 구역은 맵 중심 기준 점대칭 위치
+    public class StoreTileGenerator : MonoBehaviour
     {
-        SpawnShopTile(randomTilePos, StoreType.RandomStat, randIcon);
-        SpawnShopTile(SpeedTilePos, StoreType.MoveSpeed, speedIcon);
-        SpawnShopTile(stunTilePos, StoreType.StunReduce, stunIcon);
-    }
+        public GameObject shopTilePrefab;
+        [SerializeField] private int gridSize = 15;
 
-    private void SpawnShopTile(Vector2Int pos, StoreType type, Sprite spr)
-    {
-        Vector3 worldPos = new Vector3(pos.x + .5f, 0.51f, pos.y + .5f);
-        GameObject tile = Instantiate(shopTilePrefab, worldPos, Quaternion.identity);
-        StoreTile sTile = tile.GetComponent<StoreTile>();
-        tile.name = $"{type}Tile";
-        sTile.storeType = type;
-        sTile.SetImage(spr);
+        [Header("P1 구역 (칸 좌표 x, z)")]
+        [SerializeField] private Vector2Int augmentPos = new(7, 3);
+        [SerializeField] private Vector2Int refreshPos = new(3, 3);
+        [SerializeField] private Vector2Int readyPos = new(11, 3);
+
+        [Header("아이콘")]
+        [SerializeField] private Sprite augmentIcon;
+        [SerializeField] private Sprite refreshIcon;
+        [SerializeField] private Sprite readyIcon;
+
+        private void Start()
+        {
+            SpawnZone(PlayerType.Player1, mirror: false);
+            SpawnZone(PlayerType.Player2, mirror: true);
+        }
+
+        private void SpawnZone(PlayerType owner, bool mirror)
+        {
+            Spawn(owner, StoreTileType.Augment, augmentPos, mirror, augmentIcon);
+            Spawn(owner, StoreTileType.Refresh, refreshPos, mirror, refreshIcon);
+            Spawn(owner, StoreTileType.Ready, readyPos, mirror, readyIcon);
+        }
+
+        private void Spawn(PlayerType owner, StoreTileType type, Vector2Int cell, bool mirror, Sprite icon)
+        {
+            if (mirror) cell = new Vector2Int(gridSize - 1 - cell.x, gridSize - 1 - cell.y);
+            Vector3 pos = new Vector3(cell.x + 0.5f, 0.51f, cell.y + 0.5f);
+            GameObject tile = Instantiate(shopTilePrefab, pos, Quaternion.identity);
+            tile.GetComponent<StoreTile>().Setup(owner, type, icon);
+        }
     }
 }

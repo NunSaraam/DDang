@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f69a564056f32aa46848bcec65d7bfa9, type: 3}
+  m_Name: StoreSettings
+  m_EditorClassIdentifier: Assembly-CSharp::Store.StoreSettings
+  augments:
+  - {fileID: 11400000, guid: cc47c0ceda7faba41869be2513b9429a, type: 2}
+  - {fileID: 11400000, guid: 6bc50465c40cb554a9aa97dc39f054d3, type: 2}
+  - {fileID: 11400000, guid: 93559bf7c94ced74ab532d457e782197, type: 2}
+  - {fileID: 11400000, guid: feaefe0bda6329c4bb26a571c72e5817, type: 2}
+  - {fileID: 11400000, guid: fa5de3ac217ed23438b8b0767d5a94ee, type: 2}
+  - {fileID: 11400000, guid: 5d7d32a32629d264bb82c2ddeffda29b, type: 2}
+  - {fileID: 11400000, guid: 27e53689d84dff547b3b9339ffb28cc5, type: 2}
+  - {fileID: 11400000, guid: d535455e08a0dca4dab7e3cd83e29f5d, type: 2}
+  - {fileID: 11400000, guid: 95bed43f5203f014b841a15bcdf61247, type: 2}
+  - {fileID: 11400000, guid: e68cc39f5c2820241a380b42c2250d75, type: 2}
+  tierWeights:
+  - 0.6
+  - 0.3
+  - 0.1
+  tierColors:
+  - {r: 0.75, g: 0.78, b: 0.82, a: 1}
+  - {r: 1, g: 0.8, b: 0.25, a: 1}
+  - {r: 0.7, g: 0.5, b: 1, a: 1}
+  tierPrices: 080000000e00000014000000
+  priceStepPerPurchase: 2
+  refreshCost: 2
+  storeTime: 30
+  readyCountdown: 3
+  cardsPerOffer: 3
+  winnerReward: 8
+  loserReward: 10
+  tileRewardRatio: 0.1

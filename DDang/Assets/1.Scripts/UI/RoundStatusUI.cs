@@ -35,7 +35,7 @@ namespace UI
             RoundPhase.ExtraTime => "추가 시간",
             RoundPhase.SuddenDeath => "서든데스! 먼저 때리면 승리",
             RoundPhase.GoldenGoal => "골든골! 먼저 앞서면 승리",
-            _ when round.IsDuelRound => "결투 라운드",
+            _ when round.IsDuelRound => "파이널 라운드 · 파이트!",
             _ when round.Match != null && round.Match.IsDeuce => "듀스",
             _ => "",
         };
