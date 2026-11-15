@@ -39,10 +39,12 @@ namespace Rules
 
         public int GetTiles(PlayerType player) => scoreSource?.CountTiles(player) ?? 0;
         public int PaintableCount => scoreSource?.PaintableCount ?? 0;
+        public RoundResult? LastResult { get; private set; }       // 상점에서 패자 확인용
 
         public void StartMatch()
         {
             Match = new MatchScore(rules.winsToWin);
+            LastResult = null;
             SetPhase(RoundPhase.None);
         }
 
@@ -125,6 +127,7 @@ namespace Rules
                 scoreSource.CountTiles(PlayerType.Player2),
                 IsDuelRound);
 
+            LastResult = result;
             SetPhase(RoundPhase.RoundEnd);
             RoundEnded?.Invoke(result);
 

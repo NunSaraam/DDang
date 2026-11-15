@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Rules;
+using Stats;
+using Store;
 
 public class GameSceneInitChecker : MonoBehaviour
 {
@@ -24,8 +26,7 @@ public class GameSceneInitChecker : MonoBehaviour
             QuestManager.Instance?.ResetAllQuest();
             CoinManager.Instance?.ResetCoins();
             UIManager.Instance?.ResetAllUI();
-            foreach (var player in FindObjectsByType<PlayerMovement>(FindObjectsSortMode.None))
-                player.ResetStats();
+            PlayerDataManager.Instance.ResetMatch();                // 증강·디버프 초기화
             GameSession.Instance.needFullReset = false;
         }
 

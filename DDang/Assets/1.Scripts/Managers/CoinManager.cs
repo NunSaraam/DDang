@@ -1,59 +1,72 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Rules;
+using Stats;
 using UnityEngine;
 
-public class CoinManager : MonoBehaviour
+namespace Store
 {
-    public static CoinManager Instance;
-
-    public int player1Coins = 0;
-    public int player2Coins = 0;
-
-    private void Awake()
+    // 당근(한 판용 재화). 라운드가 끝나면 보상 지급
+    public class CoinManager : SingletonMonoBehaviour<CoinManager>
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+        [SerializeField] private StoreSettings settings;
 
-    public void AddCoins(PlayerType player, int amount)
-    {
-        if (player == PlayerType.Player1)
-        {
-            player1Coins += amount;
-        }
-        else if (player == PlayerType.Player2)
-        {
-            player2Coins += amount;
-        }
-    }
+        public event Action<PlayerType, int> CoinsChanged;
 
-    public int GetCoins(PlayerType player)
-    {
-        return (player == PlayerType.Player1) ? player1Coins : player2Coins;
-    }
+        private int p1Coins;
+        private int p2Coins;
+        private RoundManager round;
 
-    public void SpendCoins(PlayerType player, int amount)
-    {
-        if (player == PlayerType.Player1)
+        private void Start()
         {
-            player1Coins = Mathf.Max(0, player1Coins - amount);
+            if (Instance != this) return;
+            round = RoundManager.Instance;
+            if (round != null) round.RoundEnded += OnRoundEnded;
         }
-        else if (player == PlayerType.Player2)
-        {
-            player2Coins = Mathf.Max(0, player2Coins - amount);
-        }
-    }
 
-    public void ResetCoins()
-    {
-        player1Coins = 0;
-        player2Coins = 0;
+        protected override void OnDestroy()
+        {
+            if (round != null) round.RoundEnded -= OnRoundEnded;
+            base.OnDestroy();
+        }
+
+        public int GetCoins(PlayerType player) => player == PlayerType.Player1 ? p1Coins : p2Coins;
+
+        public void AddCoins(PlayerType player, int amount) => SetCoins(player, GetCoins(player) + amount);
+
+        public bool TrySpend(PlayerType player, int amount)
+        {
+            if (GetCoins(player) < amount) return false;
+            SetCoins(player, GetCoins(player) - amount);
+            return true;
+        }
+
+        public void ResetCoins()
+        {
+            SetCoins(PlayerType.Player1, 0);
+            SetCoins(PlayerType.Player2, 0);
+        }
+
+        private void SetCoins(PlayerType player, int value)
+        {
+            if (player == PlayerType.Player1) p1Coins = value;
+            else p2Coins = value;
+            CoinsChanged?.Invoke(player, value);
+        }
+
+        private void OnRoundEnded(RoundResult result)
+        {
+            if (result.WasDuel || result.Winner == PlayerType.None) return;     // 파이널 라운드 뒤에는 상점 없음
+            GiveReward(PlayerType.Player1, result.P1Tiles, result.Winner);
+            GiveReward(PlayerType.Player2, result.P2Tiles, result.Winner);
+        }
+
+        // 승자 8 / 패자 10 + 칠한 칸 × (10% + 수확) + 당근 보너스
+        private void GiveReward(PlayerType player, int tiles, PlayerType winner)
+        {
+            PlayerStats s = PlayerDataManager.Instance.GetStats(player);
+            int baseReward = player == winner ? settings.winnerReward : settings.loserReward;
+            int tileReward = Mathf.RoundToInt(tiles * (settings.tileRewardRatio + s.HarvestRatio));
+            AddCoins(player, baseReward + tileReward + s.CarrotBonus);
+        }
     }
 }

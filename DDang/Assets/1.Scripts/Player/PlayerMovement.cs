@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Rules;
 using Animal;
+using Stats;
+using Store;
 
 
 public enum PlayerState
@@ -37,6 +39,9 @@ public class PlayerMovement : MonoBehaviour
     private Renderer[] renderers;
     private float invincibleUntil;
     private Coroutine knockbackRoutine;
+    private float stunBonus;                                    // 강타: 내가 때린 상대 기절 시간 +
+
+    public IPlayerInputReceiver InputReceiver { get; private set; }
 
     public bool IsInvincible => Time.time < invincibleUntil;
 
@@ -58,23 +63,7 @@ public class PlayerMovement : MonoBehaviour
         renderers = GetComponentsInChildren<Renderer>();
 
 
-        if (playerType == PlayerType.Player1)
-        {
-            moveSpeed = PlayerDataManager.Instance.ClampMoveSpeed(PlayerDataManager.Instance.p1MoveSpeed);
-            stunTime = PlayerDataManager.Instance.ClampStunTime(PlayerDataManager.Instance.p1StunTime);
-
-        }
-        else if (playerType == PlayerType.Player2)
-        {
-            moveSpeed = PlayerDataManager.Instance.ClampMoveSpeed(PlayerDataManager.Instance.p2MoveSpeed);
-            stunTime = PlayerDataManager.Instance.ClampStunTime(PlayerDataManager.Instance.p2StunTime);
-        }
-
-        if (RoundManager.Instance.IsDuelRound)                     // 결투 라운드는 기본 능력치
-        {
-            moveSpeed = PlayerDataManager.Instance.baseMoveSpeed;
-            stunTime = PlayerDataManager.Instance.baseStunTime;
-        }
+        ApplyStats();                                           // 증강·디버프·하한·파이널 라운드 반영
 
         rb = GetComponent<Rigidbody>();
 
@@ -82,6 +71,25 @@ public class PlayerMovement : MonoBehaviour
         {
             state = PlayerState.Idle;
         }
+    }
+
+    private void ApplyStats()
+    {
+        PlayerStats s = PlayerDataManager.Instance.GetStats(playerType);
+        moveSpeed = s.MoveSpeed;
+        stunTime = s.StunTime;
+        invincibleTime = s.InvincibleTime;
+        attackCooldown = s.AttackCooldown;
+        attackRange = s.AttackRange;
+        stunBonus = s.StunBonus;
+    }
+
+    // 카드 UI가 열려 있는 동안 이동·공격 입력을 UI로 넘김
+    public void SetInputReceiver(IPlayerInputReceiver receiver)
+    {
+        InputReceiver = receiver;
+        moveDirection = Vector3.zero;
+        if (animator != null) animator.SetFloat("Move", 0f);
     }
 
     private void Update()
@@ -153,6 +161,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (InputReceiver != null)
+        {
+            InputReceiver.OnNavigate(context.ReadValue<Vector2>());
+            return;
+        }
+
         Vector3 forward = Vector3.left;
         Vector3 right = Vector3.forward;
 
@@ -186,12 +200,17 @@ public class PlayerMovement : MonoBehaviour
 
         if (context.performed)
         {
+            if (InputReceiver != null)
+            {
+                InputReceiver.OnConfirm();
+                return;
+            }
 
             if (RoundManager.Instance != null && RoundManager.Instance.Phase == RoundPhase.Store)
             {
                 if (currentStoreTile != null)
                 {
-                    currentStoreTile.TryPurchase(this);
+                    currentStoreTile.Interact(this);
                     return;
                 }
             }
@@ -241,7 +260,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (target.IsInvincible || target.state == PlayerState.Stunned) continue;
 
-                    target.Stun(target.stunTime);                  // 맞는 쪽의 기절 시간 적용
+                    target.Stun(target.stunTime + stunBonus);      // 맞는 쪽 기절 시간 + 내 강타
 
                     QuestManager.Instance?.OnStunLanded(this.playerType);
                     RoundManager.Instance.ReportPlayerHit(this.playerType);
@@ -361,11 +380,5 @@ public class PlayerMovement : MonoBehaviour
 
         if (state == PlayerState.KnockedBack) state = PlayerState.Controllable;
         knockbackRoutine = null;
-    }
-
-    public void ResetStats()
-    {
-        moveSpeed = PlayerDataManager.Instance.baseMoveSpeed;
-        stunTime = PlayerDataManager.Instance.baseStunTime;
     }
 }
