@@ -41,8 +41,8 @@ namespace Store
             return tile.Type switch
             {
                 StoreTileType.Augment => "증강 카드 보기",
-                StoreTileType.Refresh => $"새로고침 ({store.Settings.refreshCost} 당근)",
-                StoreTileType.Ready => store.IsReady(p) ? "준비 완료! (다시 누르면 취소)" : "준비",
+                StoreTileType.Refresh => $"새로고침\n<size=70%>{store.Settings.refreshCost} 당근</size>",
+                StoreTileType.Ready => store.IsReady(p) ? "준비 완료!\n<size=70%>다시 누르면 취소</size>" : "준비",
                 _ => "",
             };
         }

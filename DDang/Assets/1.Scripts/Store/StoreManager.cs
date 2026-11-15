@@ -103,14 +103,14 @@ namespace Store
             storeUI.UpdateStoreUI(player);
         }
 
-        public int GetPrice(PlayerType p, AugmentTier tier) =>
-            settings.tierPrices[(int)tier] + PlayerDataManager.Instance.GetLoadout(p).PurchaseCount * settings.priceStepPerPurchase;
+        public int GetPrice(PlayerType p) =>
+            settings.basePrice + PlayerDataManager.Instance.GetLoadout(p).PurchaseCount * settings.priceStepPerPurchase;
 
         public bool TryBuy(PlayerType p, int slot)
         {
             StoreOffer offer = offers[p][slot];
             if (closing || offer.Sold) return false;
-            if (!CoinManager.Instance.TrySpend(p, GetPrice(p, offer.Tier))) return false;
+            if (!CoinManager.Instance.TrySpend(p, GetPrice(p))) return false;
 
             PlayerDataManager.Instance.AddAugment(p, offer.Augment, offer.Tier);
             offer.Sold = true;

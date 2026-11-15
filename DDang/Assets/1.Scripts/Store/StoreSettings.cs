@@ -13,8 +13,8 @@ namespace Store
         public float[] tierWeights = { 0.6f, 0.3f, 0.1f };
         public Color[] tierColors = { new(0.75f, 0.78f, 0.82f), new(1f, 0.8f, 0.25f), new(0.7f, 0.5f, 1f) };
 
-        [Header("가격 (임시)")]
-        public int[] tierPrices = { 8, 14, 20 };
+        [Header("가격 (임시) - 등급과 관계없이 내 구매 횟수로만 결정")]
+        public int basePrice = 8;                               // 첫 구매 가격
         public int priceStepPerPurchase = 2;                    // 1개 살 때마다 내 가격만 상승
         public int refreshCost = 2;
 

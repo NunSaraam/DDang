@@ -103,7 +103,7 @@ namespace Store
                 for (int i = 0; i < cards.Length; i++)
                 {
                     StoreOffer o = offers[i];
-                    string price = o.Sold ? "구매 완료" : $"{store.GetPrice(owner, o.Tier)} 당근";
+                    string price = o.Sold ? "구매 완료" : $"{store.GetPrice(owner)} 당근";
                     cards[i].Show(o.Augment.displayName, o.Augment.Describe(o.Tier),
                         StoreSettings.TagName(o.Augment.tag),           // TODO: 태그 진행도 (예: 이동 2/3)
                         price, store.Settings.tierColors[(int)o.Tier], o.Augment.icon, o.Sold);

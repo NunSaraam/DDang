@@ -36,42 +36,34 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;                                   // 중복이면 아래 코드 실행 안 함
         }
-
-        if (pausePanel == null)
-        {
-            pausePanel = GameObject.Find("Setting");
-            pausePanel.SetActive(false);
-        }
-
-        pausePanel.SetActive(false);
-
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        FindPausePanel();
     }
 
-
-    private void Update()
+    // 꺼져 있는 오브젝트까지 포함해서 PausePanel 컴포넌트로 찾음 (씬이 바뀔 때만)
+    private void FindPausePanel()
     {
         if (pausePanel == null)
         {
-            pausePanel = GameObject.Find("Setting");
-            pausePanel.SetActive(false);
+            PausePanel panel = FindFirstObjectByType<PausePanel>(FindObjectsInactive.Include);
+            if (panel != null) pausePanel = panel.gameObject;
         }
+        if (pausePanel != null) pausePanel.SetActive(false);
     }
 
     public void ShowPausePanel(bool show)
     {
-        pausePanel.SetActive(show);
+        if (pausePanel == null) FindPausePanel();
+        if (pausePanel == null) return;               // 일시정지창이 없는 씬이면 무시
 
-        if (show)
-            pausePanel.GetComponent<PausePanel>()?.RefreshUI();
+        pausePanel.SetActive(show);
+        if (show) pausePanel.GetComponent<PausePanel>()?.RefreshUI();
     }
 
     public void RoundResult(PlayerType winner)
@@ -209,10 +201,8 @@ public class UIManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "GameScene")
-        {
-            StartCoroutine(DelayedReconnect());
-        }
+        FindPausePanel();                             // 모든 씬에서 일시정지창 다시 연결
+        if (scene.name == "GameScene") StartCoroutine(DelayedReconnect());
     }
 
     IEnumerator DelayedReconnect()
