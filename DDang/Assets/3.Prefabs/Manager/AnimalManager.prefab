@@ -81,6 +81,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a743443c865af314f9664c5ce615018a, type: 2}
   - {fileID: 11400000, guid: d165b400a8565fa40a852969befe2de9, type: 2}
   - {fileID: 11400000, guid: bdc6951ff57daf647844642b83c2f0a5, type: 2}
+  - {fileID: 11400000, guid: 7aceaa65cf6f6f3458611e3a2b9e21fe, type: 2}
+  - {fileID: 11400000, guid: f16e2ea8d7fdc764c81d32d4bff24e42, type: 2}
   spawnEdgeMargin: 2
   spawnPlayerDistance: 3
   forceAnimal: {fileID: 0}
