@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9204192119337409738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1758051413116737321}
+  - component: {fileID: 3960724880203722835}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1758051413116737321
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9204192119337409738}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 1.7458955, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3960724880203722835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9204192119337409738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94412e39b334c1f459e20c460012bc15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pausePanel: {fileID: 0}
+  bgmSlider: {fileID: 0}
+  bgmMinusButton: {fileID: 0}
+  bgmPlusButton: {fileID: 0}
+  roundWaitText: {fileID: 0}
+  roundTimeText: {fileID: 0}
+  roundWaitPanel: {fileID: 0}
+  player1WinImages: []
+  player2WinImages: []
+  defaultSprite: {fileID: 1390753191, guid: 9ae6c72d393fc3d498b07299e8f5de24, type: 3}
+  player1WinSpreite: {fileID: -889018536, guid: 9ae6c72d393fc3d498b07299e8f5de24,
+    type: 3}
+  player2WinSpreite: {fileID: -1840767706, guid: 9ae6c72d393fc3d498b07299e8f5de24,
+    type: 3}
