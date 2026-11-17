@@ -24,14 +24,9 @@ public class GameResultUI : MonoBehaviour
         p1Lose.SetActive(false);
         p2Win.SetActive(false);
         p2Lose.SetActive(false);
-    }
 
-    private void Update()
-    {
-        if (RoundManager.Instance.Phase == RoundPhase.GameOver)
-        {
-            StartCoroutine(Result());
-        }
+        if (RoundManager.HasInstance && RoundManager.Instance.Match != null)
+            StartCoroutine(Result());                 // 결과 연출은 한 번만
     }
 
     public void StartPulseEffect(PlayerType winner)

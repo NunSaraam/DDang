@@ -7,12 +7,12 @@ public class PanelSliede : MonoBehaviour
     public float duration = .4f;
     private bool isPlaying = false;
 
-    public void Slide(RectTransform current, RectTransform target)
+    // 슬라이드를 시작했으면 true (진행 중이면 무시하고 false)
+    public bool Slide(RectTransform current, RectTransform target)
     {
-        if (!isPlaying)
-        {
-            StartCoroutine(SlideRoutine(current, target));
-        }
+        if (isPlaying) return false;
+        StartCoroutine(SlideRoutine(current, target));
+        return true;
     }
 
     IEnumerator SlideRoutine(RectTransform current, RectTransform target)

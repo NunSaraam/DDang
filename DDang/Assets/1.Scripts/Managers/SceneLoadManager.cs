@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +20,7 @@ public class SceneLoadManager : MonoBehaviour
         }
         else
         {
-            Destroy(Instance);
+            Destroy(gameObject);                        // 새로 생긴 중복을 지움
         }
     }
 
@@ -49,8 +49,8 @@ public class SceneLoadManager : MonoBehaviour
             yield return null; 
         }
 
-        Debug.Log($"�ε��Ϸ�");
-        yield return new WaitForSeconds(1);
+        Debug.Log($"로딩완료");
+        yield return new WaitForSecondsRealtime(1);     // 게임 시간이 멈춰 있어도 진행
 
         asyncLoad.allowSceneActivation = true;
     }

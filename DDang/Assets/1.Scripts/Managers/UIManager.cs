@@ -57,13 +57,15 @@ public class UIManager : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(false);
     }
 
-    public void ShowPausePanel(bool show)
+    // 일시정지창이 없는 씬이면 false
+    public bool ShowPausePanel(bool show)
     {
         if (pausePanel == null) FindPausePanel();
-        if (pausePanel == null) return;               // 일시정지창이 없는 씬이면 무시
+        if (pausePanel == null) return false;
 
         pausePanel.SetActive(show);
         if (show) pausePanel.GetComponent<PausePanel>()?.RefreshUI();
+        return true;
     }
 
     public void RoundResult(PlayerType winner)

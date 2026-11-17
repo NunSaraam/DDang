@@ -17,8 +17,12 @@ public class MainmenuUI : MonoBehaviour
     public void CloseSetting()
     {
         SettingPanel.SetActive(false);
-        Time.timeScale = 1.0f;
-        SoundManager.Instance.ResumeBGM();
+        if (GameManager.Instance != null) GameManager.Instance.ResumeGame();   // 일시정지 상태까지 같이 해제
+        else
+        {
+            Time.timeScale = 1f;
+            SoundManager.Instance.ResumeBGM();
+        }
     }
 
     public void QuitGame()

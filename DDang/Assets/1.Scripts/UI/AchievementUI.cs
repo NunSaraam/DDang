@@ -18,6 +18,11 @@ public class AchievementUIManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;          // 메뉴 씬을 떠나면 비움
+    }
+
     private void Start()
     {
         LoadAllAchievementsUI();
@@ -42,6 +47,7 @@ public class AchievementUIManager : MonoBehaviour
         int current = AchievementManager.Instance.GetValue(p, ach.type);
 
         ui.Setup(ach, current, p);
+        if (current >= ach.goal) ui.MarkAsCompleted();   // 이미 달성한 업적
 
         uiItems.Add((p, ach), ui);
     }

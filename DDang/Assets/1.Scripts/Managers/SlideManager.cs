@@ -21,23 +21,20 @@ public class SlideManager : MonoBehaviour
     {
         if (current == mainmenu) return;
 
-        pS.Slide(current, mainmenu);
-        current = mainmenu;
+        if (pS.Slide(current, mainmenu)) current = mainmenu;   // 실제로 넘어갔을 때만 바꿈
     }
 
     public void GoToTutorial()
     {
         if (current == tutorial) return;
 
-        pS.Slide(current, tutorial);
-        current = tutorial;
+        if (pS.Slide(current, tutorial)) current = tutorial;
     }
 
     public void GoToAwards()
     {
         if (current == awards) return;
 
-        pS.Slide(current, awards);
-        current = awards;
+        if (pS.Slide(current, awards)) current = awards;
     }
 }
