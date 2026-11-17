@@ -173,9 +173,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Animal.Penguin
   minFreeze: 10
   maxFreeze: 15
-  minThaw: 6
-  maxThaw: 12
-  waves: 2
+  minThaw: 3
+  maxThaw: 8
+  waves: 1
   waveInterval: 10
   freezeStagger: 0.05
   jumpHeight: 0.8

@@ -31,11 +31,11 @@ MonoBehaviour:
   - {r: 0.75, g: 0.78, b: 0.82, a: 1}
   - {r: 1, g: 0.8, b: 0.25, a: 1}
   - {r: 0.7, g: 0.5, b: 1, a: 1}
-  tierPrices: 080000000e00000014000000
+  basePrice: 8
   priceStepPerPurchase: 2
   refreshCost: 2
-  storeTime: 30
-  readyCountdown: 3
+  storeTime: 60
+  readyCountdown: 1.5
   cardsPerOffer: 3
   winnerReward: 8
   loserReward: 10

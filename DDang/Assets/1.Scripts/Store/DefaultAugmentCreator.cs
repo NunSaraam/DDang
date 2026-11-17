@@ -7,7 +7,7 @@ namespace Store
     public static class DefaultAugmentCreator
     {
         private const string Folder = "Assets/4.Data/Augment";
-        private const string SettingsPath = "Assets/4.Data/StoreSettings.asset";
+        private const string SettingsPath = "Assets/4.Data/Store/StoreSettings.asset";
 
         [MenuItem("DDang/기본 증강 10종 만들기")]
         private static void Create()
@@ -30,8 +30,8 @@ namespace Store
             settings.augments.Add(Make("StunBonus", "강타", "상대 기절 시간 +{0}초", AugmentTag.Combat, AugmentStat.StunBonus, 0.15f, 0.3f, 0.45f));
             settings.augments.Add(Make("WidePaint", "넓은 발자국", "{0} 확률로 옆 칸도 칠함", AugmentTag.Paint, AugmentStat.WidePaintChance, 0.1f, 0.2f, 0.3f, true));
             settings.augments.Add(Make("HardGround", "굳은 땅", "{0} 확률로 내 칸이 버팀", AugmentTag.Paint, AugmentStat.HardGroundChance, 0.1f, 0.2f, 0.3f, true));
-            settings.augments.Add(Make("CarrotBonus", "당근 보너스", "라운드 보상 +{0} 당근", AugmentTag.Economy, AugmentStat.CarrotBonus, 1f, 2f, 3f));
-            settings.augments.Add(Make("Harvest", "수확", "칠한 칸 보상 +{0}", AugmentTag.Economy, AugmentStat.HarvestRatio, 0.02f, 0.04f, 0.06f, true));
+            settings.augments.Add(Make("CarrotBonus", "당근 보너스", "라운드 보상 +{0} 당근", AugmentTag.Economy, AugmentStat.CarrotBonus, 3f, 4f, 5f));
+            settings.augments.Add(Make("Harvest", "수확", "칠한 칸 보상 +{0}", AugmentTag.Economy, AugmentStat.HarvestRatio, 0.05f, 0.08f, 0.12f, true));
 
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();

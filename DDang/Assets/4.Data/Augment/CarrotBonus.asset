@@ -18,7 +18,7 @@ MonoBehaviour:
   tag: 4
   stat: 8
   tierValues:
-  - 1
-  - 2
   - 3
+  - 4
+  - 5
   showAsPercent: 0

@@ -2596,7 +2596,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3b4a420743d9741859364072447ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Store.StoreManager
-  settings: {fileID: 11400000, guid: fe6eeed00e754a0b8eacb8453b7c9364, type: 2}
+  settings: {fileID: 11400000, guid: f1a2b2446a350154698523560520f6ae, type: 2}
   storeUI: {fileID: 1691068971}
   p1Cards: {fileID: 229868854}
   p2Cards: {fileID: 1042849346}

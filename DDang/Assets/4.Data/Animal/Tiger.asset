@@ -17,6 +17,6 @@ MonoBehaviour:
   icon: {fileID: 0}
   category: 2
   prefab: {fileID: 2133403251771350723, guid: fb94a2050f43aac41a748b30c3fd893e, type: 3}
-  duration: 18
+  duration: 15
   spawnArea: 0
   inRotation: 1
