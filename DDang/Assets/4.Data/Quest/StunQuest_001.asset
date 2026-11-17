@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questName: "\uAE30\uC808 \uC5F0\uC18D 3\uBC88 \uC801\uC911\uC2DC\uD0A4\uAE30"
   description: "\uC0C1\uB300\uBC29\uC744 3\uBC88 \uC5F0\uC18D \uAE30\uC808\uC2DC\uD0A4\uC138\uC694!"
-  rewardCoins: 10
+  rewardCoins: 6
   requiredChain: 3

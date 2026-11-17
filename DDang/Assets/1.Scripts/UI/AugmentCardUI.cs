@@ -13,7 +13,6 @@ namespace Store
         [SerializeField] private GameObject panel;
         [SerializeField] private AugmentCardView[] cards;
         [SerializeField] private TextMeshProUGUI titleText;
-        [SerializeField] private TextMeshProUGUI carrotText;
         [SerializeField] private TextMeshProUGUI hintText;
         [SerializeField] private Color debuffColor = new(0.85f, 0.3f, 0.3f);
 
@@ -94,7 +93,6 @@ namespace Store
         private void Refresh()
         {
             StoreManager store = StoreManager.Current;
-            carrotText.text = $"당근 {CoinManager.Instance.GetCoins(owner)}";
 
             if (mode == Mode.Augment)
             {

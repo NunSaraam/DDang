@@ -39,6 +39,20 @@ namespace Rules
         private void OnPhaseChanged(RoundPhase phase)
         {
             if (phase == RoundPhase.Playing) UIManager.Instance.roundWaitPanel.SetActive(false);
+            if (phase == RoundPhase.ExtraTime) StartReverseQuest();
+        }
+
+        // 연장전 시작 시 뒤지는 쪽에게 역전 퀘스트
+        private void StartReverseQuest()
+        {
+            if (QuestManager.Instance == null) return;
+
+            int p1 = round.GetTiles(PlayerType.Player1);
+            int p2 = round.GetTiles(PlayerType.Player2);
+            if (p1 == p2) return;                               // 동점이면 역전할 사람이 없음
+
+            QuestManager.Instance.ActivateQuest(QuestType.Reverse);
+            QuestManager.Instance.OnExtraTImeStarted(p1, p2);
         }
 
         private void OnRemainingTimeChanged(float time)
@@ -55,7 +69,8 @@ namespace Rules
             QuestManager.Instance?.OnRoundEnd(result.P1Tiles, result.P2Tiles, result.Winner);
             QuestManager.Instance?.ResetAllQuest();         // 미완료 퀘스트 정리 -> 다음 라운드에 새로 제시
 
-            AchievementManager.Instance.AddValue(result.Winner, AchievementType.TotalWins, 1);
+            if (result.Winner != PlayerType.None)
+                AchievementManager.Instance.AddValue(result.Winner, AchievementType.TotalWins, 1);
         }
 
         private void OnMatchProgressed(MatchProgress progress)

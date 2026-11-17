@@ -39,7 +39,7 @@ public class QuestUI : MonoBehaviour
         GameObject obj = Instantiate(questPrefab, content);
         var pf = obj.GetComponent<Quest>();
 
-        pf.SetQuestInfo(qs.description);
+        pf.SetQuestInfo(qs.questName, qs.Goal);         // 한 줄에 들어가는 짧은 이름
 
         activeQuest.Add(qs, pf);
 
@@ -62,6 +62,14 @@ public class QuestUI : MonoBehaviour
         if (activeQuest.TryGetValue(qs, out Quest pf))
         {
             pf.UpdateProgress(p1, p2);
+        }
+    }
+
+    public void SetQuestLines(QuestSO qs, string p1, string p2)
+    {
+        if (activeQuest.TryGetValue(qs, out Quest pf))
+        {
+            pf.SetLines(p1, p2);
         }
     }
 

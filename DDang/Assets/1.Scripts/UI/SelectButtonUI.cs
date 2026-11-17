@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SelectButtonUI : MonoBehaviour
 {
-    public RectTransform selectBar;            // ÀÌµ¿½ÃÅ³ °­Á¶ ¹Ù
+    public RectTransform selectBar;            // ì´ë™ì‹œí‚¬ ê°•ì¡° ë°”
 
     private RectTransform thisRect;
 
@@ -16,7 +16,7 @@ public class SelectButtonUI : MonoBehaviour
 
     public void OnPointerEnter()
     {
-        // ¹Ù°¡ º¸ÀÌÁö ¾Ê¾Ò´Ù¸é È°¼ºÈ­
+        // ë°”ê°€ ë³´ì´ì§€ ì•Šì•˜ë‹¤ë©´ í™œì„±í™”
         if (!selectBar.gameObject.activeSelf)
             selectBar.gameObject.SetActive(true);
 

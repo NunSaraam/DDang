@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -36,7 +36,7 @@ public class AchievementUI : MonoBehaviour
 
     public void MarkAsCompleted()
     {
-        progress.text = "øœ∑·µ !";
+        progress.text = "ÏôÑÎ£åÎê®!";
         progress.color = Color.yellow;
     }
 }

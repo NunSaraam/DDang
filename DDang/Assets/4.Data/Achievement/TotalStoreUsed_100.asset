@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de64357868f126f4a84b71fb55e860f7, type: 3}
   m_Name: TotalStoreUsed_100
   m_EditorClassIdentifier: 
-  achievementName: "\uC0C1\uC810 100\uBC88 \uAD6C\uB9E4"
-  description: "\uC0C1\uC810\uC744 100\uBC88 \uC774\uC6A9\uD558\uC138\uC694!"
+  achievementName: "\uC0C1\uC810 50\uBC88 \uAD6C\uB9E4"
+  description: "\uC0C1\uC810\uC744 50\uBC88 \uC774\uC6A9\uD558\uC138\uC694!"
   type: 2
-  goal: 100
+  goal: 50
   icon: {fileID: 0}

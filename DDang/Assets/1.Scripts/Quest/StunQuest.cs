@@ -7,6 +7,8 @@ public class StunQuest : QuestSO
 {
     public int requiredChain = 3;           //기본 3
 
+    public override int Goal => requiredChain;
+
     private int p1Chain;
     private int p2Chain;
 

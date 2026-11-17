@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,29 +10,37 @@ public class Quest : MonoBehaviour
     public TextMeshProUGUI p1_ProgressText;
     public TextMeshProUGUI p2_ProgressText;
 
-    public void SetQuestInfo(string title)
+    private int goal;
+
+    public void SetQuestInfo(string title, int goal)
     {
         titleText.text = title;
-
-        p1_ProgressText.text = "P1 : 0 / 3";
-        p2_ProgressText.text = "P2 : 0 / 3";
+        this.goal = goal;
+        UpdateProgress(0, 0);
     }
 
     public void UpdateProgress(int p1, int p2)
     {
-        p1_ProgressText.text = $"P1 : {p1} / 3";
-        p2_ProgressText.text = $"P2 : {p2} / 3";
+        p1_ProgressText.text = goal > 1 ? $"P1 : {p1} / {goal}" : "P1 : ë„ì „ ì¤‘";
+        p2_ProgressText.text = goal > 1 ? $"P2 : {p2} / {goal}" : "P2 : ë„ì „ ì¤‘";
+    }
+
+    // í€˜ìŠ¤íŠ¸ë³„ ì•ˆë‚´ ë¬¸êµ¬ (ì˜ˆ: ì—­ì „ í€˜ìŠ¤íŠ¸)
+    public void SetLines(string p1, string p2)
+    {
+        p1_ProgressText.text = p1;
+        p2_ProgressText.text = p2;
     }
 
     public void CompleteQuest(PlayerType player, int reward)
     {
         if (player == PlayerType.Player1)
         {
-            p1_ProgressText.text = $"P1 : ¿Ï·á! +{reward}Æ÷ÀÎÆ® Áö±Ş!";
+            p1_ProgressText.text = $"P1 : ì™„ë£Œ! +{reward} ë‹¹ê·¼";
         }
         else if (player == PlayerType.Player2)
         {
-            p2_ProgressText.text = $"P2 : ¿Ï·á! +{reward}Æ÷ÀÎÆ® Áö±Ş!";
+            p2_ProgressText.text = $"P2 : ì™„ë£Œ! +{reward} ë‹¹ê·¼";
         }
     }
 }

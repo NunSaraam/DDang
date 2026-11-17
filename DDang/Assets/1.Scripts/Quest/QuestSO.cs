@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum QuestType
 {
-    StunChain,              //¿¬¼Ó ±âÀı Äù½ºÆ®
-    Reverse,                //¿ªÀü Äù½ºÆ®
+    StunChain,              //ì—°ì† ê¸°ì ˆ í€˜ìŠ¤íŠ¸
+    Reverse,                //ì—­ì „ í€˜ìŠ¤íŠ¸
 }
 
 public abstract class QuestSO : ScriptableObject
@@ -16,6 +16,8 @@ public abstract class QuestSO : ScriptableObject
     public QuestType type;
 
     public int rewardCoins = 10;
+
+    public virtual int Goal => 1;               // ì§„í–‰ í‘œì‹œìš© ëª©í‘œê°’ (1ì´ë©´ "ë„ì „ ì¤‘"ìœ¼ë¡œ í‘œì‹œ)
 
     public abstract void ResetQuest();
 

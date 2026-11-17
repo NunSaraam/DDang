@@ -15,4 +15,5 @@ MonoBehaviour:
   questName: "\uCD94\uAC00\uC2DC\uAC04 \uC5ED\uC804\uD558\uAE30"
   description: "\uCD94\uAC00\uC2DC\uAC04 \uB3D9\uC548 \uC0C1\uB300\uB97C \uC5ED\uC804\uD558\uC5EC
     \uC2B9\uB9AC\uD558\uC138\uC694!"
-  rewardCoins: 15
+  type: 1
+  rewardCoins: 10

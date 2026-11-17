@@ -1,12 +1,12 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum AchievementType
 {
-    TotalPaintedTiles,          //»öÄ¥ÇÑ Å¸ÀÏÀÇ ÃÑ °³¼ö
-    TotalWins,                  //ÃÑ ½Â¸®ÇÑ È½¼ö
-    TotalStoreUsed,             //»óÁ¡À» ÀÌ¿ëÇÑ ÃÑ È½¼ö
+    TotalPaintedTiles,          //ìƒ‰ì¹ í•œ íƒ€ì¼ì˜ ì´ ê°œìˆ˜
+    TotalWins,                  //ì´ ìŠ¹ë¦¬í•œ íšŸìˆ˜
+    TotalStoreUsed,             //ìƒì ì„ ì´ìš©í•œ ì´ íšŸìˆ˜
 }
 
 [CreateAssetMenu(fileName = "NewAchievement", menuName = "Progress / Achievement")]
@@ -16,7 +16,7 @@ public class AchievementSO : ScriptableObject
     public string description;
 
     public AchievementType type;
-    public int goal;            //´Ş¼º È½¼ö ex : TotalPaintedTiles = 1000°³
+    public int goal;            //ë‹¬ì„± íšŸìˆ˜ ex : TotalPaintedTiles = 1000ê°œ
 
-    public Sprite icon;         //¾÷Àû ¾ÆÀÌÄÜ
+    public Sprite icon;         //ì—…ì  ì•„ì´ì½˜
 }

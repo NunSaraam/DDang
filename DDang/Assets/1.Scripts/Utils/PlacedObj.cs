@@ -1,10 +1,10 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlacedObj : MonoBehaviour
 {
-    public PlayerType owner = PlayerType.None;              //onwer = ÇöÀç ¶¥ ÁÖÀÎ
+    public PlayerType owner = PlayerType.None;              //onwer = í˜„ì¬ ë•… ì£¼ì¸
     public KeyCheckPlayerType kowner = KeyCheckPlayerType.None;
     private Renderer rend;
 
