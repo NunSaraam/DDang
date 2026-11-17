@@ -15,8 +15,8 @@ namespace Store
 
     public class StoreOffer
     {
-        public AugmentTier Tier;            // 상점에 들어올 때 1회만 추첨
-        public AugmentData Augment;         // 새로고침하면 다시 뽑음
+        public AugmentTier Tier;            // 상점 입장·새로고침 때 추첨
+        public AugmentData Augment;         // 상점 입장·새로고침 때 추첨
         public bool Sold;
     }
 
@@ -131,8 +131,9 @@ namespace Store
         private void TryRefresh(PlayerType p)
         {
             if (!CoinManager.Instance.TrySpend(p, settings.refreshCost)) return;
-            foreach (StoreOffer o in offers[p])                     // 등급은 유지, 증강만 다시
+            foreach (StoreOffer o in offers[p])                     // 새로고침하면 등급과 증강을 모두 다시 뽑음
             {
+                o.Tier = settings.RollTier();
                 o.Augment = PickAugment();
                 o.Sold = false;
             }
