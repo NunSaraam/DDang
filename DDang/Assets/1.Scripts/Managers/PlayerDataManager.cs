@@ -65,6 +65,11 @@ namespace Stats
         [Range(0f, 1f)] public float minMoveSpeedRatio = 0.5f;     // 기본 이동속도 대비
         public float minAttackCooldown = 0.1f;
 
+        [Header("능력치 상한 (증강을 여러 개 사도 이 이상은 안 오름)")]
+        public float maxMoveSpeed = 8f;
+        [Range(0f, 1f)] public float maxWidePaintChance = 0.6f;
+        [Range(0f, 1f)] public float maxHardGroundChance = 0.5f;   // 100%면 상대가 내 칸을 못 덮음
+
         [Header("패자 디버프")]
         public float debuffMultiplier = 1.2f;
 
@@ -127,11 +132,11 @@ namespace Stats
             foreach (OwnedAugment a in loadout.Augments) Apply(ref s, a.Data.stat, a.Data.GetValue(a.Tier));
             if (loadout.ActiveDebuff.HasValue) ApplyDebuff(ref s, loadout.ActiveDebuff.Value);
 
-            s.MoveSpeed = Mathf.Max(s.MoveSpeed, baseMoveSpeed * minMoveSpeedRatio);
+            s.MoveSpeed = Mathf.Clamp(s.MoveSpeed, baseMoveSpeed * minMoveSpeedRatio, maxMoveSpeed);
             s.StunTime = Mathf.Max(s.StunTime, minStunTime);
             s.AttackCooldown = Mathf.Max(s.AttackCooldown, minAttackCooldown);
-            s.WidePaintChance = Mathf.Clamp01(s.WidePaintChance);
-            s.HardGroundChance = Mathf.Clamp01(s.HardGroundChance);
+            s.WidePaintChance = Mathf.Clamp(s.WidePaintChance, 0f, maxWidePaintChance);
+            s.HardGroundChance = Mathf.Clamp(s.HardGroundChance, 0f, maxHardGroundChance);
             return s;
         }
 
