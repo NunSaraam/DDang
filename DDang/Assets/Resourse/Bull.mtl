@@ -1,0 +1,49 @@
+newmtl Bull_Body
+Ka 0 0 0
+Kd 0.360 0.170 0.110
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Bull_Dark
+Ka 0 0 0
+Kd 0.120 0.080 0.070
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Bull_Horn
+Ka 0 0 0
+Kd 0.980 0.940 0.820
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Bull_Muzzle
+Ka 0 0 0
+Kd 0.620 0.400 0.320
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Bull_RedEye
+Ka 0 0 0
+Kd 1.000 0.180 0.100
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Bull_Gold
+Ka 0 0 0
+Kd 1.000 0.800 0.150
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl Bull_HornTip
+Ka 0 0 0
+Kd 0.300 0.250 0.220
+Ks 0 0 0
+d 1
+illum 1
+

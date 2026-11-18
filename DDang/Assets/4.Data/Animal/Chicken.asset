@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c897357476678e944adcb256823daf82, type: 3}
+  m_Name: Chicken
+  m_EditorClassIdentifier: Assembly-CSharp::Animal.AnimalData
+  displayName: "\uB2ED"
+  description: "\uB9DE\uC73C\uBA74 \uB0A0\uC544\uAC00\uC11C \uB5A8\uC5B4\uC9C4 \uACF3
+    \uC2ED\uC790 5\uCE78\uC744 \uB54C\uB9B0 \uC0AC\uB78C \uC0C9\uC73C\uB85C \uCE60\uD574\uC694!"
+  icon: {fileID: 0}
+  category: 0
+  prefab: {fileID: 2164023906696360694, guid: eb2ef621145ff00498b41f7637d47748, type: 3}
+  duration: 20
+  spawnArea: 0
+  inRotation: 1
