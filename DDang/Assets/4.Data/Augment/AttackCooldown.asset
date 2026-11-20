@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Store.AugmentData
   displayName: "\uACF5\uACA9 \uCFE8\uD0C0\uC784 \uAC10\uC18C"
   effectFormat: "\uACF5\uACA9 \uCFE8\uD0C0\uC784 -{0}\uCD08"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 2d2200f4a88de6c43bbe2232d87b9d26, type: 3}
   tag: 2
   stat: 3
   tierValues:

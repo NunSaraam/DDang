@@ -1870,9 +1870,9 @@ MonoBehaviour:
   augmentPos: {x: 7, y: 3}
   refreshPos: {x: 3, y: 3}
   readyPos: {x: 11, y: 3}
-  augmentIcon: {fileID: 0}
-  refreshIcon: {fileID: 0}
-  readyIcon: {fileID: 0}
+  augmentIcon: {fileID: 21300000, guid: 6b6313fbb78411d41a36881e2a82cff9, type: 3}
+  refreshIcon: {fileID: 21300000, guid: 0ce4e13eb0ac5fa4badc99b5bcda1537, type: 3}
+  readyIcon: {fileID: 21300000, guid: e87b58b0fb0309b44bb7e9b25b570aa5, type: 3}
 --- !u!4 &773870760
 Transform:
   m_ObjectHideFlags: 0

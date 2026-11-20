@@ -145,10 +145,10 @@ MonoBehaviour:
   peckChance: 0.25
   peckTime: 0.8
   stepHop: 0.08
-  minFly: 2
-  maxFly: 3
-  flyTime: 0.55
-  flyHeight: 1.6
+  minFly: 3
+  maxFly: 5
+  flyTime: 0.7
+  flyHeight: 2
   dazeTime: 0.4
   fxMaterial: {fileID: 0}
   featherColor: {r: 1, g: 1, b: 1, a: 1}
