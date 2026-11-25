@@ -154,6 +154,42 @@ def build_bull():
     put(3,9,18,1); put(10,9,18,1)               # 귀
     return v
 
+def build_owl():
+    # 큰 동그란 몸, 바깥으로 뻗은 귀깃, 하트 모양 크림색 얼굴판, 4×4 큰 노란 눈, 작은 부리, 배 V무늬, 나뭇가지
+    PAL.clear(); PAL.update({1: ("Brown", (0.60, 0.40, 0.24)), 2: ("DarkBrown", (0.36, 0.23, 0.14)),
+        3: ("Cream", (1.00, 0.94, 0.80)), 4: ("Belly", (0.93, 0.82, 0.62)), 5: ("Yellow", (1.00, 0.78, 0.10)),
+        6: ("Black", (0.07, 0.05, 0.06)), 7: ("White", (1.00, 1.00, 1.00)), 8: ("Orange", (1.00, 0.55, 0.12)),
+        9: ("Pink", (1.00, 0.55, 0.62)), 10: ("Branch", (0.45, 0.29, 0.16)), 11: ("Leaf", (0.45, 0.80, 0.30))})
+    v = np.zeros((13, 18, 10), dtype=int)
+    def box(x0,x1,y0,y1,z0,z1,c): v[x0:x1+1, y0:y1+1, z0:z1+1] = c
+    def put(x,y,z,c): v[x,y,z] = c
+
+    box(0,12,0,1,5,8,10)                        # 나뭇가지
+    put(12,2,6,11); put(12,2,7,11); put(11,2,7,11)   # 잎
+    box(2,10,2,8,2,7,1)                         # 몸통
+    for x in (2,10):
+        for z in (2,7): box(x,x,2,8,z,z,0)
+    box(4,8,3,7,7,7,4); box(4,8,3,6,8,8,4)      # 배
+    put(5,5,8,2); put(6,4,8,2); put(7,5,8,2)    # 배 V무늬
+    box(4,5,2,2,7,8,8); box(7,8,2,2,7,8,8)      # 발
+    box(1,1,3,8,3,6,2); box(11,11,3,8,3,6,2)    # 날개
+    put(1,2,4,2); put(1,2,5,2); put(11,2,4,2); put(11,2,5,2)
+    box(5,7,2,4,1,1,2)                          # 꼬리
+    box(1,11,9,15,2,8,1)                        # 머리
+    box(1,1,15,15,2,8,0); box(11,11,15,15,2,8,0); box(2,10,15,15,2,2,0)
+    put(4,15,4,3); put(8,15,6,3); put(6,15,3,3) # 머리 위 점무늬
+    box(1,3,16,16,4,6,1); box(1,2,17,17,4,6,1); box(1,1,17,17,4,6,2)     # 귀깃
+    box(9,11,16,16,4,6,1); box(10,11,17,17,4,6,1); box(11,11,17,17,4,6,2)
+    box(1,11,9,14,8,8,3)                        # 하트 얼굴판
+    for (x,y) in ((1,9),(1,14),(11,9),(11,14),(6,14)): put(x,y,8,1)
+    for ex in (2,7):                            # 큰 눈
+        box(ex,ex+3,10,13,9,9,5)
+        for (x,y) in ((ex,10),(ex,13),(ex+3,10),(ex+3,13)): put(x,y,9,0)
+        box(ex+1,ex+2,11,12,9,9,6); put(ex+1,12,9,7)
+    box(6,6,10,11,9,9,8)                        # 부리
+    put(3,9,9,9); put(9,9,9,9)                  # 볼
+    return v
+
 def export_obj(v, name, scale):
     W,H,L = v.shape
     cx, cz = W/2, L/2
@@ -216,6 +252,6 @@ if __name__=="__main__":
     import sys
     name = sys.argv[1] if len(sys.argv) > 1 else "Tiger"     # python voxel_model.py Penguin
     v = {"Tiger": build_tiger, "Penguin": build_penguin,
-         "Chicken": build_chicken, "Bull": build_bull}[name]()
+         "Chicken": build_chicken, "Bull": build_bull, "Owl": build_owl}[name]()
     preview(v,"preview.png")
     print("faces", export_obj(v,name,0.055))

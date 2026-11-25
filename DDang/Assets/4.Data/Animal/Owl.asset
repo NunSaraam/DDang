@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c897357476678e944adcb256823daf82, type: 3}
+  m_Name: Owl
+  m_EditorClassIdentifier: Assembly-CSharp::Animal.AnimalData
+  displayName: "\uBD80\uC5C9\uC774"
+  description: "\uBD80\uC5C9! \uBD88\uC774 \uAEBC\uC84C\uC5B4\uC694... \uB0B4 \uC8FC\uBCC0\uB9CC
+    \uBCF4\uC5EC\uC694"
+  icon: {fileID: 0}
+  category: 3
+  prefab: {fileID: 3845114276723163017, guid: bdd7ae3ba7952d042a04f9b0678662be, type: 3}
+  duration: 8
+  spawnArea: 0
+  inRotation: 1

@@ -6271,7 +6271,8 @@ PrefabInstance:
         type: 3}
       propertyPath: forceAnimal
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 0a2c6d072dd5a4f46b686ccef5a8e144,
+        type: 2}
     - target: {fileID: 4709924561140956346, guid: 3727b1c499392bd4a9079586122d60cf,
         type: 3}
       propertyPath: m_LocalPosition.x
