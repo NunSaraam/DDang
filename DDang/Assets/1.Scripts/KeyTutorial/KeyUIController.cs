@@ -12,7 +12,7 @@ public class KeyUIController : MonoBehaviour
     public KeyUI keyD;
     public KeyUI keySpace;
 
-    [Header("Player1")]
+    [Header("Player2")]
     public KeyUI keyUp;
     public KeyUI keyLeft;
     public KeyUI keyDown;
@@ -21,25 +21,25 @@ public class KeyUIController : MonoBehaviour
 
     private void Update()
     {
-        Player1Key();
-        Player2Key();
+        Player1Key();                                           // WASD + Space
+        if (!Online.OnlineSession.IsOnline) Player2Key();       // 로컬만 2P 키 안내
     }
 
     private void Player1Key()
     {
-        if (Input.GetKey(KeyCode.W)) keyW.OnKeyPressed();
-        if (Input.GetKey(KeyCode.A)) keyA.OnKeyPressed();
-        if (Input.GetKey(KeyCode.S)) keyS.OnKeyPressed();
-        if (Input.GetKey(KeyCode.D)) keyD.OnKeyPressed();
-        if (Input.GetKey(KeyCode.Space)) keySpace.OnKeyPressed();
+        keyW.SetHeld(Input.GetKey(KeyCode.W));                  // 누르고 있는 동안 눌린 모습 유지
+        keyA.SetHeld(Input.GetKey(KeyCode.A));
+        keyS.SetHeld(Input.GetKey(KeyCode.S));
+        keyD.SetHeld(Input.GetKey(KeyCode.D));
+        keySpace.SetHeld(Input.GetKey(KeyCode.Space));
     }
 
     private void Player2Key()
     {
-        if (Input.GetKey(KeyCode.UpArrow)) keyUp.OnKeyPressed();
-        if (Input.GetKey(KeyCode.LeftArrow)) keyLeft.OnKeyPressed();
-        if (Input.GetKey(KeyCode.DownArrow)) keyDown.OnKeyPressed();
-        if (Input.GetKey(KeyCode.RightArrow)) keyRight.OnKeyPressed();
-        if (Input.GetKey(KeyCode.RightShift)) keyRShift.OnKeyPressed();
+        keyUp.SetHeld(Input.GetKey(KeyCode.UpArrow));
+        keyLeft.SetHeld(Input.GetKey(KeyCode.LeftArrow));
+        keyDown.SetHeld(Input.GetKey(KeyCode.DownArrow));
+        keyRight.SetHeld(Input.GetKey(KeyCode.RightArrow));
+        keyRShift.SetHeld(Input.GetKey(KeyCode.RightShift));
     }
 }

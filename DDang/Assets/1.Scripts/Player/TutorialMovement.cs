@@ -7,6 +7,7 @@ public class TutorialMovement : MonoBehaviour
     public float minValue = 0.1f;
     public float moveSpeed = 5.0f;
     public Animator animator;
+    [SerializeField] private bool sideView;     // 온라인 대기실: 인게임과 같은 옆 시점 방향 (화면 위 = 월드 -X)
 
     private float attackCooldown = 0.4f;
     private float attackRange = 0.6f;
@@ -23,7 +24,8 @@ public class TutorialMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    // 물리 주기에 맞춰 처리 (Update에서 transform을 바꾸면 Rigidbody 보간이 깨져 끊겨 보임)
+    private void FixedUpdate()
     {
         PlayerStates();
     }
@@ -32,8 +34,8 @@ public class TutorialMovement : MonoBehaviour
     {
         Vector2 input = context.ReadValue<Vector2>();
 
-        Vector3 forward = Vector3.forward;
-        Vector3 right = Vector3.right;
+        Vector3 forward = sideView ? Vector3.left : Vector3.forward;
+        Vector3 right = sideView ? Vector3.forward : Vector3.right;
 
         Vector3 direction = (forward * input.y + right * input.x);
 
@@ -56,10 +58,10 @@ public class TutorialMovement : MonoBehaviour
             case PlayerState.Controllable:
                 rb.linearVelocity = moveDirection * moveSpeed;
 
-                if (moveDirection != Vector3.zero)
+                if (moveDirection != Vector3.zero)              // transform 직접 대입 대신 물리로 회전
                 {
                     Quaternion rotation = Quaternion.LookRotation(moveDirection);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
+                    rb.MoveRotation(Quaternion.Slerp(rb.rotation, rotation, Time.fixedDeltaTime * 10f));
                 }
                 break;
 
@@ -79,6 +81,8 @@ public class TutorialMovement : MonoBehaviour
 
         // �ִϸ��̼� ����
         animator?.SetTrigger("Attack");
+        if (Online.OnlineSession.IsOnline && TryGetComponent(out Online.OnlineLobbyRabbit net))
+            net.PlayAttackForOthers();                          // 온라인 대기실: 상대 화면에도 공격 모션
 
         // Ʃ�丮�� ��: ���� ���� ���� �� �ܼ��� ���⸸ ����
         StartCoroutine(AttackRoutine());

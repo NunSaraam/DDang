@@ -135,6 +135,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9093424170271651203}
   - component: {fileID: 2133403251771350723}
+  - component: {fileID: 4733398729444177096}
+  - component: {fileID: -7901681936336023042}
   m_Layer: 0
   m_Name: Tiger
   m_TagString: Untagged
@@ -170,9 +172,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b45a82ebfc9d9c4eaa86b8e0b85286e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Animal.Tiger
-  cellsPerSecond: 4.2
+  speedBonus: 0.7
+  turnDegreesPerSecond: 720
   catchRadius: 0.6
   bodyRadius: 0.3
-  turnSpeed: 7
   stunDuration: 1.5
-  escapeTime: 1
+  minRestAfterCatch: 1.5
+--- !u!114 &4733398729444177096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6685583333073784414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 2496677075
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 262146
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -7901681936336023042}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &-7901681936336023042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6685583333073784414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bacc4d84917afd441acf2558bef9cc9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineAnimal
+  followSharpness: 15
+  _DataIndex: 0

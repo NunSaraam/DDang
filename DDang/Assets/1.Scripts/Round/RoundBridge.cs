@@ -10,35 +10,23 @@ namespace Rules
 
         private void Awake() => round = GetComponent<RoundManager>();
 
+        // 라운드 HUD(카운트다운·시간·승리 아이콘)는 UI.RoundHudPresenter가 담당. 여기는 퀘스트·보상 같은 게임 로직만
         private void OnEnable()
         {
-            round.RoundStarted += OnRoundStarted;
             round.PhaseChanged += OnPhaseChanged;
-            round.RemainingTimeChanged += OnRemainingTimeChanged;
             round.QuestTimeReached += OnQuestTime;
             round.RoundEnded += OnRoundEnded;
-            round.MatchProgressed += OnMatchProgressed;
         }
 
         private void OnDisable()
         {
-            round.RoundStarted -= OnRoundStarted;
             round.PhaseChanged -= OnPhaseChanged;
-            round.RemainingTimeChanged -= OnRemainingTimeChanged;
             round.QuestTimeReached -= OnQuestTime;
             round.RoundEnded -= OnRoundEnded;
-            round.MatchProgressed -= OnMatchProgressed;
-        }
-
-        private void OnRoundStarted(int roundNumber)
-        {
-            UIManager.Instance.NextRound(roundNumber);
-            UIManager.Instance.roundWaitPanel.SetActive(true);
         }
 
         private void OnPhaseChanged(RoundPhase phase)
         {
-            if (phase == RoundPhase.Playing) UIManager.Instance.roundWaitPanel.SetActive(false);
             if (phase == RoundPhase.ExtraTime) StartReverseQuest();
         }
 
@@ -55,12 +43,6 @@ namespace Rules
             QuestManager.Instance.OnExtraTImeStarted(p1, p2);
         }
 
-        private void OnRemainingTimeChanged(float time)
-        {
-            if (round.Phase == RoundPhase.Countdown) UIManager.Instance.RoundWait(time);
-            else if (round.IsRoundActive) UIManager.Instance.RoundTime(time);
-        }
-
         private void OnQuestTime() => QuestManager.Instance.ActivateQuest(QuestType.StunChain);
 
 
@@ -68,14 +50,6 @@ namespace Rules
         {
             QuestManager.Instance?.OnRoundEnd(result.P1Tiles, result.P2Tiles, result.Winner);
             QuestManager.Instance?.ResetAllQuest();         // 미완료 퀘스트 정리 -> 다음 라운드에 새로 제시
-
-            if (result.Winner != PlayerType.None)
-                AchievementManager.Instance.AddValue(result.Winner, AchievementType.TotalWins, 1);
-        }
-
-        private void OnMatchProgressed(MatchProgress progress)
-        {
-            UIManager.Instance.SetRoundWins(round.Match.P1Wins, round.Match.P2Wins);
         }
     }
 }

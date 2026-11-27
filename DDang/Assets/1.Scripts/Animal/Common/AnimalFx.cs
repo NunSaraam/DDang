@@ -55,5 +55,29 @@ namespace Animal
         }
 
         public static Vector3 ToWorldDir(Vector2Int dir) => new Vector3(dir.x, 0f, dir.y);
+
+        // 바닥 기준으로 카메라가 있는 쪽 방향 (두 화면 카메라 각도가 같으므로 하나만 봄). 기본 각도 (30, -90, 0)이면 +x
+        public static Vector3 DirectionToCamera()
+        {
+            Vector3 dir = Vector3.right;
+            var cam = Object.FindFirstObjectByType<Cameras.PlayerDualCamera>();
+            if (cam != null)
+            {
+                Vector3 f = -cam.transform.forward;
+                f.y = 0f;
+                if (f.sqrMagnitude > 0.01f) dir = f.normalized;
+            }
+            return dir;
+        }
+
+        // 맵 가운데에서 away 방향으로 끝까지 간 칸(inset만큼 안쪽). 그 칸이 장애물이면 가장 가까운 바닥
+        public static Vector2Int FarEdgeCell(GridGenerator grid, Vector3 away, int inset)
+        {
+            int halfX = grid.gridSizeX / 2, halfZ = grid.gridSizeZ / 2;
+            var target = new Vector2Int(
+                Mathf.Clamp(halfX + Mathf.RoundToInt(away.x * (halfX - inset)), 0, grid.gridSizeX - 1),
+                Mathf.Clamp(halfZ + Mathf.RoundToInt(away.z * (halfZ - inset)), 0, grid.gridSizeZ - 1));
+            return grid.GetNearestFloor(target);
+        }
     }
 }

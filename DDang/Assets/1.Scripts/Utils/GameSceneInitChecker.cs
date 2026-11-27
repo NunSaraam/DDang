@@ -9,13 +9,7 @@ public class GameSceneInitChecker : MonoBehaviour
 {
     private IEnumerator Start()
     {
-        UIManager.Instance?.ReconnectUI();
-
-        Debug.Log("SceneUIManager 체킹 시작");
-        while (UIManager.Instance == null || !UIManager.Instance.IsUIReady())
-            yield return null;
-        Debug.Log("SceneUIManager 완료");
-
+        // 라운드 HUD는 씬 안의 UI.RoundHudInstaller가 스스로 준비하므로 UI를 기다리지 않음
         while (RoundManager.Instance == null)
             yield return null;
         Debug.Log("모든 게임 준비 완료");
@@ -25,7 +19,6 @@ public class GameSceneInitChecker : MonoBehaviour
             RoundManager.Instance.StartMatch();
             QuestManager.Instance?.ResetAllQuest();
             CoinManager.Instance?.ResetCoins();
-            UIManager.Instance?.ResetAllUI();
             PlayerDataManager.Instance.ResetMatch();                // 증강·디버프 초기화
             GameSession.Instance.needFullReset = false;
         }

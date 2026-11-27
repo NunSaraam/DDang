@@ -136,6 +136,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4272813624673609927}
   - component: {fileID: 7785375316532452109}
+  - component: {fileID: -7418987822203332249}
+  - component: {fileID: -1839619679024216656}
   m_Layer: 0
   m_Name: Penguin
   m_TagString: Untagged
@@ -175,8 +177,8 @@ MonoBehaviour:
   maxFreeze: 15
   minThaw: 3
   maxThaw: 8
-  waves: 1
-  waveInterval: 10
+  waves: 2
+  waveInterval: 5
   freezeStagger: 0.05
   jumpHeight: 0.8
   jumpTime: 0.45
@@ -200,3 +202,37 @@ MonoBehaviour:
   waddleSpeed: 6
   standAtFarEdge: 1
   edgeInset: 1
+--- !u!114 &-7418987822203332249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7156123630274889625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bacc4d84917afd441acf2558bef9cc9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineAnimal
+  followSharpness: 20
+  _DataIndex: 0
+--- !u!114 &-1839619679024216656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7156123630274889625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 2790591279
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 262146
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -7418987822203332249}
+  ForceRemoteRenderTimeframe: 0

@@ -1,24 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Stats;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Animal
 {
-    // 호랑이: 점수가 높은 플레이어를 추격. 닿으면 1.5초 기절시키고, 잠깐 쉰 뒤 대상을 다시 고름
+    // 호랑이: 점수가 높은 플레이어를 그 플레이어보다 살짝 빠르게 추격. 닿으면 1.5초 기절시키고,
+    //         맵 가운데로 순간이동한 뒤 대상을 다시 고름
     // 대상이 훤히 보이면 직선으로 달려들고, 장애물에 가려지면 대각선을 포함한 최단 경로로 돌아감
     public class Tiger : AnimalBase
     {
         [Header("추격")]
-        [SerializeField] private float cellsPerSecond = 4.5f;      // 이동 속도 (플레이어 기본 5칸/초)
+        [SerializeField] private float speedBonus = 0.7f;          // 대상 플레이어 이동속도(증강·디버프 반영) + 이만큼 (칸/초). 0.5~1 정도가 "살짝 빠름"
+        [SerializeField] private float turnDegreesPerSecond = 720f; // 실제로 움직이는 방향으로 몸을 돌리는 속도 (도/초)
         [SerializeField] private float catchRadius = 0.6f;         // 이 거리 안에 들어오면 닿은 것으로 판정
         [SerializeField] private float bodyRadius = 0.3f;          // 직선 추격 시 장애물과 이만큼 떨어져야 통과
-        [SerializeField] private float turnSpeed = 12f;            // 몸을 돌리는 속도
 
         [Header("기절")]
         [SerializeField] private float stunDuration = 1.5f;
-        [FormerlySerializedAs("restAfterCatch")]
-        [SerializeField] private float escapeTime = 1.5f;          // 잡힌 플레이어가 깨어난 뒤 도망칠 시간. 호랑이는 기절 시간 + 이 시간만큼 쉼
+        [SerializeField] private float minRestAfterCatch = 1.5f;   // 가운데로 순간이동한 뒤 이만큼 쉬고 다시 추격 (0이면 바로)
 
         private static readonly Vector2Int[] Directions =
         {
@@ -45,29 +45,42 @@ namespace Animal
 
                 while (IsActive && !caught && target != null)
                 {
+                    float speed = ChaseSpeed();
                     Vector3 targetPos = target.transform.position;
                     targetPos.y = transform.position.y;
 
                     if (HasClearPath(transform.position, targetPos))
                     {
-                        MoveToward(targetPos);                      // 보이면 직선으로
+                        MoveToward(targetPos, speed);               // 보이면 직선으로
                     }
                     else
                     {
                         Vector2Int from = SafeCell(CurrentCell);
                         Vector2Int goal = SafeCell(Grid.WorldToGridPosition(targetPos));
                         Vector2Int next = NextStep(from, goal);
-                        MoveToward(Grid.CellToWorld(next, transform.position.y));
+                        // 다음 칸이 토끼가 있는 칸이거나 이미 같은 칸이면 칸 중앙이 아니라 토끼에게 곧장
+                        Vector3 aim = next == goal ? targetPos : Grid.CellToWorld(next, transform.position.y);
+                        MoveToward(aim, speed);
                     }
 
                     CheckCatch();
                     yield return null;
                 }
 
-                if (caught) yield return new WaitForSeconds(stunDuration + escapeTime);   // 기절 + 도망칠 시간
+                if (caught)                                         // 잡았으면 가운데로 순간이동 → 다시 1등을 고름
+                {
+                    Vector2Int center = SafeCell(new Vector2Int(Grid.gridSizeX / 2, Grid.gridSizeZ / 2));
+                    TeleportTo(Grid.CellToWorld(center, transform.position.y));
+                    hasCache = false;
+                    if (minRestAfterCatch > 0f) yield return new WaitForSeconds(minRestAfterCatch);
+                }
                 else yield return null;
             }
         }
+
+        // 대상 플레이어의 지금 이동속도(증강·디버프·상한 반영) + 보너스
+        private float ChaseSpeed() =>
+            PlayerDataManager.Instance.GetStats(target.playerType).MoveSpeed + speedBonus;
 
         // 닿았으면 기절시킴. 이미 기절 중이거나 무적이면 무시
         private void CheckCatch()
@@ -83,16 +96,17 @@ namespace Animal
             caught = true;
         }
 
-        private void MoveToward(Vector3 goal)
+        // 이동한 방향으로 몸을 빠르게 돌림 (목표가 아니라 실제 움직임 기준 → 옆걸음 없음)
+        private void MoveToward(Vector3 goal, float speed)
         {
-            Vector3 dir = goal - transform.position;
-            dir.y = 0f;
-            if (dir.sqrMagnitude > 0.0001f)
-            {
-                Quaternion look = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, look, turnSpeed * Time.deltaTime);
-            }
-            transform.position = Vector3.MoveTowards(transform.position, goal, cellsPerSecond * Time.deltaTime);
+            Vector3 before = transform.position;
+            transform.position = Vector3.MoveTowards(before, goal, speed * Time.deltaTime);
+
+            Vector3 moved = transform.position - before;
+            moved.y = 0f;
+            if (moved.sqrMagnitude > 0.000001f)
+                transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                    Quaternion.LookRotation(moved), turnDegreesPerSecond * Time.deltaTime);
         }
 
         // 몸통 폭(bodyRadius)을 고려해서 직선 경로에 막힌 칸이 없는지 확인

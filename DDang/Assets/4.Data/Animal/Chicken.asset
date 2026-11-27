@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Chicken
   m_EditorClassIdentifier: Assembly-CSharp::Animal.AnimalData
   displayName: "\uB2ED"
-  description: "\uB9DE\uC73C\uBA74 \uB0A0\uC544\uAC00\uC11C \uB5A8\uC5B4\uC9C4 \uACF3
-    \uC2ED\uC790 5\uCE78\uC744 \uB54C\uB9B0 \uC0AC\uB78C \uC0C9\uC73C\uB85C \uCE60\uD574\uC694!"
+  description: "\uB2ED\uC744 \uB54C\uB824\uBCF4\uACE0 \uC2F6\uC740\uB370..?"
   icon: {fileID: 0}
   category: 0
   prefab: {fileID: 2164023906696360694, guid: eb2ef621145ff00498b41f7637d47748, type: 3}
   duration: 20
   spawnArea: 0
   inRotation: 1
+  onlineReady: 1

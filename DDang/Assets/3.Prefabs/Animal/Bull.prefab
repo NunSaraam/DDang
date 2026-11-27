@@ -139,6 +139,8 @@ GameObject:
   - component: {fileID: 4453574314925908791}
   - component: {fileID: 25543145411029902}
   - component: {fileID: 3682815929400090396}
+  - component: {fileID: 8230087261005003334}
+  - component: {fileID: 1034432405888360831}
   m_Layer: 9
   m_Name: Bull
   m_TagString: Untagged
@@ -216,3 +218,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.2, y: 1.6, z: 2.2}
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!114 &8230087261005003334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9044931091743582662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bacc4d84917afd441acf2558bef9cc9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineAnimal
+  followSharpness: 20
+  _DataIndex: 0
+--- !u!114 &1034432405888360831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9044931091743582662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 3236446960
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 262146
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 8230087261005003334}
+  ForceRemoteRenderTimeframe: 0

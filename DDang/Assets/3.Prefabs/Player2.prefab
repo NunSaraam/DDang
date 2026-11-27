@@ -46,6 +46,10 @@ GameObject:
   - component: {fileID: 8323843684708350332}
   - component: {fileID: 3513693702728355893}
   - component: {fileID: 5407939784964956323}
+  - component: {fileID: -7662787240393415636}
+  - component: {fileID: -1388371495682988478}
+  - component: {fileID: 760121038965002169}
+  - component: {fileID: -3148201469942128599}
   m_Layer: 8
   m_Name: Player2
   m_TagString: Untagged
@@ -96,7 +100,6 @@ MonoBehaviour:
   invincibleTime: 0.5
   blinkInterval: 0.1
   currentStoreTile: {fileID: 0}
-  curretnStoreUI: {fileID: 0}
 --- !u!114 &1354570675757862160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,7 +161,19 @@ MonoBehaviour:
     m_ActionId: de44e098-ff1c-4953-a438-8921abc9d0d3
     m_ActionName: 'SceondPlayerActions/Move[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3673043087297275501}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 4dd26bd2-19cb-4d7f-8f0b-cbb8f7967359
     m_ActionName: 'PlayerActions/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
   - m_PersistentCalls:
@@ -178,7 +193,19 @@ MonoBehaviour:
     m_ActionId: b815efe2-f9bb-4a1e-8861-0ef2f28206d0
     m_ActionName: 'SceondPlayerActions/Attack[/Keyboard/j]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3673043087297275501}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 2878f615-8bff-4424-8ee7-a40925c3561b
     m_ActionName: 'PlayerActions/Attack[/Keyboard/space]'
   m_NeverAutoSwitchControlSchemes: 0
@@ -236,6 +263,99 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.741791, z: 0}
+--- !u!114 &-7662787240393415636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999957431105124167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 3017389462
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 524546
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -1388371495682988478}
+  - {fileID: 760121038965002169}
+  - {fileID: -3148201469942128599}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &-1388371495682988478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999957431105124167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  ConfigFlags: 0
+  PhysicsSettings:
+    ForecastEnabled: 1
+    DebugPhysics: 0
+    GravityForecast: 2
+    MaxExtrapolationTime: 0.15
+    MinLinearDetectedError: 0.02
+    MinAngularDetectedError: 3
+    DeadzoneVelocityMode: 0
+    MaxLinearError: 0
+    MaxAngularError: 0
+    LowCorrectionProgressThreshold: 0.015
+    HighErrorSimilarityThreshold: 1
+    MaxErrorTotalTime: 0.5
+    MaxRemoteSleepIgnoreTime: 0.5
+    ErrorCorrectionType: 0
+    LinearVelCorrectionMul: 1
+    AngularVelCorrectionMul: 1
+    PositionCorrectionLerp: 0.15
+    RotationCorrectionLerp: 0.15
+    Spring: 75
+    Damper: 2
+    MinImpactfulCollisionAlignment: 0.3
+    ImpactStartCorrectionTime: 0.1
+    ImpactCorrectionTimeComplete: 0.3
+--- !u!114 &760121038965002169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999957431105124167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkMecanimAnimator
+  Animator: {fileID: 8428959952284520054}
+  ApplyTiming: 2
+  SyncSettings: 79
+  StateHashes: 000000004e818ee2a542061fadccca31460f42cc6ceca7b9c9a84006
+  TriggerHashes: 000000000d286c40
+  TotalWords: 2
+--- !u!114 &-3148201469942128599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999957431105124167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9bde1380b302c84a817973084a3c704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineRabbit
 --- !u!1 &3033568263535995830
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,6 +1024,7 @@ GameObject:
   - component: {fileID: 3082568480230757144}
   - component: {fileID: 8162009434265947608}
   - component: {fileID: 559843084108367138}
+  - component: {fileID: 6610307108048970488}
   m_Layer: 7
   m_Name: P2Canvas
   m_TagString: Untagged
@@ -1049,10 +1170,20 @@ MonoBehaviour:
   stunImage: {fileID: 986252313905029998}
   scoreText: {fileID: 2835015265599878727}
   storeText: {fileID: 5872793713265324659}
-  pM: {fileID: 0}
-  playerType: 2
-  grid: {fileID: 0}
   targetCamera: {fileID: 0}
+--- !u!114 &6610307108048970488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7806254729630113807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6060340328e81d644baa3fd3e4c27822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.PlayerBubbleInstaller
+  view: {fileID: 559843084108367138}
 --- !u!1 &8202670632980920157
 GameObject:
   m_ObjectHideFlags: 0

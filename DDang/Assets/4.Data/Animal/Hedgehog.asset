@@ -20,3 +20,4 @@ MonoBehaviour:
   duration: 10
   spawnArea: 1
   inRotation: 1
+  onlineReady: 1

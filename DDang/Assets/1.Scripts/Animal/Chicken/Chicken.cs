@@ -7,6 +7,7 @@ namespace Animal
     // 닭: 평소엔 바닥을 종종거리며 돌아다님. 맞으면 때린 반대쪽으로 2~3칸 날아가 착지하고,
     //     착지 칸 십자(중심 + 상하좌우)를 때린 사람 색으로 칠함. 날아가는 중에는 다시 맞지 않음
     // 프리팹: 루트에 이 스크립트 + 트리거 콜라이더(Animal 레이어), 모델은 첫 번째 자식
+    // 온라인: 경로·날아갈 칸·칠하기는 방장이 정함. 상대 PC는 쪼기·날기 신호로 모델 연출만 재생
     public class Chicken : AnimalBase
     {
         [Header("돌아다니기")]
@@ -31,6 +32,8 @@ namespace Animal
         private static readonly Vector2Int[] Directions =
             { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
+        private const byte EventPeck = 1, EventFly = 2;     // 온라인 상대 PC: 쪼기 / 날기 연출
+
         private Transform model;
         private Vector3 modelPos, modelScale;
         private Quaternion modelRot;
@@ -42,6 +45,25 @@ namespace Animal
         private Material runtimeMaterial;
 
         protected override void OnSpawn()
+        {
+            Setup();
+            baseY = transform.position.y;
+            transform.position = Grid.CellToWorld(CurrentCell, baseY);
+            direction = Directions[Random.Range(0, Directions.Length)];
+            wanderRoutine = StartCoroutine(WanderRoutine());
+        }
+
+        // 온라인 상대 PC: 모델·깃털 준비만 (이동은 OnlineAnimal이 전달)
+        protected override void OnRemoteSpawn() => Setup();
+
+        protected override void OnRemoteEvent(byte id, int a, int b)
+        {
+            if (id == EventPeck) StartCoroutine(Peck());
+            else if (id == EventFly) StartCoroutine(FlyModel());
+        }
+
+        // 모델 기준값, 콜라이더 확인, 깃털 부모·머티리얼
+        private void Setup()
         {
             model = transform.childCount > 0 ? transform.GetChild(0) : null;
             if (model != null)
@@ -55,11 +77,6 @@ namespace Animal
 
             fxRoot = new GameObject("ChickenFx").transform;
             if (fxMaterial == null) fxMaterial = runtimeMaterial = AnimalFx.CreateTransparentMaterial();
-
-            baseY = transform.position.y;
-            transform.position = Grid.CellToWorld(CurrentCell, baseY);
-            direction = Directions[Random.Range(0, Directions.Length)];
-            wanderRoutine = StartCoroutine(WanderRoutine());
         }
 
         protected override void OnDespawn()
@@ -70,19 +87,23 @@ namespace Animal
 
         protected override void OnHit(PlayerMovement attacker)
         {
-            if (flying) return;
+            if (flying || attacker == null) return;
             if (wanderRoutine != null) StopCoroutine(wanderRoutine);
             StartCoroutine(FlyRoutine(attacker));
         }
 
-        // ───────── 돌아다니기 ─────────
+        // ───────── 돌아다니기 (방장·로컬) ─────────
 
         private IEnumerator WanderRoutine()
         {
             Vector2Int cell = CurrentCell;
             while (IsActive)
             {
-                if (Random.value < peckChance) yield return Peck();
+                if (Random.value < peckChance)
+                {
+                    SendEvent(EventPeck);                                       // 상대 PC도 쪼기 (로컬에서는 아무 일도 안 함)
+                    yield return Peck();
+                }
 
                 if (!TryPickNext(cell, out Vector2Int next))
                 {
@@ -131,7 +152,7 @@ namespace Animal
             SetModel(0f, 0f, 0f);
         }
 
-        // 고개를 숙였다 들었다 3번
+        // 고개를 숙였다 들었다 3번 (공통)
         private IEnumerator Peck()
         {
             for (float t = 0f; t < peckTime; t += Time.deltaTime)
@@ -145,6 +166,7 @@ namespace Animal
 
         // ───────── 맞았을 때 ─────────
 
+        // 방장(로컬): 날아갈 칸을 정하고 포물선으로 이동, 착지 칸 십자 칠하기
         private IEnumerator FlyRoutine(PlayerMovement attacker)
         {
             flying = true;
@@ -154,6 +176,7 @@ namespace Animal
             Vector2Int from = Grid.IsFloor(CurrentCell) ? CurrentCell : Grid.GetNearestFloor(CurrentCell);
             Vector2Int to = Grid.GetPushDestination(from, dir, Random.Range(minFly, maxFly + 1));
 
+            SendEvent(EventFly);                                                // 상대 PC: 한 바퀴·깃털·착지 연출
             transform.rotation = Quaternion.LookRotation(AnimalFx.ToWorldDir(dir));
             SpawnFeathers();
 
@@ -162,17 +185,40 @@ namespace Animal
             for (float t = 0f; t < flyTime; t += Time.deltaTime)
             {
                 float k = t / flyTime;
-                transform.position = Vector3.Lerp(start, end, k) + Vector3.up * (flyHeight * 4f * k * (1f - k));
-                SetModel(0f, 360f * k, Mathf.Sin(k * Mathf.PI * 8f) * 0.15f);       // 앞으로 한 바퀴 + 파닥파닥
+                transform.position = Vector3.Lerp(start, end, k) + Vector3.up * (flyHeight * 4f * k * (1f - k));   // 포물선 (온라인: 위치가 그대로 전달됨)
+                FlyPose(k);
                 yield return null;
             }
             transform.position = end;
-            SetModel(0f, 0f, 0.3f);                                                 // 착지하며 납작
 
-            PaintCross(to, color);
+            PaintCross(to, color);                                              // 온라인: OnlineGrid로 → 두 화면 반영
+            yield return LandAndDaze();
+
+            flying = false;
+            wanderRoutine = StartCoroutine(WanderRoutine());
+        }
+
+        // 상대 PC: 날기 모델 연출만 (위치·포물선은 방장 위치가 전달됨)
+        private IEnumerator FlyModel()
+        {
+            SpawnFeathers();
+            for (float t = 0f; t < flyTime; t += Time.deltaTime)
+            {
+                FlyPose(t / flyTime);
+                yield return null;
+            }
+            yield return LandAndDaze();
+        }
+
+        // 앞으로 한 바퀴 + 파닥파닥 (공통)
+        private void FlyPose(float k) => SetModel(0f, 360f * k, Mathf.Sin(k * Mathf.PI * 8f) * 0.15f);
+
+        // 착지하며 납작 → 깃털 → 어지러워서 좌우로 흔들 (공통)
+        private IEnumerator LandAndDaze()
+        {
+            SetModel(0f, 0f, 0.3f);
             SpawnFeathers();
 
-            // 어지러워서 좌우로 흔들
             for (float t = 0f; t < dazeTime; t += Time.deltaTime)
             {
                 float k = t / dazeTime;
@@ -181,9 +227,6 @@ namespace Animal
                 yield return null;
             }
             SetModel(0f, 0f, 0f);
-
-            flying = false;
-            wanderRoutine = StartCoroutine(WanderRoutine());
         }
 
         // height: 띄울 높이, pitch: 앞으로 숙이는 각도, squash: 양수면 납작

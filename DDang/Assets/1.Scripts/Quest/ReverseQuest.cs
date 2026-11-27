@@ -40,9 +40,9 @@ public class ReverseQuest : QuestSO
         }
 
         if (behindPlayer == PlayerType.Player1)
-            QuestUI.Instance.SetQuestLines(this, "P1 : 역전하면 성공!", "P2 : 지켜내기!");
+            QuestManager.Instance.ReportLines(this, "P1 : 역전하면 성공!", "P2 : 지켜내기!");
         else if (behindPlayer == PlayerType.Player2)
-            QuestUI.Instance.SetQuestLines(this, "P1 : 지켜내기!", "P2 : 역전하면 성공!");
+            QuestManager.Instance.ReportLines(this, "P1 : 지켜내기!", "P2 : 역전하면 성공!");
     }
 
     public override void OnRoundEnd(int p1Score, int p2Score, PlayerType winner)

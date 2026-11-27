@@ -21,6 +21,8 @@ namespace Animal
         private static readonly Vector2Int[] Directions =
             { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
+        private const byte EventWall = 1, EventRemoveWall = 2;     // 온라인 상대 PC: 벽 세우기 / 없애기 (값 = 칸 x, z)
+
         private readonly Dictionary<Vector2Int, GameObject> walls = new();
         private readonly Queue<Vector2Int> wallOrder = new();
         private Vector2Int direction;
@@ -34,10 +36,18 @@ namespace Animal
             StartCoroutine(CrawlRoutine());
         }
 
+        // 온라인 상대 PC: 방장 신호대로 벽만 따라 세움 (이동은 OnlineAnimal이 전달)
+        protected override void OnRemoteEvent(byte id, int a, int b)
+        {
+            var cell = new Vector2Int(a, b);
+            if (id == EventWall) PlaceWall(cell);
+            else if (id == EventRemoveWall) RemoveWall(cell, notify: false);
+        }
+
         protected override void OnDespawn()
         {
-            // 퇴장 시 벽 전부 제거
-            foreach (Vector2Int cell in new List<Vector2Int>(walls.Keys)) RemoveWall(cell);
+            // 퇴장 시 벽 전부 제거 (각 PC가 자기 벽을 지우므로 신호 불필요)
+            foreach (Vector2Int cell in new List<Vector2Int>(walls.Keys)) RemoveWall(cell, notify: false);
             wallOrder.Clear();
         }
 
@@ -99,7 +109,7 @@ namespace Animal
             Vector2Int target = Grid.RandomFloorCell();
             for (int i = 0; i < 20 && !Grid.IsWalkable(target); i++) target = Grid.RandomFloorCell();
 
-            transform.position = Grid.CellToWorld(target, transform.position.y);
+            TeleportTo(Grid.CellToWorld(target, transform.position.y));    // 온라인: 상대 화면에서도 미끄러지지 않게
             return target;
         }
 
@@ -130,24 +140,33 @@ namespace Animal
             transform.position = end;
         }
 
+        // 방장: 떠나온 칸을 벽으로 (플레이어가 가까우면 생략)
         private void TryPlaceWall(Vector2Int cell)
         {
             if (walls.ContainsKey(cell) || IsPlayerNear(cell)) return;    // 플레이어가 끼이지 않게
+            PlaceWall(cell);
+            SendEvent(EventWall, cell.x, cell.y);
 
+            while (maxWalls > 0 && walls.Count > maxWalls)
+                RemoveWall(wallOrder.Dequeue(), notify: true);
+        }
+
+        // 벽 만들기 (방장·상대 공통)
+        private void PlaceWall(Vector2Int cell)
+        {
+            if (walls.ContainsKey(cell)) return;
             GameObject wall = Instantiate(wallPrefab, Grid.CellToWorld(cell), Quaternion.identity);
             walls[cell] = wall;
             wallOrder.Enqueue(cell);
             Grid.SetBlocked(cell, true);
-
-            while (maxWalls > 0 && walls.Count > maxWalls)
-                RemoveWall(wallOrder.Dequeue());
         }
 
-        private void RemoveWall(Vector2Int cell)
+        private void RemoveWall(Vector2Int cell, bool notify)
         {
             if (!walls.Remove(cell, out GameObject wall)) return;
             Grid.SetBlocked(cell, false);
             if (wall != null) Destroy(wall);
+            if (notify) SendEvent(EventRemoveWall, cell.x, cell.y);
         }
 
         private bool IsPlayerNear(Vector2Int cell)

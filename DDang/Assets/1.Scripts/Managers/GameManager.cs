@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Online;
 
 public enum GameState
 {
@@ -12,11 +12,16 @@ public enum GameState
     Store,          //상점
 }
 
+// 게임 상태 (씬이 바뀌어도 남음): 일시정지·재개(시간 정지와 BGM)만 담당. 화면은 이벤트로 알림
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
     public GameState currentState { get; private set; }
+    public bool IsPaused => currentState == GameState.Pause;
+
+    public event Action BackPressed;                // ESC: 열려 있는 메뉴가 받아서 처리 (받는 쪽이 없으면 아무 일도 안 함)
+    public event Action<bool> PauseChanged;         // 일시정지 / 재개 → UI.PauseMenuPresenter가 메뉴를 열고 닫음
 
     private void Awake()
     {
@@ -44,37 +49,26 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        HandlePauseInput();
-    }
-
-    void HandlePauseInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (currentState == GameState.Pause)
-                ResumeGame();
-            else
-                PauseGame();
-        }
+        if (Input.GetKeyDown(KeyCode.Escape)) BackPressed?.Invoke();
     }
 
     public void PauseGame()
     {
-        if (!UIManager.Instance.ShowPausePanel(true)) return;     // 일시정지창 없는 씬(로딩, 결과)은 무시
-
+        if (IsPaused) return;
         currentState = GameState.Pause;
-        Time.timeScale = 0f;
+        PauseChanged?.Invoke(true);
+        if (OnlineSession.IsOnline) return;         // 온라인: 상대 시간은 못 멈추므로 메뉴만 열고 게임은 계속
 
-        SoundManager.Instance.PauseBGM();
+        Time.timeScale = 0f;
+        if (SoundManager.Instance != null) SoundManager.Instance.PauseBGM();
     }
 
     public void ResumeGame()
     {
+        bool wasPaused = IsPaused;
         currentState = GameState.Resume;
-
-        UIManager.Instance.ShowPausePanel(false);
         Time.timeScale = 1f;
-
-        SoundManager.Instance.ResumeBGM();
+        if (wasPaused && SoundManager.Instance != null) SoundManager.Instance.ResumeBGM();
+        PauseChanged?.Invoke(false);
     }
 }

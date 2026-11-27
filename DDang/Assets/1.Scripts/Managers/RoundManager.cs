@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Online;
 
 namespace Rules
 {
@@ -30,12 +31,24 @@ namespace Rules
         private PlayerType roundWinner;
         private PlayerType suddenDeathWinner;
 
-        public void RegisterScoreSource(IRoundScoreSource source) => scoreSource = source;
+        public event Action ScoreChanged;                   // 칠한 칸 수가 바뀜 (등록된 맵의 이벤트를 그대로 알림)
+
+        public void RegisterScoreSource(IRoundScoreSource source)
+        {
+            UnregisterScoreSource(scoreSource);
+            scoreSource = source;
+            if (source != null) source.ScoreChanged += RaiseScoreChanged;
+            RaiseScoreChanged();                            // 새 맵 → 0:0부터
+        }
 
         public void UnregisterScoreSource(IRoundScoreSource source)
         {
-            if (scoreSource == source) scoreSource = null;
+            if (source == null || scoreSource != source) return;
+            source.ScoreChanged -= RaiseScoreChanged;
+            scoreSource = null;
         }
+
+        private void RaiseScoreChanged() => ScoreChanged?.Invoke();
 
         public int GetTiles(PlayerType player) => scoreSource?.CountTiles(player) ?? 0;
         public int PaintableCount => scoreSource?.PaintableCount ?? 0;
@@ -48,10 +61,20 @@ namespace Rules
             SetPhase(RoundPhase.None);
         }
 
+        // 온라인에서 방장이 아닌 PC: 직접 진행하지 않고 OnlineRound가 받은 대로 따라감
+        public bool IsFollower => OnlineSession.IsOnline && !OnlineSession.Instance.Runner.IsSharedModeMasterClient;
+
         public void BeginRound()                            // 게임 씬 준비 완료 후 호출
         {
             StopAllCoroutines();
+            if (IsFollower) return;
             StartCoroutine(RoundRoutine());
+        }
+
+        public void StopMatch()                             // 온라인 대전 중 나가기: 진행 중인 라운드 정리
+        {
+            StopAllCoroutines();
+            SetPhase(RoundPhase.None);
         }
 
         public void ReportPlayerHit(PlayerType attacker)   // 공격 적중 시 호출 (서든데스 판정)
@@ -64,12 +87,14 @@ namespace Rules
         {
             if (Phase != RoundPhase.Store) return;
             SetPhase(RoundPhase.None);
-            SceneLoadManager.Instance.LoadScene("GameScene");
+            LoadScene("GameScene");                         // 온라인: 방장이 바꾸면 상대도 따라옴
         }
 
         private IEnumerator RoundRoutine()
         {
             yield return new WaitUntil(() => scoreSource != null);
+            if (OnlineSession.IsOnline)                     // 온라인: 상대 PC도 맵 준비가 끝날 때까지 대기
+                yield return new WaitUntil(() => OnlineRound.Instance != null && OnlineRound.Instance.GuestReady);
 
             RoundStarted?.Invoke(Match.RoundNumber);
             yield return RunTimer(RoundPhase.Countdown, rules.countdownTime);
@@ -140,17 +165,45 @@ namespace Rules
             {
                 case MatchProgress.GameOver:
                     SetPhase(RoundPhase.GameOver);
-                    SceneLoadManager.Instance.LoadScene("GameResult");
+                    LoadScene("GameResult");
                     break;
                 case MatchProgress.Duel:                    // 기본 능력치로 싸우므로 상점 생략
                     SetPhase(RoundPhase.None);
-                    SceneLoadManager.Instance.LoadScene("GameScene");
+                    LoadScene("GameScene");
                     break;
                 default:
                     SetPhase(RoundPhase.Store);
-                    SceneLoadManager.Instance.LoadScene("Store");
+                    LoadScene("Store");
                     break;
             }
+        }
+
+        private static void LoadScene(string name)
+        {
+            if (OnlineSession.IsOnline) OnlineSession.Instance.LoadScene(name);   // 방장이 바꾸면 상대도 따라옴
+            else SceneLoadManager.Instance.LoadScene(name);
+        }
+
+        // ── 온라인 상대 PC용: OnlineRound가 방장 상태를 받아 호출 ──
+        public void FollowPhase(RoundPhase phase)
+        {
+            if (phase == RoundPhase.Countdown) RoundStarted?.Invoke(Match.RoundNumber);
+            SetPhase(phase);
+        }
+
+        public void FollowTime(float time)
+        {
+            if (time != RemainingTime) SetRemainingTime(time);
+        }
+
+        public void FollowQuestTime() => QuestTimeReached?.Invoke();
+
+        public void FollowRoundEnd(RoundResult result)
+        {
+            LastResult = result;
+            SetPhase(RoundPhase.RoundEnd);
+            RoundEnded?.Invoke(result);
+            MatchProgressed?.Invoke(Match.RecordRound(result.Winner));    // 같은 승자 기록 → 두 PC의 매치 점수가 같음
         }
 
         private IEnumerator RunTimer(RoundPhase phase, float duration)

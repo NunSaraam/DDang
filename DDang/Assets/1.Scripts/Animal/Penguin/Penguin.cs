@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Animal
 {
     // 펭귄: 점프하며 얼음 조각을 쏘아 랜덤 바닥 칸 10~15개를 얼림. 얼린 칸은 현재 색으로 고정되어 덮어쓸 수 없고, 칸마다 6~12초 뒤 랜덤 해제
+    // 온라인: 얼릴 칸·녹는 시간·잠금은 방장이 정함. 상대 PC는 신호(점프·조각·얼림·녹기 직전)대로 모습만 보여 줌
     public class Penguin : AnimalBase
     {
         [Header("얼리기")]
@@ -46,6 +49,9 @@ namespace Animal
         [SerializeField] private bool standAtFarEdge = true;        // 화면 위쪽(카메라에서 먼 쪽) 끝 가운데에 섬. 끄면 AnimalData의 Spawn Area대로
         [SerializeField, Min(0)] private int edgeInset = 1;         // 맵 끝에서 안쪽으로 몇 칸 들어올지
 
+        // 온라인 연출 신호 (값 a, b = 칸 x, z)
+        private const byte EventJump = 1, EventShard = 2, EventFreeze = 3, EventThawBlink = 4;
+
         private readonly Dictionary<Vector2Int, GameObject> frozen = new();
         private readonly HashSet<Vector2Int> incoming = new();      // 얼음 조각이 날아가는 중인 칸 (중복 선택 방지)
         private Transform iceRoot;
@@ -59,6 +65,29 @@ namespace Animal
             Vector3 toCamera = DirectionToCamera();
             if (standAtFarEdge) MoveToFarEdge(-toCamera);
             if (faceCamera) transform.rotation = Quaternion.LookRotation(toCamera);
+
+            Setup();
+            StartCoroutine(FreezeRoutine());
+        }
+
+        // 온라인 상대 PC: 모델·얼음 준비만 (위치·방향은 방장이 정해서 OnlineAnimal이 전달)
+        protected override void OnRemoteSpawn() => Setup();
+
+        protected override void OnRemoteEvent(byte id, int a, int b)
+        {
+            var cell = new Vector2Int(a, b);
+            switch (id)
+            {
+                case EventJump: StartCoroutine(JumpPose(null)); break;
+                case EventShard: StartCoroutine(ShardFlight(cell)); break;
+                case EventFreeze: Freeze(cell); break;
+                case EventThawBlink: StartCoroutine(BlinkAndThaw(cell, blinkBefore)); break;
+            }
+        }
+
+        // 모델 기준값, 얼음 부모, 머티리얼 준비
+        private void Setup()
+        {
             if (model == null && transform.childCount > 0) model = transform.GetChild(0);
             if (model != null)
             {
@@ -73,8 +102,6 @@ namespace Animal
                 runtimeMaterial = CreateIceMaterial();
                 iceMaterial = runtimeMaterial;
             }
-
-            StartCoroutine(FreezeRoutine());
         }
 
         protected override void OnDespawn()
@@ -92,6 +119,8 @@ namespace Animal
             model.localRotation = modelBaseRotation * Quaternion.Euler(0f, 0f, angle);
         }
 
+        // ───────── 방장(로컬): 얼릴 칸과 시간을 정함 ─────────
+
         private IEnumerator FreezeRoutine()
         {
             for (int w = 0; w < waves; w++)
@@ -106,6 +135,61 @@ namespace Animal
 
         // 웅크림 → 점프 (가장 높을 때 얼음 발사) → 착지 찌그러짐
         private IEnumerator JumpAndLaunch(List<Vector2Int> cells)
+        {
+            SendEvent(EventJump);                                   // 상대 PC도 같은 모션 (로컬에서는 아무 일도 안 함)
+            yield return JumpPose(() => StartCoroutine(LaunchAll(cells)));
+        }
+
+        private IEnumerator LaunchAll(List<Vector2Int> cells)
+        {
+            foreach (Vector2Int cell in cells)
+            {
+                SendEvent(EventShard, cell.x, cell.y);
+                StartCoroutine(ShardRoutine(cell));
+                if (freezeStagger > 0f) yield return new WaitForSeconds(freezeStagger);
+            }
+        }
+
+        // 조각이 떨어지면 얼리고, 녹는 시간을 정함
+        private IEnumerator ShardRoutine(Vector2Int cell)
+        {
+            yield return ShardFlight(cell);
+            incoming.Remove(cell);
+            if (Grid.IsLocked(cell)) yield break;
+
+            Freeze(cell);
+            SendEvent(EventFreeze, cell.x, cell.y);
+            StartCoroutine(ThawRoutine(cell, Random.Range(minThaw, maxThaw)));
+        }
+
+        private IEnumerator ThawRoutine(Vector2Int cell, float time)
+        {
+            float blink = Mathf.Min(blinkBefore, time);
+            yield return new WaitForSeconds(time - blink);
+            SendEvent(EventThawBlink, cell.x, cell.y);
+            yield return BlinkAndThaw(cell, blink);
+        }
+
+        // 얼릴 수 있는 칸(바닥, 막히지 않음, 아직 안 얼었고 얼음 조각이 날아가는 중도 아님) 중 count개를 랜덤으로
+        private List<Vector2Int> PickCells(int count)
+        {
+            var candidates = new List<Vector2Int>();
+            foreach (Vector2Int c in Grid.FloorCells)
+                if (Grid.IsWalkable(c) && !Grid.IsLocked(c) && !incoming.Contains(c)) candidates.Add(c);
+
+            count = Mathf.Min(count, candidates.Count);
+            for (int i = 0; i < count; i++)                         // 앞쪽 count개만 섞기
+            {
+                int j = Random.Range(i, candidates.Count);
+                (candidates[i], candidates[j]) = (candidates[j], candidates[i]);
+            }
+            return candidates.GetRange(0, count);
+        }
+
+        // ───────── 보여 주기 (방장·상대 PC 공통) ─────────
+
+        // 웅크림 → 점프 → 착지. 가장 높을 때 onApex 실행 (상대 PC는 null)
+        private IEnumerator JumpPose(Action onApex)
         {
             const float squashTime = 0.1f;
             for (float t = 0f; t < squashTime; t += Time.deltaTime)
@@ -122,11 +206,11 @@ namespace Animal
                 if (!launched && k >= 0.5f)
                 {
                     launched = true;
-                    StartCoroutine(LaunchAll(cells));
+                    onApex?.Invoke();
                 }
                 yield return null;
             }
-            if (!launched) StartCoroutine(LaunchAll(cells));
+            if (!launched) onApex?.Invoke();
 
             for (float t = 0f; t < squashTime; t += Time.deltaTime)
             {
@@ -144,17 +228,8 @@ namespace Animal
             model.localScale = Vector3.Scale(modelBaseScale, new Vector3(1f + s, 1f - s, 1f + s));
         }
 
-        private IEnumerator LaunchAll(List<Vector2Int> cells)
-        {
-            foreach (Vector2Int cell in cells)
-            {
-                StartCoroutine(ShardRoutine(cell));
-                if (freezeStagger > 0f) yield return new WaitForSeconds(freezeStagger);
-            }
-        }
-
-        // 펭귄 부리 쯤에서 얼음 조각이 포물선으로 날아가 칸에 떨어지면 그 칸이 얼어붙음
-        private IEnumerator ShardRoutine(Vector2Int cell)
+        // 펭귄 부리 쯤에서 얼음 조각이 포물선으로 날아가 칸에 떨어짐 (모습만)
+        private IEnumerator ShardFlight(Vector2Int cell)
         {
             GameObject shard = GameObject.CreatePrimitive(PrimitiveType.Cube);
             DestroyImmediate(shard.GetComponent<Collider>());
@@ -180,31 +255,12 @@ namespace Animal
             }
 
             Destroy(shard);
-            incoming.Remove(cell);
-            if (Grid.IsLocked(cell)) yield break;
-            Freeze(cell);
-            StartCoroutine(ThawRoutine(cell, Random.Range(minThaw, maxThaw)));
-        }
-
-        // 얼릴 수 있는 칸(바닥, 막히지 않음, 아직 안 얼었고 얼음 조각이 날아가는 중도 아님) 중 count개를 랜덤으로
-        private List<Vector2Int> PickCells(int count)
-        {
-            var candidates = new List<Vector2Int>();
-            foreach (Vector2Int c in Grid.FloorCells)
-                if (Grid.IsWalkable(c) && !Grid.IsLocked(c) && !incoming.Contains(c)) candidates.Add(c);
-
-            count = Mathf.Min(count, candidates.Count);
-            for (int i = 0; i < count; i++)                         // 앞쪽 count개만 섞기
-            {
-                int j = Random.Range(i, candidates.Count);
-                (candidates[i], candidates[j]) = (candidates[j], candidates[i]);
-            }
-            return candidates.GetRange(0, count);
         }
 
         private void Freeze(Vector2Int cell)
         {
-            Grid.SetLocked(cell, true);                             // 현재 색 그대로 고정
+            if (frozen.ContainsKey(cell)) return;
+            if (IsHost) Grid.SetLocked(cell, true);                 // 잠금은 방장만 (칠하기 판정을 방장이 하므로). 현재 색 그대로 고정
 
             GameObject ice = GameObject.CreatePrimitive(PrimitiveType.Cube);
             DestroyImmediate(ice.GetComponent<Collider>());         // 플레이어 이동·공격 판정에 걸리지 않게
@@ -224,7 +280,7 @@ namespace Animal
         private void Thaw(Vector2Int cell)
         {
             if (!frozen.Remove(cell, out GameObject ice)) return;
-            Grid.SetLocked(cell, false);
+            if (IsHost) Grid.SetLocked(cell, false);
             if (ice != null) Destroy(ice);
         }
 
@@ -241,11 +297,9 @@ namespace Animal
             if (ice != null) ice.localScale = full;
         }
 
-        private IEnumerator ThawRoutine(Vector2Int cell, float time)
+        // 깜빡이다가 녹음
+        private IEnumerator BlinkAndThaw(Vector2Int cell, float blink)
         {
-            float blink = Mathf.Min(blinkBefore, time);
-            yield return new WaitForSeconds(time - blink);
-
             if (frozen.TryGetValue(cell, out GameObject ice) && ice != null)
             {
                 Renderer[] rends = ice.GetComponentsInChildren<Renderer>();
@@ -253,7 +307,7 @@ namespace Animal
                 for (float t = 0f; t < blink; t += blinkInterval)
                 {
                     visible = !visible;
-                    foreach (Renderer r in rends) r.enabled = visible;
+                    foreach (Renderer r in rends) if (r != null) r.enabled = visible;
                     yield return new WaitForSeconds(blinkInterval);
                 }
             }
