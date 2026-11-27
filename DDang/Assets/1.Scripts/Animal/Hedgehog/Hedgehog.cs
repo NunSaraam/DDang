@@ -18,28 +18,48 @@ namespace Animal
         private Transform model;                    // 첫 번째 자식. 콜라이더가 있는 루트는 그대로
         private Vector3 modelScale, modelPos;
 
+        private const byte EventFire = 1;           // 온라인 상대 PC: 웅크림 → 발사 한 번
+        private const float PopTime = 0.08f, RecoverTime = 0.15f;
+
         protected override void OnSpawn()
+        {
+            CacheModel();
+            StartCoroutine(FireLoop());
+        }
+
+        // 온라인 상대 PC: 발사 신호를 받을 때마다 같은 연출과 가시 발사 (가시는 각 PC가 직접 날림)
+        protected override void OnRemoteSpawn() => CacheModel();
+
+        protected override void OnRemoteEvent(byte id, int a, int b)
+        {
+            if (id == EventFire) StartCoroutine(FireOnce());
+        }
+
+        private void CacheModel()
         {
             model = transform.childCount > 0 ? transform.GetChild(0) : transform;
             modelScale = model.localScale;
             modelPos = model.localPosition;
-
-            StartCoroutine(FireLoop());
         }
 
         private IEnumerator FireLoop()
         {
-            const float popTime = 0.08f, recoverTime = 0.15f;
-
             while (IsActive)
             {
-                yield return ScaleTo(new Vector3(1.25f, 0.7f, 1.25f), windupTime * 0.6f);   // 웅크림
-                yield return Shake(shakeAmount, windupTime * 0.4f);                        // 부르르
-                FireAllDirections();
-                yield return ScaleTo(new Vector3(0.85f, 1.3f, 0.85f), popTime);            // 튀어오름
-                yield return ScaleTo(Vector3.one, recoverTime);
-                yield return new WaitForSeconds(Mathf.Max(0f, fireInterval - windupTime - popTime - recoverTime));
+                SendEvent(EventFire);                   // 상대 PC도 같은 순서로 (로컬에서는 아무 일도 안 함)
+                yield return FireOnce();
+                yield return new WaitForSeconds(Mathf.Max(0f, fireInterval - windupTime - PopTime - RecoverTime));
             }
+        }
+
+        // 웅크림 → 부르르 → 12방향 발사 → 튀어오름 (방장·상대 PC 공통)
+        private IEnumerator FireOnce()
+        {
+            yield return ScaleTo(new Vector3(1.25f, 0.7f, 1.25f), windupTime * 0.6f);   // 웅크림
+            yield return Shake(shakeAmount, windupTime * 0.4f);                        // 부르르
+            FireAllDirections();
+            yield return ScaleTo(new Vector3(0.85f, 1.3f, 0.85f), PopTime);            // 튀어오름
+            yield return ScaleTo(Vector3.one, RecoverTime);
         }
 
         private void FireAllDirections()

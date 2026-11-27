@@ -4,6 +4,7 @@ using UnityEngine;
 using Rules;
 using Map;
 using Cameras;
+using Online;
 
 public class GridGenerator : MonoBehaviour, IRoundScoreSource
 {
@@ -33,11 +34,15 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
     public IReadOnlyList<Vector2Int> FloorCells => floorCells;
 
     public int PaintableCount => paintableCount;
+    public event System.Action ScoreChanged;                    // 칸 주인이 바뀜 (게이지·말풍선용)
     public int CountTiles(PlayerType pT) => CountScore(pT);
 
 
-    void Start()
+    IEnumerator Start()                                         // 기다릴 수 있게 IEnumerator
     {
+        if (OnlineSession.IsOnline && (mapSettings != null || duelMapSettings != null))   // 온라인 게임 맵: 방장이 정한 seed가 도착할 때까지 대기 (대기실 평지는 제외)
+            yield return new WaitUntil(() => OnlineGrid.Instance != null && OnlineGrid.Instance.Seed != 0);
+
         Layout = CreateLayout();
         if (Layout != null) gridSizeX = gridSizeZ = Layout.Size;
 
@@ -60,7 +65,9 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
         MapGenSettings settings = isDuel ? duelMapSettings : mapSettings;
         if (settings == null) return null;
 
-        int seed = settings.fixedSeed != 0 ? settings.fixedSeed : System.Environment.TickCount;
+        int seed = settings.fixedSeed != 0 ? settings.fixedSeed
+                 : OnlineSession.IsOnline ? OnlineGrid.Instance.Seed   // 온라인: 두 PC가 같은 seed
+                 : System.Environment.TickCount;
         Debug.Log($"맵 생성 seed: {seed} ({(isDuel ? "결투" : "일반")})");     // 문제 맵 재현용
         return MapGenerator.Generate(settings, seed);
     }
@@ -79,7 +86,6 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
     public void PaintBlock(PlacedObj block, PlayerType pT)
     {
         if (block == null || lockedBlocks.Contains(block)) return;     // 얼린 타일은 덮어쓸 수 없음
-
         PlayerType oldOwner = block.owner;
 
         Material mat = pT switch                            //switch expression방식 =>는 왼쪽이 입력일 때 오른쪽 값 반환, _는 default:
@@ -90,11 +96,7 @@ public class GridGenerator : MonoBehaviour, IRoundScoreSource
         };
 
         block.SetMaterial(mat, pT);                 //땅을 칠하면서, 땅주인도 기록
-
-        if (pT != PlayerType.None && pT != oldOwner)
-        {
-            AchievementManager.Instance.AddValue(pT, AchievementType.TotalPaintedTiles, 1);
-        }
+        if (oldOwner != pT) ScoreChanged?.Invoke(); // 주인이 바뀐 경우만 (온라인 반영도 이 함수를 거침)
     }
 
     public void KeyCheckPaintBlock(PlacedObj block, KeyCheckPlayerType kpT)

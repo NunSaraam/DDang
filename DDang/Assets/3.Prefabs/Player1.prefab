@@ -162,6 +162,10 @@ GameObject:
   - component: {fileID: 7566430333078737447}
   - component: {fileID: 4643950941997451041}
   - component: {fileID: 7934562277110399131}
+  - component: {fileID: 47543592596360631}
+  - component: {fileID: -5173674005775435996}
+  - component: {fileID: 8562779810136159272}
+  - component: {fileID: -250785145371236878}
   m_Layer: 7
   m_Name: Player1
   m_TagString: Untagged
@@ -212,7 +216,6 @@ MonoBehaviour:
   invincibleTime: 0.5
   blinkInterval: 0.1
   currentStoreTile: {fileID: 0}
-  curretnStoreUI: {fileID: 0}
 --- !u!114 &8246529043820231410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,6 +355,99 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.741791, z: 0}
+--- !u!114 &47543592596360631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2245200204370084093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 3153595724
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 524546
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -5173674005775435996}
+  - {fileID: 8562779810136159272}
+  - {fileID: -250785145371236878}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &-5173674005775435996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2245200204370084093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  ConfigFlags: 0
+  PhysicsSettings:
+    ForecastEnabled: 1
+    DebugPhysics: 0
+    GravityForecast: 2
+    MaxExtrapolationTime: 0.15
+    MinLinearDetectedError: 0.02
+    MinAngularDetectedError: 3
+    DeadzoneVelocityMode: 0
+    MaxLinearError: 0
+    MaxAngularError: 0
+    LowCorrectionProgressThreshold: 0.015
+    HighErrorSimilarityThreshold: 1
+    MaxErrorTotalTime: 0.5
+    MaxRemoteSleepIgnoreTime: 0.5
+    ErrorCorrectionType: 0
+    LinearVelCorrectionMul: 1
+    AngularVelCorrectionMul: 1
+    PositionCorrectionLerp: 0.15
+    RotationCorrectionLerp: 0.15
+    Spring: 75
+    Damper: 2
+    MinImpactfulCollisionAlignment: 0.3
+    ImpactStartCorrectionTime: 0.1
+    ImpactCorrectionTimeComplete: 0.3
+--- !u!114 &8562779810136159272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2245200204370084093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkMecanimAnimator
+  Animator: {fileID: 5615263000084873531}
+  ApplyTiming: 2
+  SyncSettings: 79
+  StateHashes: 000000004e818ee2a542061fadccca31460f42cc6ceca7b9c9a84006
+  TriggerHashes: 000000000d286c40
+  TotalWords: 2
+--- !u!114 &-250785145371236878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2245200204370084093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9bde1380b302c84a817973084a3c704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineRabbit
 --- !u!1 &3060616024420376068
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,6 +723,7 @@ GameObject:
   - component: {fileID: 152073864164962345}
   - component: {fileID: 1302069676439583388}
   - component: {fileID: 4085804323413439333}
+  - component: {fileID: 7305425467916773830}
   m_Layer: 7
   m_Name: P1Canvas
   m_TagString: Untagged
@@ -772,10 +869,20 @@ MonoBehaviour:
   stunImage: {fileID: 1992850217457089902}
   scoreText: {fileID: 1305408326630435558}
   storeText: {fileID: 9208126780210665139}
-  pM: {fileID: 0}
-  playerType: 1
-  grid: {fileID: 0}
   targetCamera: {fileID: 0}
+--- !u!114 &7305425467916773830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6295678106682294240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6060340328e81d644baa3fd3e4c27822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.PlayerBubbleInstaller
+  view: {fileID: 4085804323413439333}
 --- !u!1 &6582292541555110402
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,1289 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Fusion.Unity.Editor</name>
+    </assembly>
+    <members>
+        <member name="T:Fusion.Editor.FusionEditorHubSrpTools">
+            <summary>
+            Utilities for converting scene and prefab materials to the used SRP. This allows intro samples to imported into a project with any SRP.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorUtility.ContentBoxScope">
+            <summary>
+            Reusable editor help box scope.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorHubWindow">
+            <summary>
+            The main class to manage the Fusion Hub window.
+            The Hub for example completes the installation of a user project by creating vital config files that are not overwritten by upgrades.
+            It can also install samples and addons that are packaged with the SDK.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionEditorHubWindow.CurrentPage">
+            <summary>
+            Get and sets current page from PlayerPrefs. It's handy for domain reloads.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionEditorHubWindow.ScrollRect">
+            <summary>
+            Get and sets current scrolling from PlayerPrefs. It's handy for domain reloads.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWindow.OnImportPackageCompleted(System.String)">
+            <summary>
+            The QPrototypes have to be reloaded to properly work.
+            Reimporting assets only works after the package import.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWindow.CheckPopupCondition">
+            <summary>
+            Is used to check if important user files are installed and opens the Hub otherwise.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWindow.HubSkin">
+            <summary>
+            The Editor Hub Unity skin.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWindow.ProductLogo">
+            <summary>
+            The product logo.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWindow.CorrectIcon">
+            <summary>
+            The correct icon marking completed installation steps.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWindow.MissingIcon">
+            <summary>
+            The icon marking missing installation steps.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWindow.DocumentationIcon">
+            <summary>
+            The icon indicating documentation.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWindow.ClearPagesCache">
+            <summary>
+            Clears the page cache of the Fusion Hub. Allows to change the set of loaded pages.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubPage.UpdateStateHierarchy(Fusion.Editor.FusionEditorHubPage.CustomConditionCheck)">
+            <summary>
+            Creates mutable state objects and shared it with step elements.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubPage.AddScenePathToBuildSettings(System.String,System.Boolean)">
+            <summary>
+            Add a scene path to the build settings
+            </summary>
+            <param name="scenePath">Path to the scene</param>
+            <param name="addToTop">Add the new scene to the top</param>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorHubWidgetBase">
+            <summary>
+            Structured as such that a subclass has child elements to prevent Unity inspector recursion problems.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWidget.Id">
+            <summary>
+            Hidden id is used for player prefs key to save step progress.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionEditorHubWidget.State">
+            <summary>
+            Internal state saves mutable data for the widget.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionEditorHubWidget.WidgetModeAsEnum">
+            <summary>
+            The mode is saved in string but can be cached into internal enum for convenience.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorHubWidgetDocDownload">
+            <summary>
+            Widget to download and update online doc md files.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.TryGetSavedFolderPath(System.String@)">
+            <summary>
+            Resolves the folder saved in player prefs against the project root,
+            so a changed editor working directory cannot redirect the path to a wrong directory.
+            Without a saved key, falls back to a documentation install found inside the default
+            parent folder (e.g. committed to version control by someone else) and saves the key,
+            so the widget behaves as if it was installed locally.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.DrawActionRow(UnityEngine.Rect,UnityEngine.GUIContent,System.String,System.Int32,System.Int32)">
+            <summary>
+            Draws an icon button with a label to its right, indented to the widget text column. Returns true when the button was clicked.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.InstallDocumentation(Fusion.Editor.FusionEditorHubWidget,System.Boolean)">
+            <summary>
+            Asks the user for a target folder, then installs the documentation from the selected source into it.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.UpdateDocumentation(Fusion.Editor.FusionEditorHubWidget,System.Boolean)">
+            <summary>
+            Fetches the documentation again from the selected source and replaces the content of the saved folder.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.OpenDocumentationFolder">
+            <summary>
+            Opens the documentation folder in the file explorer.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.UninstallDocumentation">
+            <summary>
+            Deletes the documentation folder and the player prefs key after user confirmation.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.HasDocumentationDownloadContent">
+            <summary>
+            Returns true when the documentation folder was saved to player prefs and it still exists and has content.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.TrySelectFolder(System.String,System.String,System.String,System.String@)">
+            <summary>
+            Asks the user to select a folder and saves it to player prefs.
+            A previously saved folder is used as the initial selection of the dialog.
+            Selecting the Assets folder or the project root is denied, a subfolder is required.
+            </summary>
+            <param name="dialogTitle">Title used for the folder selection dialog and error popups.</param>
+            <param name="playerPrefsKey">Player prefs key the selected folder is saved to and read from.</param>
+            <param name="defaultFolderName">Folder name suggested by the selection dialog when no folder was saved yet.</param>
+            <param name="folderPath">The resulting absolute folder path.</param>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.ExtractDocumentationFromSourceAsync(Fusion.Editor.FusionEditorHubWidget,System.String,System.Boolean)">
+            <summary>
+            Extracts the documentation zip into the folder, downloaded from the widget url or read from the widget zip asset.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.GetPackageZipPath(Fusion.Editor.FusionEditorHubWidget)">
+            <summary>
+            Returns the physical path of the zip asset referenced by the widget, null when no asset is assigned.
+            Asset paths are virtual (Assets/ or Packages/, package content resides in Library/PackageCache),
+            GetPhysicalPath maps them to the location on disk.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.GetPackageZipVersion(Fusion.Editor.FusionEditorHubWidget)">
+            <summary>
+            Reads and parses the version file inside the widget zip asset, cached per asset path.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.GetWebDocumentationVersion(System.String)">
+            <summary>
+            Returns the version of the online documentation, fetched once per url in the background.
+            Returns null while the fetch is still running, the next repaint picks up the result.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.FetchWebDocumentationVersionAsync(System.String)">
+            <summary>
+            Fetches the version of the online documentation behind the url.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.ExtractDocumentationFromAsset(Fusion.Editor.FusionEditorHubWidget,System.String)">
+            <summary>
+            Reads the zip archive from the widget asset reference and extracts it into the folder.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.DownloadAndExtractDocumentationAsync(System.String,System.String)">
+            <summary>
+            Downloads the documentation zip archive from the url and extracts it into the folder, showing a progress bar.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.GetDocumentationDownloadVersion">
+            <summary>
+            Returns the content of the version file inside the saved documentation folder, empty when not available.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.GetUpdateRowLabel(System.String,System.String,System.String)">
+            <summary>
+            Builds the update row label: no suffix without a known available version, "(version: ...)" when up to date
+            and a highlighted "(new version available: ...)" when the available version is newer than the installed one.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.FormatVersionForDisplay(System.String)">
+            <summary>
+            Converts the leading ISO date of the version to European notation for display, e.g. "2026-08-14" to "14.08.2026".
+            The internal version strings stay in ISO format, their dates compare lexicographically.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.IsVersionNewer(System.String,System.String)">
+            <summary>
+            Returns true when the candidate version is newer than the installed version.
+            A different product/version slug counts as newer, otherwise the leading dates
+            of the parsed version strings ("{yyyy-MM-dd} {product} {version}") are compared.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.ParseDocumentationVersion(System.String)">
+            <summary>
+            Parses the version file content ("key: value" lines) into the generated date "{yyyy-MM-dd}", e.g. "2026-08-14".
+            Falls back to the first line of the file when the generated key is missing.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWidgetDocDownload.ExtractDocumentationDownload(System.Byte[],System.String,System.Single)">
+            <summary>
+            Extracts the downloaded documentation zip into the folder, deleting and replacing any existing content.
+            The zip is extracted into a temporary sibling folder first, so invalid downloads or a failed extraction leave the existing content untouched.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorHubWidgetType">
+            <summary/>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubWidgetType.Value">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.ReflectionUtils.GetMemberIncludingBaseTypes(System.Type,System.String,System.Reflection.BindingFlags,System.Type)">
+            <summary>
+              Returns the first found member of the given name. Includes private members.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.ReflectionUtils.GetFieldIncludingBaseTypes(System.Type,System.String,System.Reflection.BindingFlags,System.Type)">
+            <summary>
+              Normal reflection GetField() won't find private fields in parents (only will find protected). So this recurses the
+              hard to find privates.
+              This is needed since Unity serialization does find inherited privates.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorHubWindowSdk.Open">
+            <summary>
+            Open the Fusion Hub window.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorSkin">
+            <summary>
+            An editor scriptable object that stores UI skins and different <see cref="T:UnityEngine.GUIStyle"/> Unity inspectors and custom windows.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AnimatorControllerTools.GetStatesNames(UnityEditor.Animations.AnimatorController,System.Collections.Generic.List{System.String})">
+            ------------------------------ STATES --------------------------------------
+        </member>
+        <member name="M:Fusion.Editor.AnimatorControllerTools.GetHashesAndNames(Fusion.NetworkMecanimAnimator,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Int32[]@,System.Int32[]@)">
+            <summary>
+            Re-index all of the State and Trigger names in the current AnimatorController. Never hurts to run this (other than hanging the editor for a split second).
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AnimatorControllerTools.GetWordCount(Fusion.NetworkMecanimAnimator)">
+            <summary>
+            Returns the <see cref="T:Fusion.NetworkMecanimAnimator"/>'s word count, using the animator's animator controller.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorHubPageSO">
+            <summary>
+            Collection of <see cref="T:Fusion.Editor.FusionEditorHubPage"/>.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubPageSO.Content">
+            <summary/>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorHubModeSelectionWindow.HubSkin">
+            <summary>
+            The Fusion Hub Unity skin.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorAssetLibrary">
+            <summary>
+            Library of assets to be used by Fusion Editor.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorAssetLibrary._assetPath">
+            <summary>
+            This has to always point at the correct created asset.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.AssetDatabaseUtils">
+            <summary>
+            Utility methods for working with Unity's <see cref="T:UnityEditor.AssetDatabase"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.AddAddressableAssetsWithLabelMonitor(System.String,System.Action{UnityEngine.Hash128})">
+            <summary>
+            Register a handler that will be called when an addressable asset with a specific label is added or removed.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAddressablesContentHash">
+            <summary>
+            Hash of the serialized addressable settings and group assets. Unlike <see cref="P:UnityEditor.AddressableAssets.Settings.AddressableAssetSettings.currentHash"/>,
+            it only changes when the assets are saved, making it deterministic across MPPM instances and editor sessions.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.SetAssetAndTheMainAssetDirty(UnityEngine.Object)">
+            <summary>
+            Sets the asset dirty and, if is a sub-asset, also sets the main asset dirty.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetPathOrThrow(System.Int32)">
+            <summary>
+            Returns the asset path for the given instance ID or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetPathOrThrow(UnityEngine.Object)">
+            <summary>
+            Returns the asset path for the given object or throws an exception if <paramref name="obj"/> is
+            not an asset.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetPathOrThrow(System.String)">
+            <summary>
+            Returns the asset path for the given asset GUID or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetGuidOrThrow(System.String)">
+            <summary>
+            Returns the asset GUID for the given asset path or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetGuidOrThrow(System.Int32)">
+            <summary>
+            Returns the asset GUID for the given instance ID or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetGuidOrThrow(UnityEngine.Object)">
+            <summary>
+            Returns the asset GUID for the given object reference or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAssetPathOrThrow(UnityEditor.GUID)">
+            <summary>
+            Returns the asset path for the given asset GUID or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetGUIDAndLocalFileIdentifierOrThrow``1(UnityEngine.LazyLoadReference{``0})">
+            <summary>
+            Gets the GUID and local file identifier for the given object reference or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetGUIDAndLocalFileIdentifierOrThrow(UnityEngine.Object)">
+            <summary>
+            Gets the GUID and local file identifier for the given object reference or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetGUIDAndLocalFileIdentifierOrThrow(System.Int32)">
+            <summary>
+            Gets the GUID and local file identifier for the instance ID or throws an exception if the asset is not found.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.LoadAsset(UnityEditor.GUID,System.Int64)">
+            <summary>
+            Loads the asset identified by <paramref name="guid"/> and <paramref name="fileId"/>, or returns <see langword="null"/>
+            if no such asset exists.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.MoveAssetOrThrow(System.String,System.String)">
+            <summary>
+            Moves the asset at <paramref name="source"/> to <paramref name="destination"/> or throws an exception if the move fails.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasLabel(System.String,System.String)">
+            <summary>
+            Returns <see langword="true"/> if the asset at <paramref name="assetPath"/> has the given <paramref name="label"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasLabel(UnityEngine.Object,System.String)">
+            <summary>
+            Returns <see langword="true"/> if the asset <paramref name="obj"/> has the given <paramref name="label"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasLabel(UnityEditor.GUID,System.String)">
+            <summary>
+            Returns <see langword="true"/> if the asset <paramref name="guid"/> has the given <paramref name="label"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasAnyLabel(System.String,System.String[])">
+            <summary>
+            Returns <see langword="true"/> if the asset at <paramref name="assetPath"/> has any of the given <paramref name="labels"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasAnyLabel(UnityEngine.Object,System.String[])">
+            <summary>
+            Returns <see langword="true"/> if the <paramref name="asset"/> has any of the given <paramref name="labels"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.SetLabel(System.String,System.String,System.Boolean)">
+            <summary>
+            Sets or unsets <paramref name="label"/> label for the asset at <paramref name="assetPath"/>, depending
+            on the value of <paramref name="present"/>.
+            </summary>
+            <returns><see langword="true"/> if there was a change to the labels.</returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.SetLabel(UnityEngine.Object,System.String,System.Boolean)">
+            <summary>
+            Sets or unsets the <paramref name="label"/> label for the asset <paramref name="obj"/>, depending
+            on the value of <paramref name="present"/>.
+            </summary>
+            <returns><see langword="true"/> if there was a change to the labels.</returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.SetLabels(System.String,System.String[])">
+            <summary>
+            Sets all the labels for the asset at <paramref name="assetPath"/>.
+            </summary>
+            <returns><see langword="true"/> if the asset was found</returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasScriptingDefineSymbol(UnityEditor.Build.NamedBuildTarget,System.String)">
+            <summary>
+            Checks if a scripting define <paramref name="value"/> is defined for <paramref name="target"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasScriptingDefineSymbol(UnityEditor.BuildTargetGroup,System.String)">
+            <summary>
+            Checks if a scripting define <paramref name="value"/> is defined for <paramref name="group"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.SetScriptableObjectType``1(UnityEngine.ScriptableObject)">
+            <inheritdoc cref="M:Fusion.Editor.AssetDatabaseUtils.SetScriptableObjectType(UnityEngine.ScriptableObject,System.Type)"/>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.SetScriptableObjectType(UnityEngine.ScriptableObject,System.Type)">
+            <summary>
+            Changes the type of scriptable object.
+            </summary>
+            <returns>The new instance with requested type</returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.HasScriptingDefineSymbol(System.String)">
+            <summary>
+            Checks if any and all <see cref="T:UnityEditor.BuildTargetGroup"/> have the given scripting define symbol.
+            </summary>
+            <returns><see langword="true"/> if all groups have the symbol, <see langword="false"/> if none have it, <see langword="null"/> if some have it and some don't</returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.UpdateScriptingDefineSymbol(UnityEditor.BuildTargetGroup,System.String,System.Boolean)">
+            <summary>
+            Adds or removes <paramref name="define"/> scripting define symbol from <paramref name="group"/>, depending
+            on the value of <paramref name="enable"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.UpdateScriptingDefineSymbol(System.String,System.Boolean)">
+            <summary>
+            Adds or removes <paramref name="define"/> from all <see cref="T:UnityEditor.BuildTargetGroup"/>s, depending on the value of <paramref name="enable"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.IsPathWritable(System.String)">
+            <summary>
+            Checks if given path is read only. This can happen e.g. for non-local and non-embedded packages.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetImporterOrThrow``1(UnityEngine.Object)">
+            <summary>
+            Gets the importer for a given <paramref name="asset"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.TryGetImporter``1(UnityEngine.Object,``0@)">
+            <summary>
+            Gets the importer for a given <paramref name="asset"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetNativeTypeName(System.Type)">
+            <summary>
+            Instance-free equivalent of <see cref="M:UnityEditor.ObjectNames.GetClassName(UnityEngine.Object)"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.RegisterCustomDependencyWithMppmWorkaround(System.String,UnityEngine.Hash128)">
+            <summary>
+            Sends out <see cref="T:Fusion.FusionMppmRegisterCustomDependencyCommand"/> command to virtual peers
+            before calling <see cref="M:UnityEditor.AssetDatabase.RegisterCustomDependency(System.String,UnityEngine.Hash128)"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAddress(UnityEngine.Object)">
+            <summary>
+            Returns the address of an asset or an empty string, if either Addressables are disabled or the asset is not addressable.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.GetAddress(System.String)">
+            <summary>
+            Returns the address of an asset or an empty string, if either Addressables are disabled or the asset is not addressable.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.IterateAssets``1(System.String,System.String)">
+            <summary>
+            Iterates over all assets in the project that match the given search criteria, without
+            actually loading them.
+            </summary>
+            <param name="root">The optional root folder</param>
+            <param name="label">The optional label</param>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseUtils.IterateAssets(System.String,System.String,System.Type)">
+            <summary>
+            Iterates over all assets in the project that match the given search criteria, without
+            actually loading them.
+            </summary>
+            <param name="root">The optional root folder</param>
+            <param name="label">The optional label</param>
+            <param name="type">The optional type</param>
+        </member>
+        <member name="T:Fusion.Editor.FusionRunnerVisibilityControlsWindow">
+            <summary>
+            This window contains controls for each active NetworkRunner (see Multi-Peer) including
+            UI toggles for runner SetVisible() and ProvideInput members. NetworkRunner and Player Objects can be pinged in the hierarchy.
+            FusionStats creation shortcuts are provided for convenience as well.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionRunnerVisibilityControlsWindow.Instance">
+            <summary>
+            Window instance.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionRunnerVisibilityControlsWindow.ShowWindow">
+            <summary>
+            Create window instance.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionRunnerVisibilityControlsWindow.ShowButton(UnityEngine.Rect)">
+            <summary>
+            Draw buttons on toolbar.
+            Automatically called by unity.
+            </summary>
+            <param name="position">Position of the button.</param>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditorGUI.BoxScope.#ctor(System.String,System.Int32,System.Single)">
+             <summary>
+            if fields include inline help (?) buttons, use indent : 1
+             </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorGUI.ScriptPropertyName">
+            <summary>
+            The name of the script property in Unity objects
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorGUI.WhitespaceContent">
+            <summary>
+            GUIContent with a single whitespace
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionEditorGUI.FoldoutWidth">
+            <summary>
+            Width of the foldout arrow
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.IncludeLabel">
+            <summary>
+            Label used to mark assets or scripts to be included in the plugin.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.PartialProjectName">
+            <summary>
+            The name of the partial project file, used to point to scripts in the Unity project.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.PluginSdkPath">
+            <summary>
+            Path to the Fusion Plugin SDK. Relative to the project root. Environment variables can be used (%NAME%).
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.IgnoredAssemblies">
+             <summary>
+             The plugin needs to know about simulation types used on Unity side. Code export converts all user networked
+             types to a plugin-compatible version with matching memory layout.
+            
+             Assemblies to be excluded when exporting network types. Use * as a wildcard.
+             </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.IncludePaths">
+            <summary>
+            Additional files and folders can either be marked with <c>FusionPluginInclude</c> label or included here. They will
+            be added to the project file.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.AutoExport">
+            <summary>
+            Auto export settings. Due to API limitations this is not fully automatic, most notably for scenes. When run in batch mode, call <see cref="M:Fusion.Editor.FusionPluginProjectSettings.ExportPrefabsAndScenes"/> to ensure exported data
+            is fully in sync.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginProjectSettings.ExportCallbacks">
+            <summary>
+            Serialization callbacks. Create a scriptable object with matching methods.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.TryGetGlobal(Fusion.Editor.FusionPluginProjectSettings@)">
+            <summary>
+            Attempts to get the global instance, if exists.
+            </summary>
+            <param name="global"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportAll">
+            <summary>
+            Exports code and data.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportCode">
+            <summary>
+            Exports code.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportPrefabsAndScenes">
+            <summary>
+            Exports data.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.BuildAndRun">
+            <summary>
+            Builds a Release version and runs the Photon Server.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.BuildAndRunDebug">
+            <summary>
+            Builds a Debug version.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.BuildDebug">
+            <summary>
+            Builds a Debug version.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.BuildRelease">
+            <summary>
+            Builds a Release version.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.Run">
+            <summary>
+            Runs the Photon.Server.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.OpenProject">
+            <summary>
+            Opens the plugin project. It can be run and debug from the default IDE.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportScene(UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Exports data from a single scene.
+            </summary>
+            <param name="scene"></param>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportPrefab(Fusion.NetworkObject)">
+            <summary>
+            Exports data from a single prefab.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportScriptableObject(UnityEngine.ScriptableObject)">
+             <summary>
+            
+             </summary>
+             <param name="scriptableObject"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginProjectSettings.ExportCode(System.String[],System.Boolean)">
+            <summary>
+            Exports code from all or from selected assemblies.
+            </summary>
+            <param name="assemblyNames">Optional. If specified, only those assemblies will be scanned and exported.</param>
+            <param name="removeMissingFiles">If true, remove all files exported from assemblies that are not in <paramref name="assemblyNames"/></param>
+        </member>
+        <member name="T:Fusion.Editor.FusionPluginAutoExportFlags">
+            <summary>
+            Auto-export settings for <see cref="T:Fusion.Editor.FusionPluginProjectSettings"/>.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginAutoExportFlags.Prefabs">
+            <summary>
+            Export each Fusion prefab that gets updated/moved or remove any data left-over from a removed prefab.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginAutoExportFlags.ScriptableObjects">
+            <summary>
+            Export scriptable objects.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginAutoExportFlags.Scenes">
+            <summary>
+            Exports active scene when it is being saved. Note that this will not cause any imported scenes to be exported automatically; a scene needs to be opened and saved for the export to happen.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginAutoExportFlags.Code">
+            <summary>
+            After each recompile, affected assemblies get reexported. Note that this might not work in batch mode, since [DidReloadScript] has to be run.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionPluginExportCallbacks">
+            <summary>
+            A collection of callbacks invoked whenever an export happens. Make sure "Editor and Runtime" is chosen for each.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginExportCallbacks.PostprocessPrefabData">
+            <summary>
+            Invoked whenever a prefab data is captured.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginExportCallbacks.PostprocessSceneData">
+            <summary>
+            Invoked whenever a scene is captured.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionPluginExportCallbacks.PostprocessScriptableObjectData">
+            <summary>
+            Invoked whenever an asset is captured.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionPluginExportDataSummary">
+            <summary>
+            Summary of the plugin data export.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginExportDataSummary.#ctor(System.TimeSpan,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Summary of the plugin data export.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginExportDataSummary.Duration">
+            <summary/>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginExportDataSummary.PrefabCount">
+            <summary/>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginExportDataSummary.SceneCount">
+            <summary/>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginExportDataSummary.AssetCount">
+            <summary/>
+        </member>
+        <member name="T:Fusion.Editor.FusionPluginCodeExportSummary">
+            <summary>
+            Summary of the plugin code export.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionPluginCodeExportSummary.#ctor(System.TimeSpan,System.Int32,System.Int32)">
+            <summary>
+            Summary of the plugin code export.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginCodeExportSummary.Duration">
+            <summary/>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginCodeExportSummary.FilesGenerated">
+            <summary/>
+        </member>
+        <member name="P:Fusion.Editor.FusionPluginCodeExportSummary.FilesRemoved">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.FusionAssistants.EnsureComponentExists``1(UnityEngine.GameObject)">
+            <summary>
+            Ensure GameObject has component T. Will create as needed and return the found/created component.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionAssistants.CreatePrimitive(System.Nullable{UnityEngine.PrimitiveType},System.String,System.Nullable{UnityEngine.Vector3},System.Nullable{UnityEngine.Quaternion},System.Nullable{UnityEngine.Vector3},UnityEngine.Transform,UnityEngine.Material,System.Type[])">
+            <summary>
+            Create a scene object with all of the supplied arguments and parameters applied.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.ChangeDllManager">
+            <summary>
+            Provides methods to toggle between different DLL modes for the Fusion framework.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.ChangeDllManager.ChangeDllModeToSharedDebug">
+            <summary>
+            Changes the DLL mode to Debug.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.ChangeDllManager.ChangeDllModeToSharedRelease">
+            <summary>
+            Changes the DLL mode to Release.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.ChangeDllManager.ChangeDllMode(Fusion.NetworkRunner.BuildTypes)">
+            <summary>
+            Changes the DLL mode based on the specified build type and build mode.
+            </summary>
+            <param name="buildType">The build type (<see cref="T:Fusion.NetworkRunner.BuildTypes"/>).</param>
+        </member>
+        <member name="M:Fusion.Editor.NetworkObjectPostprocessor.GetPostprocessOrder">
+            <summary>
+            Returns <see cref="F:Fusion.Editor.NetworkObjectPostprocessor.PostprocessOrder"/>
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.INetworkAssetSourceFactory">
+            <summary>
+            A factory that creates asset source instances for a given asset.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.INetworkAssetSourceFactory.Order">
+            <summary>
+            The order in which this factory is executed. The lower the number, the earlier it is executed.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.NetworkAssetSourceFactoryStatic">
+            <summary>
+            A <see cref="T:Fusion.Editor.INetworkAssetSourceFactory"/> implementation that creates <see cref="T:Fusion.NetworkAssetSourceStaticLazy`1"/>.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryStatic.Order">
+            <inheritdoc cref="P:Fusion.Editor.INetworkAssetSourceFactory.Order"/>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryStatic.TryCreateInternal``2(Fusion.Editor.NetworkAssetSourceFactoryContext@,``0@)">
+            <summary>
+            Creates <see cref="T:Fusion.NetworkAssetSourceStaticLazy`1"/>.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.NetworkAssetSourceFactoryResource">
+            <summary>
+            A <see cref="T:Fusion.Editor.INetworkAssetSourceFactory"/> implementation that creates <see cref="T:Fusion.NetworkAssetSourceResource`1"/>
+            instances for assets in the Resources folder.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryResource.Order">
+            <inheritdoc cref="P:Fusion.Editor.INetworkAssetSourceFactory.Order"/>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryResource.TryCreateInternal``2(Fusion.Editor.NetworkAssetSourceFactoryContext@,``0@)">
+            <summary>
+            Creates <see cref="T:Fusion.NetworkAssetSourceResource`1"/> if the asset is in the Resources folder.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.NetworkAssetSourceFactoryAssetBundle">
+            <summary>
+            A <see cref="T:Fusion.Editor.INetworkAssetSourceFactory"/> implementation that creates <see cref="T:Fusion.NetworkAssetSourceAssetBundle`1"/>
+            if the asset is an Addressable.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryAssetBundle.Order">
+            <inheritdoc cref="P:Fusion.Editor.INetworkAssetSourceFactory.Order"/>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryAssetBundle.TryCreateInternal``2(Fusion.Editor.NetworkAssetSourceFactoryContext@,``0@)">
+            <summary>
+            Creates <see cref="T:Fusion.NetworkAssetSourceAssetBundle`1"/> if the asset is an Addressable.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.NetworkAssetSourceFactoryAddressable">
+            <summary>
+            A <see cref="T:Fusion.Editor.INetworkAssetSourceFactory"/> implementation that creates <see cref="T:Fusion.NetworkAssetSourceAddressable`1"/>
+            if the asset is an Addressable.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryAddressable.Order">
+            <inheritdoc cref="P:Fusion.Editor.INetworkAssetSourceFactory.Order"/>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryAddressable.#ctor">
+            <summary>
+            Creates a new instance. Checks if AddressableAssetSettings exists and logs a warning if it does not.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryAddressable.TryCreateInternal``2(Fusion.Editor.NetworkAssetSourceFactoryContext@,``0@)">
+            <summary>
+            Creates <see cref="T:Fusion.NetworkAssetSourceAddressable`1"/> if the asset is an Addressable.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.NetworkBehaviourEditor.DrawNetworkObjectCheck">
+            <summary>
+            Checks if GameObject or parent GameObject has a NetworkObject, and draws a warning and buttons for adding one if not.
+            </summary>
+            <param name="nb"></param>
+        </member>
+        <member name="T:Fusion.Editor.NetworkProjectConfigUtilities">
+            <summary>
+            Editor utilities for creating and managing the <see cref="T:Fusion.NetworkProjectConfigAsset"/> singleton.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.EditorHubWidget">
+            <summary>
+            Contains editor related settings for the Fusion Hub.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionInstaller">
+            <summary>
+            Handles the installation and setup of Fusion in the Unity Editor.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionInstaller.UpdateDefinesForAllTargets">
+            <summary>
+            Iterates through all valid build targets including server and makes sure the correct
+            Fusion defines are applied
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionInstaller.BuildVersionDefines">
+            <summary>
+            Builds a collection of "OR_NEWER" version defines for backward compatibility checks.
+            </summary>
+            <returns>A list of version define strings.</returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetImportContextExtensions.SetOutputArtifactData(UnityEditor.AssetImporters.AssetImportContext,System.String,System.ReadOnlySpan{System.Byte})">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.AssetImportContextExtensions.GetArtifactData(UnityEditor.AssetImporters.AssetImportContext,System.String,System.String)">
+            <summary/>
+        </member>
+        <member name="T:Fusion.Editor.NetworkAssetSourceFactoryContext">
+            <summary>
+            A context object that is passed to <see cref="T:Fusion.Editor.INetworkAssetSourceFactory"/> instances to create an asset source instance.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryContext.InstanceID">
+            <summary>
+            Asset instance ID.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryContext.AssetGuid">
+            <summary>
+            Asset Unity GUID;
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryContext.AssetName">
+            <summary>
+            Asset name;
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.NetworkAssetSourceFactoryContext.IsMainAsset">
+            <summary>
+            Is this the main asset.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.NetworkAssetSourceFactoryContext.AssetPath">
+            <summary>
+            Asset Unity path.
+            </summary>
+        </member>
+        <member name="P:Fusion.Editor.NetworkAssetSourceFactoryContext.Object">
+            <summary>
+            The object pointed to be <see cref="F:Fusion.Editor.NetworkAssetSourceFactoryContext.InstanceID"/>
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryContext.#ctor(System.String,System.Int32,System.String,System.Boolean)">
+            <summary>
+            Create a new instance of <see cref="T:Fusion.Editor.NetworkAssetSourceFactoryContext"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryContext.#ctor(UnityEditor.HierarchyProperty)">
+            <summary>
+            Create a new instance of <see cref="T:Fusion.Editor.NetworkAssetSourceFactoryContext"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.NetworkAssetSourceFactoryContext.#ctor(UnityEngine.Object)">
+            <summary>
+            Create a new instance of <see cref="T:Fusion.Editor.NetworkAssetSourceFactoryContext"/>.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.GuidFileId">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.#ctor(UnityEditor.GUID,System.Int64)">
+            <summary/>
+        </member>
+        <member name="F:Fusion.Editor.GuidFileId.Guid">
+            <summary/>
+        </member>
+        <member name="F:Fusion.Editor.GuidFileId.FileId">
+            <summary/>
+        </member>
+        <member name="P:Fusion.Editor.GuidFileId.GuidStr">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.Deconstruct(UnityEditor.GUID@,System.Int64@)">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.Equals(Fusion.Editor.GuidFileId)">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.Equals(System.Object)">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.GetHashCode">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.op_Equality(Fusion.Editor.GuidFileId,Fusion.Editor.GuidFileId)">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.GuidFileId.op_Inequality(Fusion.Editor.GuidFileId,Fusion.Editor.GuidFileId)">
+            <summary/>
+        </member>
+        <member name="T:Fusion.Editor.AssetDatabaseEnumerable">
+            <summary>
+            Enumerable of assets in the project that match the given search criteria.
+            </summary>
+            <seealso cref="T:Fusion.Editor.AssetDatabaseEnumerator"/>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseEnumerable.#ctor(System.String,System.String,System.Type)">
+            <summary>
+            Not intended to be called directly. Use <see cref="M:Fusion.Editor.AssetDatabaseUtils.IterateAssets(System.String,System.String,System.Type)"/> instead.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseEnumerable.GetEnumerator">
+            <summary>
+            Not intended to be called directly. Use <see cref="M:Fusion.Editor.AssetDatabaseUtils.IterateAssets(System.String,System.String,System.Type)"/> instead.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.AssetDatabaseEnumerator">
+            <summary>
+            Enumerates assets in the project that match the given search criteria using <see cref="T:UnityEditor.HierarchyProperty"/> API.
+            Obtained with <see cref="M:Fusion.Editor.AssetDatabaseUtils.IterateAssets(System.String,System.String,System.Type)"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseEnumerator.#ctor(System.String,System.String,System.Type)">
+            <summary>
+            Creates a new instance.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseEnumerator.MoveNext">
+            <summary>
+            Updates internal <see cref="T:UnityEditor.HierarchyProperty"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseEnumerator.Reset">
+            <summary>
+            Throws <see cref="T:System.NotImplementedException"/>.
+            </summary>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="P:Fusion.Editor.AssetDatabaseEnumerator.Current">
+            <summary>
+            Returns the internernal <see cref="T:UnityEditor.HierarchyProperty"/>. Most of the time
+            this will be the same instance as returned the last time, so do not cache
+            the result - check its properties intestead.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.AssetDatabaseEnumerator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Fusion.Editor.HashCodeUtilities.GetHashDeterministic(System.String,System.Int32)">
+            <summary>
+              This may only be deterministic on 64 bit systems.
+            </summary>
+            <param name="str"></param>
+            <param name="initialHash"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Fusion.Editor.FusionCustomDependency">
+            <summary>
+            A wrapper around Unity's custom dependencies. Allows refresh to be deferred (if circumstances permit) and works around issues with custom dependencies in MPPM.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionCustomDependency.Name">
+            <summary>
+            Name of the dependency.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionCustomDependency.IsGlobalImmediateRefreshEnabled">
+            <summary>
+            Global force immediate switch. Set to true to force all the refreshes to be synchronous.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionCustomDependency.#ctor(System.String,System.Func{System.Nullable{UnityEngine.Hash128}})">
+            <param name="name">Name of the dependency</param>
+            <param name="getter">Hash value getter. If returns null, the dependency will not be updated.</param>
+        </member>
+        <member name="M:Fusion.Editor.FusionCustomDependency.Refresh(System.Boolean)">
+             <summary>
+             Refreshes the dependency. Under normal circumstances, this will enqueue the operation until the next <see cref="F:UnityEditor.EditorApplication.delayCall"/>.
+             The hash will be calculated immediately if any of these is true:
+             - <paramref name="forceImmediate"/>
+             - <see cref="F:Fusion.Editor.FusionCustomDependency.IsGlobalImmediateRefreshEnabled"/>
+             - <see cref="P:UnityEngine.Application.isBatchMode"/>
+            
+             Note that if <see cref="M:UnityEditor.AssetDatabase.IsAssetImportWorkerProcess"/> returns true, the immediate refresh will result with an error.
+             </summary>
+             <param name="forceImmediate"></param>
+        </member>
+        <member name="M:Fusion.Editor.FusionCustomDependency.Update(System.Boolean)">
+            <summary/>
+        </member>
+        <member name="T:Fusion.Editor.FusionCustomDependencyEagerAttribute">
+            <summary>
+            If added to a <see cref="T:Fusion.Editor.FusionCustomDependency"/> field, the dependency will be calculated
+            on the first InitializeOnLoad, but without AssetDatabase.Refresh. This is to avoid refreshing
+            assets due to initial 0 value of the dependency hash.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditor">
+            <summary>
+            Base class for all Photon Common editors. Supports <see cref="T:Fusion.EditorButtonAttribute"/> and <see cref="T:Fusion.ScriptHelpAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditor.PrepareOnInspectorGUI">
+            <summary>
+            Prepares the editor by initializing the script header drawer.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditor.DrawEditorButtons">
+            <summary>
+            Draws the editor buttons.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditor.OnInspectorGUI">
+            <inheritdoc/>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditor.DrawScriptPropertyField">
+            <summary>
+            Draws the script property field.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditor.OnEnable">
+            <summary>
+            Empty implementations, provided for compatibility with OdinEditor class.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionEditor.OnDisable">
+            <summary>
+            Empty implementations, provided for compatibility with OdinEditor class.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorGUIDisplayTypePickerMenuFlags">
+            <summary>
+            Flags for the <see cref="M:Fusion.Editor.FusionEditorGUI.DisplayTypePickerMenu(UnityEngine.Rect,System.Type[],System.Action{System.Type},System.Func{System.Type,System.Boolean},System.String,System.Type,Fusion.Editor.FusionEditorGUIDisplayTypePickerMenuFlags)"/> method
+            and its overloads.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorGUIDisplayTypePickerMenuFlags.None">
+            <summary>
+            No special flags
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorGUIDisplayTypePickerMenuFlags.GroupByNamespace">
+            <summary>
+            Group types by their namespace
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorGUIDisplayTypePickerMenuFlags.ShowFullName">
+            <summary>
+            Show the full name of the type including the namespace
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorGUIDisplayTypePickerMenuFlags.Default">
+            <summary>
+            The default flags
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionEditorMenuPriority">
+            <summary>
+            An enumeration to globally control the Unity menu item priorities set with the <see cref="T:UnityEditor.MenuItem"/> attribute.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.TOP">
+            <summary>
+            Top priority.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.SECTION_1">
+            <summary>
+            Generic section 1.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.Demo">
+            <summary>
+            Demo and sample entries.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.Export">
+            <summary>
+            Export entries.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.GlobalConfigs">
+            <summary>
+            Configuration entries.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.Profilers">
+            <summary>
+            Select windows.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.Setup">
+            <summary>
+            Setup and create entries.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.Window">
+            <summary>
+            Select windows.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.SECTION_2">
+            <summary>
+            Generic section 2
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.Bake">
+            <summary>
+            Map baking menu items.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.SECTION_3">
+            <summary>
+            Generic section 3
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.CodeGen">
+            <summary>
+            code gen menu items.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionEditorMenuPriority.BOTTOM">
+            <summary>
+            Bottom priority.
+            </summary>
+        </member>
+        <member name="T:Fusion.Editor.FusionGlobalScriptableObjectUtils">
+            <summary>
+            Utility methods for working with <see cref="T:Fusion.FusionGlobalScriptableObject"/>.
+            </summary>
+        </member>
+        <member name="F:Fusion.Editor.FusionGlobalScriptableObjectUtils.GlobalAssetLabel">
+            <summary>
+            The label that is assigned to global assets.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.SetDirty(Fusion.FusionGlobalScriptableObject)">
+            <summary>
+            Calls <see cref="M:UnityEditor.EditorUtility.SetDirty(UnityEngine.Object)"/> on the object.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.GetGlobalAssetPath``1">
+            <summary>
+            Locates the asset that is going to be used as a global asset for the given type, that is
+            an asset marked with the <see cref="F:Fusion.Editor.FusionGlobalScriptableObjectUtils.GlobalAssetLabel"/> label. If there are multiple such assets,
+            exception is thrown. If there are no such assets, empty string is returned.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.GetGlobalAssetPath(System.Type)">
+            <inheritdoc cref="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.GetGlobalAssetPath``1"/>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.TryImportGlobal``1">
+            <summary>
+            Attempts to import the global asset for the given type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns><see langword="true"/> if the asset was found and reimported</returns>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.TryGetGlobalAssetPath``1(System.String@)">
+            <summary>
+            A wrapper around <see cref="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.GetGlobalAssetPath``1"/> that returns a value indicating if
+            it was able to find the asset.
+            </summary>
+            <param name="path"></param>
+            <typeparam name="T"></typeparam>
+            <returns><see langword="true"/> if the asset was found</returns>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.TryGetGlobalAssetPath(System.Type,System.String@)">
+            <inheritdoc cref="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.TryGetGlobalAssetPath``1(System.String@)"/>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.EnsureAssetExists``1">
+            <summary>
+            If the global asset does not exist, creates it based on the type's <see cref="T:Fusion.FusionGlobalScriptableObjectAttribute"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns><see langword="true"/> If the asset already existed.</returns>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.EnsureAssetExists(System.Type)">
+            <inheritdoc cref="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.EnsureAssetExists``1"/>
+        </member>
+        <member name="M:Fusion.Editor.FusionGlobalScriptableObjectUtils.TryGetGlobal(System.Type,Fusion.FusionGlobalScriptableObject@)">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Editor.SerializedPropertyUtilities.GetArrayIndex(UnityEditor.SerializedProperty)">
+            <summary>
+            Get the index this element is at.
+            </summary>
+        </member>
+        <member name="M:Fusion.Editor.SerializedPropertyUtilities.GetTargetObject(UnityEditor.SerializedProperty,System.Reflection.FieldInfo@,System.Object@)">
+            <summary>
+            Gets the object the property represents.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -24,26 +24,12 @@ public class KeyUI : MonoBehaviour
         keyText.text = key;
     }
 
-    public void OnKeyPressed()
+    // 누르고 있는 동안 눌린 모습 유지 (KeyUIController가 매 프레임 호출)
+    public void SetHeld(bool held)
     {
-        if (!isPressed)
-        {
-            StartCoroutine(PressedKey());
-        }
-    }
-
-    IEnumerator PressedKey()
-    {
-        isPressed = true;
-
-        backhround.color = pressedColor;
-        transform.localScale = Vector3.one * .9f;
-
-        yield return new WaitForSeconds(.1f);
-
-        backhround.color = defaultColor;
-        transform.localScale = Vector3.one;
-
-        isPressed = false;
+        if (held == isPressed) return;                  // 바뀔 때만 적용
+        isPressed = held;
+        backhround.color = held ? pressedColor : defaultColor;
+        transform.localScale = Vector3.one * (held ? .9f : 1f);
     }
 }

@@ -105,6 +105,8 @@ GameObject:
   - component: {fileID: 4732804889136447170}
   - component: {fileID: 2164023906696360694}
   - component: {fileID: 2840844479431363713}
+  - component: {fileID: 852118064137526861}
+  - component: {fileID: 5420525468155302217}
   m_Layer: 9
   m_Name: Chicken
   m_TagString: Untagged
@@ -174,6 +176,40 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0.75, z: 0}
+--- !u!114 &852118064137526861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5048272960624338365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bacc4d84917afd441acf2558bef9cc9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineAnimal
+  followSharpness: 20
+  _DataIndex: 0
+--- !u!114 &5420525468155302217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5048272960624338365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 3354174492
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 262146
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 852118064137526861}
+  ForceRemoteRenderTimeframe: 0
 --- !u!1 &6928787646094477195
 GameObject:
   m_ObjectHideFlags: 0

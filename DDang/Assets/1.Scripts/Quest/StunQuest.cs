@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,7 +33,7 @@ public class StunQuest : QuestSO
                 p1Chain++;
                 p2Chain = 0;
 
-                QuestUI.Instance.UpdateQuestUI(this, p1Chain, p2Chain);
+                QuestManager.Instance.ReportProgress(this, p1Chain, p2Chain);
 
                 if (p1Chain >= requiredChain)
                 {
@@ -47,7 +47,7 @@ public class StunQuest : QuestSO
                 p2Chain++;
                 p1Chain = 0;
 
-                QuestUI.Instance.UpdateQuestUI(this, p1Chain, p2Chain);
+                QuestManager.Instance.ReportProgress(this, p1Chain, p2Chain);
 
                 if (p2Chain >= requiredChain)
                 {

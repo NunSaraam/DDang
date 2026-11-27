@@ -21,19 +21,34 @@ namespace Animal
         private Transform model;                    // 첫 번째 자식. 콜라이더가 있는 루트는 그대로
         private Vector3 modelScale, modelPos;
 
+        private const byte EventShuffle = 1;        // 온라인 상대 PC: 가슴 치기 → 점프 → 착지 모션
+
         protected override void OnSpawn()
+        {
+            CacheModel();
+            StartCoroutine(ShuffleRoutine());
+        }
+
+        // 온라인 상대 PC: 모션만 (섞기는 방장이 OnlineGrid로 칠하므로 자동으로 보임)
+        protected override void OnRemoteSpawn() => CacheModel();
+
+        protected override void OnRemoteEvent(byte id, int a, int b)
+        {
+            if (id == EventShuffle) StartCoroutine(ShuffleMotion());
+        }
+
+        private void CacheModel()
         {
             model = transform.childCount > 0 ? transform.GetChild(0) : transform;
             modelScale = model.localScale;
             modelPos = model.localPosition;
-
-            StartCoroutine(ShuffleRoutine());
         }
 
         private IEnumerator ShuffleRoutine()
         {
             for (int i = 0; i < shuffleCount; i++)
             {
+                SendEvent(EventShuffle);                // 상대 PC도 같은 모션 (로컬에서는 아무 일도 안 함)
                 yield return ChestBeat();
                 yield return Hop(jumpHeight, jumpTime);
                 StartCoroutine(Slam());
@@ -44,6 +59,14 @@ namespace Animal
             }
             yield return new WaitForSeconds(1f);    // 마지막 물결이 끝날 때까지
             Finish();
+        }
+
+        // 상대 PC에서 재생하는 모션 (방장의 섞기 한 번과 같은 순서)
+        private IEnumerator ShuffleMotion()
+        {
+            yield return ChestBeat();
+            yield return Hop(jumpHeight, jumpTime);
+            yield return Slam();
         }
 
         // 통통 부풀었다 줄었다 반복

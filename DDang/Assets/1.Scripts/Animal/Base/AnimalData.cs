@@ -18,5 +18,6 @@ namespace Animal
         [Range(1f, 30f)] public float duration = 15f;           // 지나면 자동 퇴장
         public AnimalSpawnArea spawnArea = AnimalSpawnArea.RandomFloor;
         public bool inRotation = true;                          // 끄면 랜덤 등장 목록에서 빠짐
+        public bool onlineReady;                                // 온라인 동기화가 끝난 동물만 켬 (꺼져 있으면 온라인에서 안 나옴)
     }
 }

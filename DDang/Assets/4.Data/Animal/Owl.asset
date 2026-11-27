@@ -21,3 +21,4 @@ MonoBehaviour:
   duration: 8
   spawnArea: 0
   inRotation: 1
+  onlineReady: 1

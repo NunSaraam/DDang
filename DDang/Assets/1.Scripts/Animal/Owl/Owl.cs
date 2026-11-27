@@ -70,6 +70,8 @@ namespace Animal
             StartCoroutine(MainRoutine());
         }
 
+        protected override void OnRemoteSpawn() => OnSpawn();      // 온라인 상대 PC: 연출·어둠을 그대로 재생 (자기 카메라에만 어둠)
+
         protected override void OnDespawn() => Cleanup();
         private void OnDestroy() => Cleanup();                      // 씬이 바뀌어 Finish 없이 사라질 때도
 
@@ -133,7 +135,7 @@ namespace Animal
 
         private void AddOverlay(Camera cam, Transform target)
         {
-            if (cam == null) return;
+            if (cam == null || !cam.isActiveAndEnabled) return;      // 꺼진 카메라(온라인에서 상대 화면)에는 만들지 않음
 
             var root = new GameObject($"OwlDarkness ({cam.name})");
             root.layer = 5;                                         // UI

@@ -7,6 +7,7 @@ using Rules;
 using Animal;
 using Stats;
 using Store;
+using Online;
 
 
 public enum PlayerState
@@ -43,7 +44,9 @@ public class PlayerMovement : MonoBehaviour
 
     public IPlayerInputReceiver InputReceiver { get; private set; }
 
-    public bool IsInvincible => Time.time < invincibleUntil;
+    private bool remoteInvincible;                              // 온라인 상대 토끼: 주인 PC가 보낸 무적 상태
+    public bool IsInvincible => Time.time < invincibleUntil || remoteInvincible;
+    public void SetRemoteInvincible(bool on) => remoteInvincible = on;
 
     private Rigidbody rb;
 
@@ -52,9 +55,21 @@ public class PlayerMovement : MonoBehaviour
     private PlayerState currentState;
 
     public StoreTile currentStoreTile;
-    [SerializeField] StoreUI curretnStoreUI;
+    public event System.Action<StoreTile> StoreTileChanged;      // 상점 타일에 올라섬 / 내려옴(null) → 머리 위 안내 문구
 
-    public PlayerState state { get; private set; } = PlayerState.Controllable;
+    private PlayerState stateValue = PlayerState.Controllable;
+    public event System.Action<PlayerState> StateChanged;          // 기절 말풍선 등 화면용 (값이 바뀔 때만)
+
+    public PlayerState state
+    {
+        get => stateValue;
+        private set
+        {
+            if (stateValue == value) return;
+            stateValue = value;
+            StateChanged?.Invoke(value);
+        }
+    }
 
     private void Start()
     {
@@ -83,6 +98,9 @@ public class PlayerMovement : MonoBehaviour
         attackRange = s.AttackRange;
         stunBonus = s.StunBonus;
     }
+
+    // 온라인 상대 토끼: 주인 PC가 보낸 상태를 그대로 표시 (OnlineRabbit이 호출)
+    public void SetRemoteState(PlayerState remote) => state = remote;
 
     // 카드 UI가 열려 있는 동안 이동·공격 입력을 UI로 넘김
     public void SetInputReceiver(IPlayerInputReceiver receiver)
@@ -221,6 +239,7 @@ public class PlayerMovement : MonoBehaviour
                 state = PlayerState.Attacking;
                 ChaeckAttackRange();
                 animator.SetTrigger("Attack");
+                if (OnlineSession.IsOnline) GetComponent<OnlineRabbit>().PlayAttackForOthers();   // 상대 화면 모션
                 StartCoroutine(AttackCooldown(attackCooldown));
             }
         }
@@ -259,6 +278,12 @@ public class PlayerMovement : MonoBehaviour
                 if (angle < 90f)
                 {
                     if (target.IsInvincible || target.state == PlayerState.Stunned) continue;
+
+                    if (OnlineSession.IsOnline)             // 온라인: 맞은 쪽 주인 PC가 판정
+                    {
+                        target.GetComponent<OnlineRabbit>().RequestStun(stunBonus, playerType);
+                        continue;
+                    }
 
                     target.Stun(target.stunTime + stunBonus);      // 맞는 쪽 기절 시간 + 내 강타
 
@@ -322,7 +347,7 @@ public class PlayerMovement : MonoBehaviour
         if (tile != null)
         {
             currentStoreTile = tile;
-            curretnStoreUI.UpdateStoreUI(this);
+            StoreTileChanged?.Invoke(tile);
         }
     }
 
@@ -333,7 +358,7 @@ public class PlayerMovement : MonoBehaviour
         if (tile != null && tile == currentStoreTile)
         {
             currentStoreTile = null;
-            curretnStoreUI.ExitTileUI(this);
+            StoreTileChanged?.Invoke(null);
         }
     }
 

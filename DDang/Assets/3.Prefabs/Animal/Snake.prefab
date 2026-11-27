@@ -132,6 +132,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3000271745511705252}
   - component: {fileID: 9113740119696281779}
+  - component: {fileID: -8437349936691081552}
+  - component: {fileID: -4040195629605626698}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -169,8 +171,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellsPerSecond: 4
   straightChance: 0.7
+  centerBias: 0.5
+  burrowAfter: 1
   wallPrefab: {fileID: 3272410960056362670, guid: 1e5bc8c91a6aad742a6b9cadf48029df,
     type: 3}
-  wallMinTime: 3
-  wallMaxTime: 5
+  maxWalls: 0
   playerClearance: 1
+--- !u!114 &-8437349936691081552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5112572681280643519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bacc4d84917afd441acf2558bef9cc9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Online.OnlineAnimal
+  followSharpness: 20
+  _DataIndex: 0
+--- !u!114 &-4040195629605626698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5112572681280643519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 1930799266
+  SendPriority: 1
+  EnableInterpolation: 1
+  Flags: 262146
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -8437349936691081552}
+  ForceRemoteRenderTimeframe: 0

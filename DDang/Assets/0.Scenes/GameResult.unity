@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 37633609}
   - component: {fileID: 37633608}
+  - component: {fileID: 37633610}
   m_Layer: 0
   m_Name: ResultUI
   m_TagString: Untagged
@@ -154,6 +155,8 @@ MonoBehaviour:
   player2Panel: {fileID: 1390479600}
   p2Win: {fileID: 1345136038}
   p2Lose: {fileID: 340832066}
+  pulseDuration: 3
+  pulseInterval: 0.5
 --- !u!4 &37633609
 Transform:
   m_ObjectHideFlags: 0
@@ -169,6 +172,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &37633610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37633607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d6ec6046e96ad942ab0c901fb1f3565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.GameResultInstaller
+  view: {fileID: 37633608}
 --- !u!1 &38905883
 GameObject:
   m_ObjectHideFlags: 0

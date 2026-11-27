@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rules;
 using Stats;
+using Online;
 
 public enum PlayerType
 {
@@ -36,6 +37,13 @@ public class BlockPainting : MonoBehaviour
         if (player != null && player.state == PlayerState.Stunned) return;    // 기절 중에는 칠하지 않음
         if (RoundManager.HasInstance && RoundManager.Instance.Phase == RoundPhase.SuddenDeath) return;  // 서든데스는 타격으로만 승부
 
+        // 온라인: 라운드 진행 중에만 칠함. 그 전에는 "지난 칸"을 비워 두어 시작하는 순간 서 있는 칸부터 같이 칠함
+        if (OnlineGrid.Instance != null && !(RoundManager.HasInstance && RoundManager.Instance.IsRoundActive))
+        {
+            lastBlock = null;
+            return;
+        }
+
         Vector3 rayOrigin = transform.position + Vector3.up * 0.5f;
         if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, mask))
         {
@@ -43,7 +51,10 @@ public class BlockPainting : MonoBehaviour
             if (block != null && block != lastBlock)            // 같은 칸에서는 들어설 때 한 번만 시도
             {
                 lastBlock = block;
-                if (TryPaint(block) && Random.value < myStats.WidePaintChance) PaintNeighbor(block);
+                if (OnlineGrid.Instance != null)                // 온라인: 방장에게 요청만
+                    OnlineGrid.Instance.RequestPaint(grid.WorldToGridPosition(block.transform.position), pT);
+                else if (TryPaint(block) && Random.value < myStats.WidePaintChance)
+                    PaintNeighbor(block);
             }
         }
 

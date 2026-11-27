@@ -1,3 +1,5 @@
+using System;
+
 namespace Rules
 {
     public enum RoundPhase
@@ -17,6 +19,7 @@ namespace Rules
     {
         int PaintableCount { get; }                 // 장애물을 제외 한 칠할 수 있는 칸 수
         int CountTiles(PlayerType player);
+        event Action ScoreChanged;                  // 칠한 칸 수가 바뀜 (게이지·말풍선용)
     }
 
     public readonly struct RoundResult

@@ -10,6 +10,7 @@ namespace Animal
     //       경로 위 플레이어는 1초 기절(한 돌진에 한 명당 1번). 3회 돌진하면 퇴장.
     //       어슬렁거리는 중이나 경고 중에 맞으면 때린 방향(때린 사람 → 황소)으로 짧은 경고 후 돌진
     // 프리팹: 루트에 이 스크립트 + 트리거 콜라이더(Animal 레이어), 모델은 첫 번째 자식
+    // 온라인: 생각·판정은 방장. 상대 PC는 경고선·돌진 신호로 연출만 재생 (이동은 OnlineAnimal이 전달)
     public class Bull : AnimalBase
     {
         [Header("돌진")]
@@ -42,6 +43,8 @@ namespace Animal
         private static readonly Vector2Int[] Directions =
             { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
+        private const byte EventWarn = 1, EventCharge = 2;          // 온라인 상대 PC: 경고선 / 돌진 연출
+
         private enum Phase { Resting, Warning, Charging }
 
         private Phase phase = Phase.Resting;
@@ -53,8 +56,43 @@ namespace Animal
         private Transform fxRoot;
         private Material runtimeMaterial;
         private readonly List<GameObject> warningTiles = new();
+        private Coroutine remoteWarn;
 
         protected override void OnSpawn()
+        {
+            Setup();
+            baseY = transform.position.y;
+            transform.position = Grid.CellToWorld(CurrentCell, baseY);
+            StartCoroutine(ChargeLoop());
+        }
+
+        // 온라인 상대 PC: 모델·경고선 준비만 (이동은 OnlineAnimal이 전달)
+        protected override void OnRemoteSpawn() => Setup();
+
+        protected override void OnRemoteEvent(byte id, int a, int b)
+        {
+            if (id == EventWarn)
+            {
+                // a = 시작 칸 x | 시작 칸 z << 8 | 방향 << 16,  b = 칸 수 | 맞아서인지 << 8
+                var start = new Vector2Int(a & 0xFF, (a >> 8) & 0xFF);
+                Vector2Int dir = Directions[(a >> 16) & 0x3];
+                var path = new List<Vector2Int>();
+                for (int i = 1; i <= (b & 0xFF); i++) path.Add(start + dir * i);
+
+                if (remoteWarn != null) StopCoroutine(remoteWarn);  // 경고 중에 맞아서 방향이 바뀌면 다시
+                remoteWarn = StartCoroutine(Warn(path, (b >> 8) != 0 ? hitWarnTime : warnTime, interruptible: false));
+            }
+            else if (id == EventCharge)
+            {
+                if (remoteWarn != null) StopCoroutine(remoteWarn);
+                remoteWarn = null;
+                ResetModel();
+                StartCoroutine(ChargeFx(a));
+            }
+        }
+
+        // 모델 기준값, 콜라이더 확인, 연출 부모·머티리얼
+        private void Setup()
         {
             model = transform.childCount > 0 ? transform.GetChild(0) : null;
             if (model != null)
@@ -67,10 +105,6 @@ namespace Animal
 
             fxRoot = new GameObject("BullFx").transform;
             if (warningMaterial == null) warningMaterial = runtimeMaterial = AnimalFx.CreateTransparentMaterial();
-
-            baseY = transform.position.y;
-            transform.position = Grid.CellToWorld(CurrentCell, baseY);
-            StartCoroutine(ChargeLoop());
         }
 
         protected override void OnDespawn()
@@ -82,7 +116,7 @@ namespace Animal
 
         protected override void OnHit(PlayerMovement attacker)
         {
-            if (phase != Phase.Charging) hitBy = attacker;          // 돌진 중에는 무시
+            if (attacker != null && phase != Phase.Charging) hitBy = attacker;   // 돌진 중에는 무시
         }
 
         private IEnumerator ChargeLoop()
@@ -110,6 +144,9 @@ namespace Animal
 
                     phase = Phase.Warning;
                     transform.rotation = Quaternion.LookRotation(AnimalFx.ToWorldDir(dir));
+                    Vector2Int from = CurrentCell;
+                    SendEvent(EventWarn, from.x | (from.y << 8) | (System.Array.IndexOf(Directions, dir) << 16),
+                              path.Count | ((byHit ? 1 : 0) << 8));        // 상대 PC: 같은 칸에 경고선
                     yield return Warn(path, byHit ? hitWarnTime : warnTime, interruptible: !byHit);
                     if (byHit) { hitBy = null; break; }             // 맞아서 하는 짧은 경고 중에 또 맞은 건 무시
                     if (hitBy == null) break;                       // 보통 경고 중에 맞으면 맞은 방향으로 다시
@@ -118,6 +155,7 @@ namespace Animal
                 if (path.Count > 0)
                 {
                     phase = Phase.Charging;
+                    SendEvent(EventCharge, path.Count);             // 상대 PC: 돌진 연출
                     yield return Charge(path);
                 }
 
@@ -279,7 +317,7 @@ namespace Animal
             return bestDir;
         }
 
-        // ───────── 경고 ─────────
+        // ───────── 경고 (방장·상대 공통) ─────────
 
         private IEnumerator Warn(List<Vector2Int> path, float time, bool interruptible)
         {
@@ -300,7 +338,7 @@ namespace Animal
                 {
                     nextBlink += blinkInterval;
                     visible = !visible;
-                    foreach (GameObject w in warningTiles) w.SetActive(visible);
+                    foreach (GameObject w in warningTiles) if (w != null) w.SetActive(visible);
                 }
                 if (model != null)                                  // 발 구르며 몸을 낮추고 부르르
                 {
@@ -321,6 +359,7 @@ namespace Animal
 
         // ───────── 돌진 ─────────
 
+        // 방장(로컬): 실제 돌진 (이동 + 들이받기 + 연출)
         private IEnumerator Charge(List<Vector2Int> path)
         {
             var stunned = new HashSet<PlayerMovement>();
@@ -333,17 +372,8 @@ namespace Animal
             {
                 float k = t / duration;
                 transform.position = Vector3.Lerp(start, end, k);
-                if (model != null)
-                {
-                    model.localPosition = modelPos + Vector3.up * Mathf.Abs(Mathf.Sin(t * 20f)) * runBob;
-                    model.localScale = Vector3.Scale(modelScale, new Vector3(0.95f, 0.95f, 1.1f));   // 앞으로 길쭉
-                }
-
-                // 지나간 칸의 경고선 지우기
-                int passed = Mathf.FloorToInt(k * path.Count);
-                for (int i = 0; i < passed && i < warningTiles.Count; i++)
-                    if (warningTiles[i] != null) warningTiles[i].SetActive(false);
-
+                ChargePose(t);
+                HidePassedWarnings(k, path.Count);
                 RamPlayers(stunned);
 
                 if (t >= nextDust)
@@ -356,8 +386,48 @@ namespace Animal
             transform.position = end;
             RamPlayers(stunned);
             ClearWarning();
+            yield return StopSquash();
+        }
 
-            // 멈추며 찌그러짐
+        // 상대 PC: 돌진 연출만 (이동은 방장 위치가 전달됨)
+        private IEnumerator ChargeFx(int count)
+        {
+            float duration = count / chargeSpeed;
+            float nextDust = 0f;
+            for (float t = 0f; t < duration; t += Time.deltaTime)
+            {
+                ChargePose(t);
+                HidePassedWarnings(t / duration, count);
+                if (t >= nextDust)
+                {
+                    nextDust += 0.05f;
+                    StartCoroutine(DustRoutine(transform.position));
+                }
+                yield return null;
+            }
+            ClearWarning();
+            yield return StopSquash();
+        }
+
+        // 달릴 때 들썩 + 앞으로 길쭉 (공통)
+        private void ChargePose(float t)
+        {
+            if (model == null) return;
+            model.localPosition = modelPos + Vector3.up * Mathf.Abs(Mathf.Sin(t * 20f)) * runBob;
+            model.localScale = Vector3.Scale(modelScale, new Vector3(0.95f, 0.95f, 1.1f));
+        }
+
+        // 지나간 칸의 경고선 지우기 (공통)
+        private void HidePassedWarnings(float k, int count)
+        {
+            int passed = Mathf.FloorToInt(k * count);
+            for (int i = 0; i < passed && i < warningTiles.Count; i++)
+                if (warningTiles[i] != null) warningTiles[i].SetActive(false);
+        }
+
+        // 멈추며 찌그러짐 (공통)
+        private IEnumerator StopSquash()
+        {
             for (float t = 0f; t < 0.15f; t += Time.deltaTime)
             {
                 if (model != null)

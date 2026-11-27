@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Fusion;
+using Online;
 using Rules;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -51,10 +53,13 @@ namespace Animal
             base.OnDestroy();
         }
 
-        private void OnWarning()
+        private void OnWarning()                                        // 방장(로컬)에서만 불림
         {
             Pending = PickNext();
-            if (Pending != null) Warned?.Invoke(Pending);
+            if (Pending == null) return;
+            Warned?.Invoke(Pending);
+            if (OnlineSession.IsOnline && OnlineRound.Instance != null)
+                OnlineRound.Instance.SendAnimalWarning(roster.IndexOf(Pending));   // 상대 PC도 경고
         }
 
         private void OnSpawnTime()
@@ -77,7 +82,7 @@ namespace Animal
         // 한 판(매치) 안에서 중복 없이 뽑기
         private AnimalData PickNext()
         {
-            if (forceAnimal != null) return forceAnimal;
+            if (forceAnimal != null && (!OnlineSession.IsOnline || forceAnimal.onlineReady)) return forceAnimal;   // 온라인은 준비된 동물만
 
             if (round.Match != poolMatch)                           // 새 매치 -> 사용 기록 초기화
             {
@@ -85,7 +90,8 @@ namespace Animal
                 usedThisMatch.Clear();
             }
 
-            var candidates = roster.FindAll(d => d != null && d.inRotation && !usedThisMatch.Contains(d));
+            var candidates = roster.FindAll(d => d != null && d.inRotation && !usedThisMatch.Contains(d)
+                                                 && (!OnlineSession.IsOnline || d.onlineReady));   // 온라인: 동기화가 끝난 동물만
             if (candidates.Count == 0) return null;
 
             AnimalData pick = candidates[UnityEngine.Random.Range(0, candidates.Count)];
@@ -102,9 +108,36 @@ namespace Animal
                 ? new Vector2Int(grid.gridSizeX / 2, grid.gridSizeZ / 2)
                 : PickSpawnCell(grid);
 
-            Current = Instantiate(data.prefab, grid.CellToWorld(cell, 0.5f), Quaternion.identity);   // 0.5 = 바닥 블록 윗면
+            Vector3 pos = grid.CellToWorld(cell, 0.5f);                 // 0.5 = 바닥 블록 윗면
+
+            if (OnlineSession.IsOnline)                                 // 온라인: 방장이 네트워크로 등장 → 상대 PC에도 생김
+            {
+                int index = roster.IndexOf(data);
+                NetworkObject obj = OnlineSession.Instance.Runner.Spawn(data.prefab.GetComponent<NetworkObject>(), pos, Quaternion.identity,
+                    onBeforeSpawned: (runner, o) => o.GetComponent<OnlineAnimal>().DataIndex = (byte)index);
+                Current = obj.GetComponent<AnimalBase>();
+            }
+            else Current = Instantiate(data.prefab, pos, Quaternion.identity);
+
             Current.Begin(data, grid);
             Spawned?.Invoke(Current);
+        }
+
+        // ── 온라인 상대 PC: 방장 알림을 받아 같은 이벤트를 냄 (경고 UI 등은 그대로 동작) ──
+        public void FollowWarning(int index)
+        {
+            if (index < 0 || index >= roster.Count) return;
+            Pending = roster[index];
+            Warned?.Invoke(Pending);
+        }
+
+        public void FollowSpawn(AnimalBase animal, int index)
+        {
+            if (index < 0 || index >= roster.Count) return;
+            Pending = null;
+            Current = animal;
+            animal.BeginRemote(roster[index], FindAnyObjectByType<GridGenerator>());
+            Spawned?.Invoke(animal);
         }
 
         // 가장자리·플레이어와 떨어진 바닥 칸. 없으면 아무 바닥 칸
