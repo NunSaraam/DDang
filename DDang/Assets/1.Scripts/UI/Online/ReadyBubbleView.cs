@@ -36,7 +36,7 @@ namespace UI
         {
             canvas.enabled = true;
             nicknameText.text = nickname;
-            stateText.text = ready ? "Ready" : "UnReady";
+            stateText.text = ready ? "준비 완료" : "준비 취소";
             stateText.color = ready ? readyColor : unreadyColor;
 
             if (shownReady.HasValue && shownReady.Value != ready)       // 준비 상태가 바뀌면 톡

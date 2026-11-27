@@ -40,7 +40,7 @@ namespace UI
             PlayerRef opponent = room.SlotPlayer(other);
             view.SetStatus(opponent == PlayerRef.None
                 ? $"방 코드: {OnlineSession.Instance.RoomName} · 상대를 기다리는 중"
-                : $"상대: {room.NameOf(opponent)} · 둘 다 Ready면 시작");
+                : $"상대: {room.NameOf(opponent)} · 둘 다 준비 완료 시 시작");
 
             foreach (ReadyBubbleView bubble in bubbles)             // 그 자리에 사람이 없으면 숨김
             {
