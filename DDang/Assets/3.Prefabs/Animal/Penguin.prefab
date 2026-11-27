@@ -175,8 +175,8 @@ MonoBehaviour:
   maxFreeze: 15
   minThaw: 3
   maxThaw: 8
-  waves: 1
-  waveInterval: 10
+  waves: 2
+  waveInterval: 5
   freezeStagger: 0.05
   jumpHeight: 0.8
   jumpTime: 0.45

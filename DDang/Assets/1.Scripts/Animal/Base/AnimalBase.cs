@@ -84,6 +84,9 @@ namespace Animal
 
         protected Vector2Int CurrentCell => Grid.WorldToGridPosition(transform.position);
 
+        // 순간이동 (온라인 버전에서는 네트워크 위치도 함께 옮김)
+        protected void TeleportTo(Vector3 position) => transform.position = position;
+
         protected void PaintCell(Vector2Int cell, PlayerType color) => Grid.PaintCell(cell, color);
 
         protected void PaintArea(Vector2Int center, int radius, PlayerType color)   // radius 1 = 3×3

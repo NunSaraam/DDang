@@ -46,9 +46,11 @@ namespace Animal
         private Vector3 modelPos, modelScale;
         private Quaternion modelRot;
         private bool leaving;
+        private float spawnTime;
 
         protected override void OnSpawn()
         {
+            spawnTime = Time.time;
             Vector3 toCamera = AnimalFx.DirectionToCamera();
             if (standAtFarEdge)
             {
@@ -94,9 +96,8 @@ namespace Animal
             }
             overlayAlpha = darkness;
 
-            // 지속 시간이 끝나기 직전에 어둠을 걷고 날아감
-            float spawnedFor = flyTime + 0.5f + fadeInTime;
-            float wait = Data.duration - spawnedFor - fadeOutTime - 0.05f;
+            // 지속 시간이 끝나기 직전에 어둠을 걷고 날아감 (실제로 흐른 시간 기준)
+            float wait = Data.duration - (Time.time - spawnTime) - fadeOutTime - 0.05f;
             if (wait > 0f) yield return new WaitForSeconds(wait);
 
             leaving = true;
