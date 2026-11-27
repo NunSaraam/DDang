@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Animal.AnimalData
   displayName: "\uD669\uC18C"
   description: "\uACBD\uACE0\uC120\uC774 \uBCF4\uC774\uBA74 \uD53C\uD558\uC138\uC694! "
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8c8ab3b8f0869ec4a93612b6382452d9, type: 3}
   category: 2
   prefab: {fileID: 25543145411029902, guid: 75d183f7a12e37e4185a9cbdd5304c47, type: 3}
   duration: 30

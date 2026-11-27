@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Boss.BossData
   displayName: "\uACE0\uC2B4\uB3C4\uCE58"
   description: "\uB9DE\uC73C\uBA74 \uC544\uD50C\uAC70 \uAC19\uC740\uB370..?"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 4378ce0dbfd22674d8fab3656f3bae5b, type: 3}
   category: 1
   prefab: {fileID: 4381255278792374512, guid: 0e7aedeaba556ff449467886661fe41b, type: 3}
   duration: 10

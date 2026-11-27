@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: "\uBD80\uC5C9\uC774"
   description: "\uBD80\uC5C9! \uBD88\uC774 \uAEBC\uC84C\uC5B4\uC694... \uB0B4 \uC8FC\uBCC0\uB9CC
     \uBCF4\uC5EC\uC694"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: bf958514a2d909148bd53129f6f78aa0, type: 3}
   category: 3
   prefab: {fileID: 3845114276723163017, guid: bdd7ae3ba7952d042a04f9b0678662be, type: 3}
   duration: 8
